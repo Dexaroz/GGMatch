@@ -1,8 +1,8 @@
-package com.pamn.ggmatch.architecture.sharedKernel.domain
+package com.pamn.ggmatch.app.architecture.sharedKernel.domain
 
 abstract class Entity<ID>(
     override val id: ID
-) : Identifiable<ID> {
+) : com.pamn.ggmatch.app.architecture.sharedKernel.domain.Identifiable<ID> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

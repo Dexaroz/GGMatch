@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.architecture.sharedKernel.time
+package com.pamn.ggmatch.app.architecture.sharedKernel.time
 
 import kotlinx.datetime.Instant
 

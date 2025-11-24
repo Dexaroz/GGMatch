@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.architecture.sharedKernel.paging
+package com.pamn.ggmatch.app.architecture.sharedKernel.paging
 
 data class Page<T>(
     val items: List<T>,

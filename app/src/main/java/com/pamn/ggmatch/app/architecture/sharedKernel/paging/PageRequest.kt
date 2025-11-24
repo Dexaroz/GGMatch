@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.architecture.sharedKernel.paging
+package com.pamn.ggmatch.app.architecture.sharedKernel.paging
 
 data class PageRequest(
     val page: Int = 0,

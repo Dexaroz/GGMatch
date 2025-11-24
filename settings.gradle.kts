@@ -2,13 +2,11 @@ pluginManagement {
     repositories {
         google {
             content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+                google()
+                mavenCentral()
+                gradlePluginPortal()
             }
         }
-        mavenCentral()
-        gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
@@ -19,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ggmatch"
+rootProject.name = "GGMatch"
 include(":app")

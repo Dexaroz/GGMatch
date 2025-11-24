@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019099012768",
+    "project_id": "ggmatch-45096",
+    "storage_bucket": "ggmatch-45096.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019099012768:android:83ffd75019d2b7744d33c5",
+        "android_client_info": {
+          "package_name": "com.pamn.ggmatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgLl6OKh-0Ck-1SBLxNGz5aiemQHhUtYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

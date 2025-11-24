@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.architecture.sharedKernel.result
+package com.pamn.ggmatch.app.architecture.sharedKernel.result
 
 sealed class Result<out T, out E> {
 
