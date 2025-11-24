@@ -1,7 +1,6 @@
 package com.pamn.ggmatch.app.architecture.sharedKernel.result
 
 sealed class AppError(open val message: String) {
-
     data class Validation(override val message: String) : AppError(message)
 
     data class NotFound(override val message: String) : AppError(message)
@@ -12,6 +11,6 @@ sealed class AppError(open val message: String) {
 
     data class Unexpected(
         override val message: String,
-        val cause: Throwable? = null
+        val cause: Throwable? = null,
     ) : AppError(message)
 }

@@ -1,9 +1,8 @@
 package com.pamn.ggmatch.app.architecture.sharedKernel.domain
 
 abstract class Entity<ID>(
-    override val id: ID
-) : com.pamn.ggmatch.app.architecture.sharedKernel.domain.Identifiable<ID> {
-
+    override val id: ID,
+) : Identifiable<ID> {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null) return false
@@ -15,6 +14,5 @@ abstract class Entity<ID>(
 
     override fun hashCode(): Int = id?.hashCode() ?: 0
 
-    override fun toString(): String =
-        "${this::class.simpleName}(id=$id)"
+    override fun toString(): String = "${this::class.simpleName}(id=$id)"
 }
