@@ -9,8 +9,8 @@ value class Email(val value: String) :
         require(value.isNotBlank()) { "Email cannot be blank" }
         require(
             _root_ide_package_.com.pamn.ggmatch.app.architecture.model.user.Email.Companion.isValid(
-                value
-            )
+                value,
+            ),
         ) { "Invalid email format: $value" }
     }
 
