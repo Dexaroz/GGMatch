@@ -11,14 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.pamn.ggmatch.app.theme.GgmatchTheme
+import com.pamn.ggmatch.app.theme.ggMatchTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            GgmatchTheme {
+            ggMatchTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     greeting(
                         name = "Android",
@@ -44,7 +44,7 @@ fun greeting(
 @Preview(showBackground = true)
 @Composable
 fun greetingPreview() {
-    GgmatchTheme {
+    ggMatchTheme {
         greeting("Android")
     }
 }
