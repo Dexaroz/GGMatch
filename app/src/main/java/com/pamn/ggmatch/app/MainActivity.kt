@@ -1,5 +1,6 @@
 package com.pamn.ggmatch.app
 
+import SwipeDemo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,34 +18,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // El setContent debe ser llamado una única vez al final de onCreate.
         setContent {
             ggMatchTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding),
+                    // Llama al Composable de la demo de deslizamiento (swipe).
+                    SwipeDemo(
+                        // Pasar el padding del Scaffold es buena práctica,
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier,
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun greetingPreview() {
-    ggMatchTheme {
-        greeting("Android")
     }
 }
