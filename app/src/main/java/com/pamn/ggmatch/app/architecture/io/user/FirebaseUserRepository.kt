@@ -13,18 +13,15 @@ import kotlinx.datetime.Instant
 class FirebaseUserRepository(
     firestore: FirebaseFirestore,
 ) : FirebaseRepository<UserId, User>(
-    firestore = firestore,
-    collectionName = "users",
-), UserRepository {
+        firestore = firestore,
+        collectionName = "users",
+    ),
+    UserRepository {
+    override fun getId(entity: User): UserId = entity.id
 
-    override fun getId(entity: User): UserId =
-        entity.id
+    override fun idToString(id: UserId): String = id.value
 
-    override fun idToString(id: UserId): String =
-        id.value
-
-    override fun stringToId(id: String): UserId =
-        UserId(id)
+    override fun stringToId(id: String): UserId = UserId(id)
 
     override fun toDocument(entity: User): Map<String, Any?> =
         mapOf(
@@ -35,7 +32,10 @@ class FirebaseUserRepository(
             "updatedAtEpochMs" to entity.updatedAt.toEpochMilliseconds(),
         )
 
-    override fun fromDocument(id: UserId, doc: DocumentSnapshot): User {
+    override fun fromDocument(
+        id: UserId,
+        doc: DocumentSnapshot,
+    ): User {
         val email =
             Email(
                 doc.getString("email")
@@ -71,9 +71,7 @@ class FirebaseUserRepository(
         )
     }
 
-    override suspend fun findByEmail(email: Email) =
-        findFirstBy(field = "email", value = email.value)
+    override suspend fun findByEmail(email: Email) = findFirstBy(field = "email", value = email.value)
 
-    override suspend fun findByUsername(username: Username) =
-        findFirstBy(field = "username", value = username.value)
+    override suspend fun findByUsername(username: Username) = findFirstBy(field = "username", value = username.value)
 }

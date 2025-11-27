@@ -5,7 +5,6 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 
 object AppContainer {
-
     private var initialized = false
 
     lateinit var timeProvider: TimeProvider

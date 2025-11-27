@@ -25,7 +25,7 @@ private val LightColorScheme =
     )
 
 @Composable
-fun GgmatchTheme(
+fun ggMatchTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,

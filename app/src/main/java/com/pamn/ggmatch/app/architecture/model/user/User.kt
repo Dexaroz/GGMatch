@@ -12,7 +12,6 @@ class User private constructor(
     val createdAt: Instant,
     var updatedAt: Instant,
 ) : AggregateRoot<UserId>(id) {
-
     companion object {
         fun register(
             id: UserId,

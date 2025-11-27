@@ -9,8 +9,8 @@ import com.pamn.ggmatch.app.architecture.model.user.User
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.model.user.Username
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
-import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
+import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthRepository(
@@ -18,7 +18,6 @@ class FirebaseAuthRepository(
     private val userRepository: UserRepository,
     private val timeProvider: TimeProvider,
 ) : AuthRepository {
-
     override suspend fun register(
         email: Email,
         password: String,

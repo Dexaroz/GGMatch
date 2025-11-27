@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun GgMatchApp() {
+fun ggMatchApp() {
     val navController = rememberNavController()
-    GgMatchNavHost(navController = navController)
+    ggMatchNavHost(navController = navController)
 }

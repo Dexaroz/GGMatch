@@ -12,7 +12,6 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 class RegisterUserCommandHandler(
     private val authRepository: AuthRepository,
 ) : CommandHandler<RegisterUserCommand, User> {
-
     override suspend operator fun invoke(command: RegisterUserCommand): Result<User, AppError> {
         val email = Email(command.email)
         val username = Username(command.username)

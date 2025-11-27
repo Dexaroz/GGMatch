@@ -24,74 +24,74 @@ import androidx.compose.ui.unit.sp
 private val ScreenPadding = 24.dp
 private val ButtonHeight = 50.dp
 private val ButtonShape = RoundedCornerShape(24.dp)
-private const val TitleFontSize = 28
-private const val SubtitleFontSize = 16
+private const val TITLEFONTSIZE = 28
+private const val SUBTITLEFONTSIZE = 16
 
 @Composable
-fun Test1Screen(
+fun test1Screen(
     onGoToTest2: () -> Unit,
     onGoToTest3: () -> Unit,
     onGoToTest4: () -> Unit,
 ) {
-    BaseTestScreen(
+    baseTestScreen(
         title = "TEST 1",
         description = "Pantalla de prueba 1. Desde aquí puedes navegar al resto.",
     ) {
-        PrimaryButton(text = "Ir a Test 2", onClick = onGoToTest2)
+        primaryButton(text = "Ir a Test 2", onClick = onGoToTest2)
         Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
+        primaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
         Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
+        primaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
     }
 }
 
 @Composable
-fun Test2Screen(
+fun test2Screen(
     onBack: () -> Unit,
     onGoToTest3: () -> Unit,
 ) {
-    BaseTestScreen(
+    baseTestScreen(
         title = "TEST 2",
         description = "Pantalla de prueba 2.",
     ) {
-        PrimaryButton(text = "Volver", onClick = onBack)
+        primaryButton(text = "Volver", onClick = onBack)
         Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
+        primaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
     }
 }
 
 @Composable
-fun Test3Screen(
+fun test3Screen(
     onBack: () -> Unit,
     onGoToTest4: () -> Unit,
 ) {
-    BaseTestScreen(
+    baseTestScreen(
         title = "TEST 3",
         description = "Pantalla de prueba 3.",
     ) {
-        PrimaryButton(text = "Volver", onClick = onBack)
+        primaryButton(text = "Volver", onClick = onBack)
         Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
+        primaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
     }
 }
 
 @Composable
-fun Test4Screen(
+fun test4Screen(
     onBack: () -> Unit,
     onGoToTest1: () -> Unit,
 ) {
-    BaseTestScreen(
+    baseTestScreen(
         title = "TEST 4",
         description = "Pantalla de prueba 4.",
     ) {
-        PrimaryButton(text = "Volver", onClick = onBack)
+        primaryButton(text = "Volver", onClick = onBack)
         Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = "Ir a Test 1 (reset)", onClick = onGoToTest1)
+        primaryButton(text = "Ir a Test 1 (reset)", onClick = onGoToTest1)
     }
 }
 
 @Composable
-private fun BaseTestScreen(
+private fun baseTestScreen(
     title: String,
     description: String,
     content: @Composable ColumnScope.() -> Unit,
@@ -110,13 +110,13 @@ private fun BaseTestScreen(
         ) {
             Text(
                 text = title,
-                fontSize = TitleFontSize.sp,
+                fontSize = TITLEFONTSIZE.sp,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = description,
-                fontSize = SubtitleFontSize.sp,
+                fontSize = SUBTITLEFONTSIZE.sp,
             )
 
             Spacer(Modifier.height(16.dp))
@@ -132,7 +132,7 @@ private fun BaseTestScreen(
 }
 
 @Composable
-private fun PrimaryButton(
+private fun primaryButton(
     text: String,
     onClick: () -> Unit,
 ) {
