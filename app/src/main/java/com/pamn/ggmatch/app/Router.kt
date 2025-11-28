@@ -8,4 +8,6 @@ object Router {
     const val TEST2 = "test2"
     const val TEST3 = "test3"
     const val TEST4 = "test4"
+
+    const val TESTSWIPE = "testSwipe"
 }

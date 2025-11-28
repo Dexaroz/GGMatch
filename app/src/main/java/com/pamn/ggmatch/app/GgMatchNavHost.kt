@@ -12,6 +12,8 @@ import com.pamn.ggmatch.app.architecture.view.test1Screen
 import com.pamn.ggmatch.app.architecture.view.test2Screen
 import com.pamn.ggmatch.app.architecture.view.test3Screen
 import com.pamn.ggmatch.app.architecture.view.test4Screen
+import com.pamn.ggmatch.app.architecture.view.testSwipeScreen
+
 
 @Composable
 fun ggMatchNavHost(navController: NavHostController) {
@@ -50,6 +52,7 @@ fun ggMatchNavHost(navController: NavHostController) {
                 onGoToTest2 = { navController.navigate(Router.TEST2) },
                 onGoToTest3 = { navController.navigate(Router.TEST3) },
                 onGoToTest4 = { navController.navigate(Router.TEST4) },
+                onGoToTestSwipe = { navController.navigate(Router.TESTSWIPE)}
             )
         }
 
@@ -75,6 +78,11 @@ fun ggMatchNavHost(navController: NavHostController) {
                         popUpTo(0)
                     }
                 },
+            )
+        }
+        composable(Router.TESTSWIPE) {
+            testSwipeScreen(
+                onBack = { navController.popBackStack() },
             )
         }
     }
