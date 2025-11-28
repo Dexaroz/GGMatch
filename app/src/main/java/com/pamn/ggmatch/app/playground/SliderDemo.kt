@@ -222,7 +222,7 @@ fun SwipeDemo(modifier: Modifier = Modifier) {
                     .background(Color(0xFFFFEBEE), MaterialTheme.shapes.extraLarge)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.undo),
+                    painter = painterResource(id = R.drawable.no),
                     contentDescription = "Nope",
                     tint = Color(0xFFF44336),
                     modifier = Modifier.size(36.dp)
