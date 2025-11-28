@@ -10,7 +10,7 @@ import androidx.compose.animation.core.tween
 @Stable
 class SwipeState(
     val coroutineScope: CoroutineScope,
-    val swipeThresholdPx: Float
+    val swipeThresholdPx: Float,
 ) {
     var currentIndex by mutableIntStateOf(0)
     var offsetX by mutableFloatStateOf(0f)
