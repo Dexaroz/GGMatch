@@ -34,6 +34,23 @@ class User private constructor(
             user.registerUserRegisteredEvent()
             return user
         }
+
+        fun fromPersistence(
+            id: UserId,
+            email: Email,
+            username: Username,
+            status: UserStatus,
+            createdAt: Instant,
+            updatedAt: Instant,
+        ): User =
+            User(
+                id = id,
+                email = email,
+                username = username,
+                status = status,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
+            )
     }
 
     fun confirmEmail(timeProvider: TimeProvider) {

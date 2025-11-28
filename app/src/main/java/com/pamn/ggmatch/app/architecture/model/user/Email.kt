@@ -4,11 +4,11 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.domain.ValueObject
 
 @JvmInline
 value class Email(val value: String) :
-    com.pamn.ggmatch.app.architecture.sharedKernel.domain.ValueObject {
+    ValueObject {
     init {
         require(value.isNotBlank()) { "Email cannot be blank" }
         require(
-            _root_ide_package_.com.pamn.ggmatch.app.architecture.model.user.Email.Companion.isValid(
+            isValid(
                 value,
             ),
         ) { "Invalid email format: $value" }
