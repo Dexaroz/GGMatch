@@ -1,5 +1,6 @@
 package com.pamn.ggmatch.app.architecture.view.auth.view
 
+import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,7 +49,7 @@ fun loginView(
     onLoginSuccess: () -> Unit,
     onGoToRegister: () -> Unit,
 ) {
-    var usernameOrEmail by rememberSaveable { mutableStateOf("") }
+    var emailText by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
@@ -84,12 +85,12 @@ fun loginView(
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
                 ggTextField(
-                    value = usernameOrEmail,
+                    value = emailText,
                     onValueChange = {
-                        usernameOrEmail = it
+                        emailText = it
                         errorMessage = null
                     },
-                    label = uiTexts.usernamePlaceholder,
+                    label = uiTexts.emailPlaceholder,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -125,8 +126,13 @@ fun loginView(
                         Modifier
                             .width(SharedDimens.buttonWidth),
                     onClick = {
-                        if (usernameOrEmail.isBlank() || password.isBlank()) {
+                        if (emailText.isBlank() || password.isBlank()) {
                             errorMessage = uiTexts.emptyFieldsErrorText
+                            return@ggPrimaryGradientButton
+                        }
+
+                        if (!Patterns.EMAIL_ADDRESS.matcher(emailText.trim()).matches()) {
+                            errorMessage = uiTexts.invalidEmailErrorText
                             return@ggPrimaryGradientButton
                         }
 
@@ -134,18 +140,26 @@ fun loginView(
                             isLoading = true
                             errorMessage = null
 
-                            val email = Email(usernameOrEmail.trim())
+                            try {
+                                val emailValue = Email(emailText.trim())
 
-                            when (val result = authRepository.login(email, password)) {
-                                is Result.Ok -> {
-                                    isLoading = false
-                                    onLoginSuccess()
-                                }
+                                when (val result = authRepository.login(emailValue, password)) {
+                                    is Result.Ok -> {
+                                        isLoading = false
+                                        onLoginSuccess()
+                                    }
 
-                                is Result.Error -> {
-                                    isLoading = false
-                                    errorMessage = result.toUserMessage(uiTexts)
+                                    is Result.Error -> {
+                                        isLoading = false
+                                        errorMessage = result.toUserMessage(uiTexts)
+                                    }
                                 }
+                            } catch (e: IllegalArgumentException) {
+                                isLoading = false
+                                errorMessage = uiTexts.invalidEmailErrorText
+                            } catch (e: Exception) {
+                                isLoading = false
+                                errorMessage = uiTexts.genericErrorText
                             }
                         }
                     },
@@ -163,4 +177,5 @@ fun loginView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String = uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String =
+    uiTexts.genericErrorText

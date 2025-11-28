@@ -1,5 +1,6 @@
 package com.pamn.ggmatch.app.architecture.view.auth.view
 
+import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,8 +50,8 @@ fun registerView(
     onRegisterSuccess: () -> Unit,
     onGoToLogin: () -> Unit,
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable { mutableStateOf("") }
+    var emailText by rememberSaveable { mutableStateOf("") }
+    var usernameText by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
@@ -86,9 +87,9 @@ fun registerView(
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
                 ggTextField(
-                    value = email,
+                    value = emailText,
                     onValueChange = {
-                        email = it
+                        emailText = it
                         errorMessage = null
                     },
                     label = uiTexts.emailPlaceholder,
@@ -97,9 +98,9 @@ fun registerView(
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
                 ggTextField(
-                    value = username,
+                    value = usernameText,
                     onValueChange = {
-                        username = it
+                        usernameText = it
                         errorMessage = null
                     },
                     label = uiTexts.usernamePlaceholder,
@@ -138,8 +139,18 @@ fun registerView(
                         Modifier
                             .width(SharedDimens.buttonWidth),
                     onClick = {
-                        if (email.isBlank() || username.isBlank() || password.isBlank()) {
+                        if (emailText.isBlank() || usernameText.isBlank() || password.isBlank()) {
                             errorMessage = uiTexts.emptyFieldsErrorText
+                            return@ggPrimaryGradientButton
+                        }
+
+                        if (!Patterns.EMAIL_ADDRESS.matcher(emailText.trim()).matches()) {
+                            errorMessage = uiTexts.invalidEmailErrorText
+                            return@ggPrimaryGradientButton
+                        }
+
+                        if (password.length < 6) {
+                            errorMessage = uiTexts.weakPasswordErrorText
                             return@ggPrimaryGradientButton
                         }
 
@@ -147,32 +158,40 @@ fun registerView(
                             isLoading = true
                             errorMessage = null
 
-                            val emailValue = Email(email.trim())
-                            val usernameValue = Username(username.trim())
+                            try {
+                                val emailValue = Email(emailText.trim())
+                                val usernameValue = Username(usernameText.trim())
 
-                            when (
-                                val result =
-                                    authRepository.register(
-                                        email = emailValue,
-                                        password = password,
-                                        username = usernameValue,
-                                    )
-                            ) {
-                                is Result.Ok -> {
-                                    isLoading = false
-                                    onRegisterSuccess()
-                                }
+                                when (
+                                    val result =
+                                        authRepository.register(
+                                            email = emailValue,
+                                            password = password,
+                                            username = usernameValue,
+                                        )
+                                ) {
+                                    is Result.Ok -> {
+                                        isLoading = false
+                                        onRegisterSuccess()
+                                    }
 
-                                is Result.Error -> {
-                                    isLoading = false
-                                    errorMessage = result.toUserMessage(uiTexts)
+                                    is Result.Error -> {
+                                        isLoading = false
+                                        errorMessage = result.toUserMessage(uiTexts)
+                                    }
                                 }
+                            } catch (e: IllegalArgumentException) {
+                                isLoading = false
+                                errorMessage = uiTexts.invalidEmailErrorText
+                            } catch (e: Exception) {
+                                isLoading = false
+                                errorMessage = uiTexts.genericErrorText
                             }
                         }
                     },
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 ggAuthFooter(
                     text = uiTexts.footerText,
@@ -184,4 +203,6 @@ fun registerView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: RegisterTextVariables): String = uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(
+    uiTexts: RegisterTextVariables,
+): String = uiTexts.genericErrorText

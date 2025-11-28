@@ -6,9 +6,11 @@ data class RegisterTextVariables(
     val usernamePlaceholder: String = "Username",
     val passwordPlaceholder: String = "Password",
     val buttonText: String = "REGISTER",
-    val loadingText: String = "REGISTERING...",
     val footerText: String = "Already have an account?",
-    val footerActionText: String = "LOGIN",
-    val emptyFieldsErrorText: String = "Please fill in all fields",
-    val genericErrorText: String = "Something went wrong. Please try again.",
+    val footerActionText: String = "Login",
+    val loadingText: String = "CREATING ACCOUNT...",
+    val emptyFieldsErrorText: String = "All fields are required",
+    val invalidEmailErrorText: String = "Please enter a valid email address",
+    val weakPasswordErrorText: String = "Password must be at least 6 characters",
+    val genericErrorText: String = "We couldn't create your account. Try again."
 )

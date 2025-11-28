@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 
 object AuthDimens {
     val titleTopMargin = 24.dp
-    val fieldVerticalSpacing = 16.dp
+    val fieldVerticalSpacing = 10.dp
     val buttonTopMargin = 21.dp
     val logoTextSize = 55.sp
     val titleTextSize = 28.sp
