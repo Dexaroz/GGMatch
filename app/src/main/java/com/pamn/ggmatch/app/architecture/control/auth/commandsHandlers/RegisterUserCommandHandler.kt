@@ -1,22 +1,25 @@
-package com.pamn.ggmatch.app.architecture.control.user.commandsHandlers
+package com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers
 
-import com.pamn.ggmatch.app.architecture.control.user.commands.LoginUserCommand
+import com.pamn.ggmatch.app.architecture.control.auth.commands.RegisterUserCommand
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.model.user.User
+import com.pamn.ggmatch.app.architecture.model.user.Username
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 
-class LoginUserCommandHandler(
+class RegisterUserCommandHandler(
     private val authRepository: AuthRepository,
-) : CommandHandler<LoginUserCommand, User> {
-    override suspend operator fun invoke(command: LoginUserCommand): Result<User, AppError> {
+) : CommandHandler<RegisterUserCommand, User> {
+    override suspend operator fun invoke(command: RegisterUserCommand): Result<User, AppError> {
         val email = Email(command.email)
+        val username = Username(command.username)
 
-        return authRepository.login(
+        return authRepository.register(
             email = email,
             password = command.password,
+            username = username,
         )
     }
 }
