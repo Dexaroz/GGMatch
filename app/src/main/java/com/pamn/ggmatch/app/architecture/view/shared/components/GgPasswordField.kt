@@ -10,7 +10,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.pamn.ggmatch.app.architecture.view.shared.SharedDimens
 
 @Composable
-fun GgPasswordField(
+fun ggPasswordField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,

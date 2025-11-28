@@ -6,8 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pamn.ggmatch.app.architecture.view.auth.view.LoginView
-import com.pamn.ggmatch.app.architecture.view.auth.view.RegisterView
+import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.test1Screen
 import com.pamn.ggmatch.app.architecture.view.test2Screen
 import com.pamn.ggmatch.app.architecture.view.test3Screen
@@ -24,7 +23,7 @@ fun ggMatchNavHost(navController: NavHostController) {
         popExitTransition = { ExitTransition.None },
     ) {
         composable(Router.AUTH_LOGIN) {
-            LoginView(
+            loginView(
                 onLoginSuccess = {
                     navController.navigate(Router.HOME) {
                         popUpTo(Router.AUTH_LOGIN) { inclusive = true }

@@ -15,19 +15,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
-import com.pamn.ggmatch.app.architecture.view.auth.RegisterUiTexts
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthFooter
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthHeader
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthTitle
+import com.pamn.ggmatch.app.architecture.view.auth.RegisterTextVariables
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthFooter
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthHeader
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthTitle
 import com.pamn.ggmatch.app.architecture.view.shared.SharedDimens
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgPasswordField
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgPrimaryGradientButton
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgTextField
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggPasswordField
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggPrimaryGradientButton
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggTextField
 
 @Composable
-fun RegisterView(
+fun registerView(
     modifier: Modifier = Modifier,
-    uiTexts: RegisterUiTexts = RegisterUiTexts(),
+    uiTexts: RegisterTextVariables = RegisterTextVariables(),
     headerImageRes: Int = R.drawable.register_header,
     logoText: String = "GGMATCH",
     onRegisterClick: (email: String, username: String, password: String) -> Unit,
@@ -47,18 +47,18 @@ fun RegisterView(
                     .fillMaxSize()
                     .padding(horizontal = SharedDimens.screenHorizontalPadding),
         ) {
-            GgAuthHeader(
+            ggAuthHeader(
                 imageRes = headerImageRes,
                 logoText = logoText,
             )
 
             Spacer(modifier = Modifier.height(AuthDimens.titleTopMargin))
 
-            GgAuthTitle(text = uiTexts.title)
+            ggAuthTitle(text = uiTexts.title)
 
             Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            GgTextField(
+            ggTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = uiTexts.emailPlaceholder,
@@ -66,7 +66,7 @@ fun RegisterView(
 
             Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            GgTextField(
+            ggTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = uiTexts.usernamePlaceholder,
@@ -74,7 +74,7 @@ fun RegisterView(
 
             Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            GgPasswordField(
+            ggPasswordField(
                 value = password,
                 onValueChange = { password = it },
                 label = uiTexts.passwordPlaceholder,
@@ -82,12 +82,12 @@ fun RegisterView(
 
             Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
 
-            GgPrimaryGradientButton(
+            ggPrimaryGradientButton(
                 text = uiTexts.buttonText,
                 onClick = { onRegisterClick(email, username, password) },
             )
 
-            GgAuthFooter(
+            ggAuthFooter(
                 text = uiTexts.footerText,
                 actionText = uiTexts.footerActionText,
                 onActionClick = onGoToLogin,

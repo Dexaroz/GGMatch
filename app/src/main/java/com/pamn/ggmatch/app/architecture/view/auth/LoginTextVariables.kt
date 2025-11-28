@@ -1,8 +1,8 @@
 package com.pamn.ggmatch.app.architecture.view.auth
 
-data class LoginUiTexts(
+data class LoginTextVariables(
     val title: String = "LOGIN",
-    val usernamePlaceholder: String = "Username",
+    val usernamePlaceholder: String = "Email",
     val passwordPlaceholder: String = "Password",
     val buttonText: String = "LOGIN",
     val loadingText: String = "LOADING...",

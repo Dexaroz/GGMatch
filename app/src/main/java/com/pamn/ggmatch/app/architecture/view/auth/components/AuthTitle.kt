@@ -8,7 +8,7 @@ import com.pamn.ggmatch.app.architecture.view.auth.AuthColors
 import com.pamn.ggmatch.app.architecture.view.auth.AuthTextStyles
 
 @Composable
-fun GgAuthTitle(
+fun ggAuthTitle(
     text: String,
     modifier: Modifier = Modifier,
 ) {

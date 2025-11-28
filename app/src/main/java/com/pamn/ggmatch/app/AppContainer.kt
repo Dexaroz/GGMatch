@@ -12,10 +12,9 @@ import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
 import com.pamn.ggmatch.app.architecture.io.user.UserRepository
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
-import com.pamn.ggmatch.app.controllers.AuthCommandHandlers
+import com.pamn.ggmatch.app.controllers.AuthController
 
 object AppContainer {
-
     private var initialized = false
 
     lateinit var timeProvider: TimeProvider
@@ -33,7 +32,7 @@ object AppContainer {
     lateinit var authRepository: AuthRepository
         private set
 
-    lateinit var authCommandHandlers: AuthCommandHandlers
+    lateinit var authController: AuthController
         private set
 
     fun init(context: Context) {
@@ -57,8 +56,8 @@ object AppContainer {
                 timeProvider = timeProvider,
             )
 
-        authCommandHandlers =
-            AuthCommandHandlers(
+        authController =
+            AuthController(
                 registerUser =
                     RegisterUserCommandHandler(
                         authRepository = authRepository,

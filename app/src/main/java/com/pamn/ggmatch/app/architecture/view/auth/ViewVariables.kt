@@ -11,11 +11,10 @@ object AuthDimens {
     val titleTopMargin = 24.dp
     val fieldVerticalSpacing = 16.dp
     val buttonTopMargin = 32.dp
-    val logoTextSize = 40.sp
+    val logoTextSize = 55.sp
     val titleTextSize = 28.sp
     val headerCornerRadius = 25.dp
     val headerHeight = 400.dp
-    val headerHorizontalPadding = 16.dp
 }
 
 object AuthColors {

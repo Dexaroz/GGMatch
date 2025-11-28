@@ -28,20 +28,20 @@ import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
-import com.pamn.ggmatch.app.architecture.view.auth.LoginUiTexts
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthFooter
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthHeader
-import com.pamn.ggmatch.app.architecture.view.auth.components.GgAuthTitle
+import com.pamn.ggmatch.app.architecture.view.auth.LoginTextVariables
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthFooter
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthHeader
+import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthTitle
 import com.pamn.ggmatch.app.architecture.view.shared.SharedDimens
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgPasswordField
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgPrimaryGradientButton
-import com.pamn.ggmatch.app.architecture.view.shared.components.GgTextField
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggPasswordField
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggPrimaryGradientButton
+import com.pamn.ggmatch.app.architecture.view.shared.components.ggTextField
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginView(
+fun loginView(
     modifier: Modifier = Modifier,
-    uiTexts: LoginUiTexts = LoginUiTexts(),
+    uiTexts: LoginTextVariables = LoginTextVariables(),
     headerImageRes: Int = R.drawable.login_header,
     logoText: String = "GGMATCH",
     authRepository: AuthRepository = AppContainer.authRepository,
@@ -65,7 +65,7 @@ fun LoginView(
                     .fillMaxSize()
                     .statusBarsPadding(),
         ) {
-            GgAuthHeader(
+            ggAuthHeader(
                 imageRes = headerImageRes,
                 logoText = logoText,
             )
@@ -79,11 +79,11 @@ fun LoginView(
                         .padding(horizontal = SharedDimens.screenHorizontalPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                GgAuthTitle(text = uiTexts.title)
+                ggAuthTitle(text = uiTexts.title)
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-                GgTextField(
+                ggTextField(
                     value = usernameOrEmail,
                     onValueChange = {
                         usernameOrEmail = it
@@ -94,7 +94,7 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-                GgPasswordField(
+                ggPasswordField(
                     value = password,
                     onValueChange = {
                         password = it
@@ -118,7 +118,7 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
 
-                GgPrimaryGradientButton(
+                ggPrimaryGradientButton(
                     text = if (isLoading) uiTexts.loadingText else uiTexts.buttonText,
                     enabled = !isLoading,
                     modifier =
@@ -127,7 +127,7 @@ fun LoginView(
                     onClick = {
                         if (usernameOrEmail.isBlank() || password.isBlank()) {
                             errorMessage = uiTexts.emptyFieldsErrorText
-                            return@GgPrimaryGradientButton
+                            return@ggPrimaryGradientButton
                         }
 
                         scope.launch {
@@ -153,7 +153,7 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                GgAuthFooter(
+                ggAuthFooter(
                     text = uiTexts.footerText,
                     actionText = uiTexts.footerActionText,
                     onActionClick = onGoToRegister,
@@ -163,5 +163,4 @@ fun LoginView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginUiTexts): String =
-    uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String = uiTexts.genericErrorText

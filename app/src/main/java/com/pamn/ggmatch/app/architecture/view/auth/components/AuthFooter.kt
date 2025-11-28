@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun GgAuthFooter(
+fun ggAuthFooter(
     text: String,
     actionText: String,
     onActionClick: () -> Unit,

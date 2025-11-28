@@ -1,6 +1,6 @@
 package com.pamn.ggmatch.app.architecture.view.auth
 
-data class RegisterUiTexts(
+data class RegisterTextVariables(
     val title: String = "REGISTER",
     val emailPlaceholder: String = "Email",
     val usernamePlaceholder: String = "Username",

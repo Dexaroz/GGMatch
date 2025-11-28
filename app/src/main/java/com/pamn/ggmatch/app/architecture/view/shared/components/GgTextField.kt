@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import com.pamn.ggmatch.app.architecture.view.shared.SharedDimens
 
 @Composable
-fun GgTextField(
+fun ggTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,

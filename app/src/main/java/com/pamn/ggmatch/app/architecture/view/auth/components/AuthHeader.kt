@@ -1,4 +1,3 @@
-// GgAuthHeader.kt
 package com.pamn.ggmatch.app.architecture.view.auth.components
 
 import androidx.compose.foundation.Image
@@ -7,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +19,7 @@ import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
 import com.pamn.ggmatch.app.architecture.view.auth.AuthTextStyles
 
 @Composable
-fun GgAuthHeader(
+fun ggAuthHeader(
     imageRes: Int,
     logoText: String,
     modifier: Modifier = Modifier,
