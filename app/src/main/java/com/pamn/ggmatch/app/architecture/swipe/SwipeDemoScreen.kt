@@ -18,7 +18,7 @@ import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.pamn.ggmatch.app.architecture.swipe.logic.SwipeState
+import com.pamn.ggmatch.app.architecture.swipe.logic.swipeState
 import com.pamn.ggmatch.app.architecture.swipe.model.getTestCards
 import com.pamn.ggmatch.app.architecture.swipe.ui.SwipeButtons
 import com.pamn.ggmatch.app.architecture.swipe.ui.SwipeCard
@@ -33,7 +33,7 @@ fun SwipeDemoScreen(
     val cards = getTestCards()
     val coroutineScope = rememberCoroutineScope()
     val swipeThresholdPx = with(LocalDensity.current) { SWIPE_THRESHOLD_DP.dp.toPx() }
-    val swipeState = remember { SwipeState(coroutineScope, swipeThresholdPx) }
+    val swipeState = remember { swipeState(coroutineScope, swipeThresholdPx) }
 
     Column(
         modifier = modifier

@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Stable
-class SwipeState(
+class swipeState(
     val coroutineScope: CoroutineScope,
     val swipeThresholdPx: Float,
 ) {
