@@ -6,6 +6,9 @@ data class RegisterTextVariables(
     val usernamePlaceholder: String = "Username",
     val passwordPlaceholder: String = "Password",
     val buttonText: String = "REGISTER",
+    val loadingText: String = "REGISTERING...",
     val footerText: String = "Already have an account?",
-    val footerActionText: String = "Login",
+    val footerActionText: String = "LOGIN",
+    val emptyFieldsErrorText: String = "Please fill in all fields",
+    val genericErrorText: String = "Something went wrong. Please try again.",
 )

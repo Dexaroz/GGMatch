@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
+import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 import com.pamn.ggmatch.app.architecture.view.test1Screen
 import com.pamn.ggmatch.app.architecture.view.test2Screen
 import com.pamn.ggmatch.app.architecture.view.test3Screen
@@ -30,6 +31,17 @@ fun ggMatchNavHost(navController: NavHostController) {
                     }
                 },
                 onGoToRegister = { navController.navigate(Router.AUTH_REGISTER) },
+            )
+        }
+
+        composable(Router.AUTH_REGISTER) {
+            registerView(
+                onRegisterSuccess = {
+                    navController.navigate(Router.HOME) {
+                        popUpTo(Router.AUTH_REGISTER) { inclusive = true }
+                    }
+                },
+                onGoToLogin = { navController.navigate(Router.AUTH_LOGIN) },
             )
         }
 

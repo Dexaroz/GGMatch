@@ -3,17 +3,31 @@ package com.pamn.ggmatch.app.architecture.view.auth.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
+import com.pamn.ggmatch.app.AppContainer
+import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
+import com.pamn.ggmatch.app.architecture.model.user.Email
+import com.pamn.ggmatch.app.architecture.model.user.Username
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
 import com.pamn.ggmatch.app.architecture.view.auth.RegisterTextVariables
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthFooter
@@ -23,6 +37,7 @@ import com.pamn.ggmatch.app.architecture.view.shared.SharedDimens
 import com.pamn.ggmatch.app.architecture.view.shared.components.ggPasswordField
 import com.pamn.ggmatch.app.architecture.view.shared.components.ggPrimaryGradientButton
 import com.pamn.ggmatch.app.architecture.view.shared.components.ggTextField
+import kotlinx.coroutines.launch
 
 @Composable
 fun registerView(
@@ -30,12 +45,17 @@ fun registerView(
     uiTexts: RegisterTextVariables = RegisterTextVariables(),
     headerImageRes: Int = R.drawable.register_header,
     logoText: String = "GGMATCH",
-    onRegisterClick: (email: String, username: String, password: String) -> Unit,
+    authRepository: AuthRepository = AppContainer.authRepository,
+    onRegisterSuccess: () -> Unit,
     onGoToLogin: () -> Unit,
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -45,7 +65,7 @@ fun registerView(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(horizontal = SharedDimens.screenHorizontalPadding),
+                    .statusBarsPadding(),
         ) {
             ggAuthHeader(
                 imageRes = headerImageRes,
@@ -54,44 +74,114 @@ fun registerView(
 
             Spacer(modifier = Modifier.height(AuthDimens.titleTopMargin))
 
-            ggAuthTitle(text = uiTexts.title)
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SharedDimens.screenHorizontalPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ggAuthTitle(text = uiTexts.title)
 
-            Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
+                Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            ggTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = uiTexts.emailPlaceholder,
-            )
+                ggTextField(
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        errorMessage = null
+                    },
+                    label = uiTexts.emailPlaceholder,
+                )
 
-            Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
+                Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            ggTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = uiTexts.usernamePlaceholder,
-            )
+                ggTextField(
+                    value = username,
+                    onValueChange = {
+                        username = it
+                        errorMessage = null
+                    },
+                    label = uiTexts.usernamePlaceholder,
+                )
 
-            Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
+                Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            ggPasswordField(
-                value = password,
-                onValueChange = { password = it },
-                label = uiTexts.passwordPlaceholder,
-            )
+                ggPasswordField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    label = uiTexts.passwordPlaceholder,
+                )
 
-            Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
+                Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
-            ggPrimaryGradientButton(
-                text = uiTexts.buttonText,
-                onClick = { onRegisterClick(email, username, password) },
-            )
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.align(Alignment.Start),
+                    )
+                    Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
+                }
 
-            ggAuthFooter(
-                text = uiTexts.footerText,
-                actionText = uiTexts.footerActionText,
-                onActionClick = onGoToLogin,
-            )
+                Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
+
+                ggPrimaryGradientButton(
+                    text = if (isLoading) uiTexts.loadingText else uiTexts.buttonText,
+                    enabled = !isLoading,
+                    modifier =
+                        Modifier
+                            .width(SharedDimens.buttonWidth),
+                    onClick = {
+                        if (email.isBlank() || username.isBlank() || password.isBlank()) {
+                            errorMessage = uiTexts.emptyFieldsErrorText
+                            return@ggPrimaryGradientButton
+                        }
+
+                        scope.launch {
+                            isLoading = true
+                            errorMessage = null
+
+                            val emailValue = Email(email.trim())
+                            val usernameValue = Username(username.trim())
+
+                            when (
+                                val result =
+                                    authRepository.register(
+                                        email = emailValue,
+                                        password = password,
+                                        username = usernameValue,
+                                    )
+                            ) {
+                                is Result.Ok -> {
+                                    isLoading = false
+                                    onRegisterSuccess()
+                                }
+
+                                is Result.Error -> {
+                                    isLoading = false
+                                    errorMessage = result.toUserMessage(uiTexts)
+                                }
+                            }
+                        }
+                    },
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ggAuthFooter(
+                    text = uiTexts.footerText,
+                    actionText = uiTexts.footerActionText,
+                    onActionClick = onGoToLogin,
+                )
+            }
         }
     }
 }
+
+private fun Result.Error<AppError>.toUserMessage(uiTexts: RegisterTextVariables): String = uiTexts.genericErrorText
