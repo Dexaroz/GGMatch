@@ -1,11 +1,16 @@
 package com.pamn.ggmatch.app.architecture.swipe.logic
 
-import androidx.compose.runtime.*
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.tween
 
 @Stable
 class SwipeState(
@@ -23,7 +28,10 @@ class SwipeState(
         offsetX = 0f
     }
 
-    suspend fun handleAction(direction: Int, cardsSize: Int) {
+    suspend fun handleAction(
+        direction: Int,
+        cardsSize: Int,
+    ) {
         backgroundColor = if (direction > 0) Color(0xFF4CAF50) else Color(0xFFF44336)
         nextCard(cardsSize)
         backgroundColor = Color.White
@@ -38,14 +46,15 @@ class SwipeState(
             animate(
                 initialValue = offsetX,
                 targetValue = target,
-                animationSpec = tween(250)
+                animationSpec = tween(250),
             ) { value, _ ->
                 offsetX = value
-                backgroundColor = when {
-                    offsetX > 0 -> Color(0xFFE8F5E9)
-                    offsetX < 0 -> Color(0xFFFFEBEE)
-                    else -> Color.White
-                }
+                backgroundColor =
+                    when {
+                        offsetX > 0 -> Color(0xFFE8F5E9)
+                        offsetX < 0 -> Color(0xFFFFEBEE)
+                        else -> Color.White
+                    }
             }
 
             handleAction(direction, cardsSize)

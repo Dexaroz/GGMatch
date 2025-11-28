@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.view
 
-import SwipeDemoScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pamn.ggmatch.app.architecture.swipe.SwipeDemoScreen
 
 private val ScreenPadding = 24.dp
 private val ButtonHeight = 50.dp
