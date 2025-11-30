@@ -7,7 +7,6 @@ import kotlinx.datetime.Instant
 class User private constructor(
     id: UserId,
     val email: Email,
-    val username: Username,
     var status: UserStatus,
     val createdAt: Instant,
     var updatedAt: Instant,
@@ -16,7 +15,6 @@ class User private constructor(
         fun register(
             id: UserId,
             email: Email,
-            username: Username,
             timeProvider: TimeProvider,
         ): User {
             val now = timeProvider.now()
@@ -25,7 +23,6 @@ class User private constructor(
                 User(
                     id = id,
                     email = email,
-                    username = username,
                     status = UserStatus.EMAIL_PENDING,
                     createdAt = now,
                     updatedAt = now,
@@ -38,7 +35,6 @@ class User private constructor(
         fun fromPersistence(
             id: UserId,
             email: Email,
-            username: Username,
             status: UserStatus,
             createdAt: Instant,
             updatedAt: Instant,
@@ -46,7 +42,6 @@ class User private constructor(
             User(
                 id = id,
                 email = email,
-                username = username,
                 status = status,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
@@ -67,7 +62,6 @@ class User private constructor(
             UserRegisteredEvent(
                 userId = id,
                 email = email,
-                username = username,
             ),
         )
     }

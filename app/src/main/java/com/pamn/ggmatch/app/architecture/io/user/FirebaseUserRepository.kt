@@ -7,7 +7,6 @@ import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.model.user.User
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.model.user.UserStatus
-import com.pamn.ggmatch.app.architecture.model.user.Username
 import kotlinx.datetime.Instant
 
 class FirebaseUserRepository(
@@ -26,7 +25,6 @@ class FirebaseUserRepository(
     override fun toDocument(entity: User): Map<String, Any?> =
         mapOf(
             "email" to entity.email.value,
-            "username" to entity.username.value,
             "status" to entity.status.name,
             "createdAtEpochMs" to entity.createdAt.toEpochMilliseconds(),
             "updatedAtEpochMs" to entity.updatedAt.toEpochMilliseconds(),
@@ -36,17 +34,10 @@ class FirebaseUserRepository(
         id: UserId,
         doc: DocumentSnapshot,
     ): User {
-        val email =
-            Email(
-                doc.getString("email")
-                    ?: error("Missing 'email' field for user ${id.value}"),
-            )
-
-        val username =
-            Username(
-                doc.getString("username")
-                    ?: error("Missing 'username' field for user ${id.value}"),
-            )
+        val emailValue =
+            doc.getString("email")
+                ?: error("Missing 'email' field for user ${id.value}")
+        val email = Email(emailValue)
 
         val statusName = doc.getString("status") ?: UserStatus.EMAIL_PENDING.name
         val status =
@@ -56,7 +47,6 @@ class FirebaseUserRepository(
         val createdAtMs =
             doc.getLong("createdAtEpochMs")
                 ?: error("Missing 'createdAtEpochMs' for user ${id.value}")
-
         val updatedAtMs =
             doc.getLong("updatedAtEpochMs")
                 ?: createdAtMs
@@ -64,7 +54,6 @@ class FirebaseUserRepository(
         return User.fromPersistence(
             id = id,
             email = email,
-            username = username,
             status = status,
             createdAt = Instant.fromEpochMilliseconds(createdAtMs),
             updatedAt = Instant.fromEpochMilliseconds(updatedAtMs),
@@ -72,6 +61,4 @@ class FirebaseUserRepository(
     }
 
     override suspend fun findByEmail(email: Email) = findFirstBy(field = "email", value = email.value)
-
-    override suspend fun findByUsername(username: Username) = findFirstBy(field = "username", value = username.value)
 }

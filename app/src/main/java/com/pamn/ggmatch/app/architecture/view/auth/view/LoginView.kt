@@ -177,5 +177,4 @@ fun loginView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String =
-    uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String = uiTexts.genericErrorText

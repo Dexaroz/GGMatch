@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.model.user.User
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.model.user.Username
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
@@ -21,7 +20,6 @@ class FirebaseAuthRepository(
     override suspend fun register(
         email: Email,
         password: String,
-        username: Username,
     ): Result<User, AppError> =
         try {
             val authResult =
@@ -39,7 +37,6 @@ class FirebaseAuthRepository(
                 User.register(
                     id = userId,
                     email = email,
-                    username = username,
                     timeProvider = timeProvider,
                 )
 
