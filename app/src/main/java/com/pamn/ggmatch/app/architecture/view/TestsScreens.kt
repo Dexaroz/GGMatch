@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pamn.ggmatch.app.architecture.swipe.SwipeDemoScreen
 
 private val ScreenPadding = 24.dp
 private val ButtonHeight = 50.dp
@@ -32,6 +33,7 @@ fun test1Screen(
     onGoToTest2: () -> Unit,
     onGoToTest3: () -> Unit,
     onGoToTest4: () -> Unit,
+    onGoToTestSwipe: () -> Unit,
 ) {
     baseTestScreen(
         title = "TEST 1",
@@ -42,6 +44,8 @@ fun test1Screen(
         primaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
         Spacer(Modifier.height(12.dp))
         primaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
+        Spacer(Modifier.height(12.dp))
+        primaryButton(text = "Ir a Test Swipe", onClick = onGoToTestSwipe)
     }
 }
 
@@ -87,6 +91,26 @@ fun test4Screen(
         primaryButton(text = "Volver", onClick = onBack)
         Spacer(Modifier.height(12.dp))
         primaryButton(text = "Ir a Test 1 (reset)", onClick = onGoToTest1)
+    }
+}
+
+@Composable
+fun testSwipeScreen(
+    onBack: () -> Unit,
+) {
+    baseTestScreen(
+        title = "TEST SWIPE",
+        description = "Pantalla de prueba del Swipe Card.",
+    ) {
+        SwipeDemoScreen(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp)
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        primaryButton(text = "Volver", onClick = onBack)
     }
 }
 
