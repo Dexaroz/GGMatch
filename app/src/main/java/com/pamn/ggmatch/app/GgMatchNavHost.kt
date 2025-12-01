@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
-import com.pamn.ggmatch.app.architecture.view.testSwipeScreen
 
 @Composable
 fun ggMatchNavHost(navController: NavHostController) {
@@ -39,12 +38,6 @@ fun ggMatchNavHost(navController: NavHostController) {
                     }
                 },
                 onGoToLogin = { navController.navigate(Router.AUTH_LOGIN) },
-            )
-        }
-
-        composable(Router.HOME) {
-            testSwipeScreen(
-                onBack = { navController.popBackStack() },
             )
         }
     }

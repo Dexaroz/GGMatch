@@ -20,35 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pamn.ggmatch.app.architecture.swipe.swipeDemoScreen
 
 private val SCREEN_PADDING = 24.dp
 private val BUTTON_HEIGHT = 50.dp
 private val BUTTON_SHAPE = RoundedCornerShape(24.dp)
 private const val TITLE_FONT_SIZE = 28
 private const val SUBTITLE_FONT_SIZE = 16
-
-@Composable
-fun testSwipeScreen(onBack: () -> Unit) {
-    baseTestScreen(
-        title = "TEST SWIPE",
-        description = "Pantalla de prueba del Swipe Card.",
-    ) {
-        swipeDemoScreen(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(500.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        primaryButton(
-            text = "Volver",
-            onClick = onBack,
-        )
-    }
-}
 
 @Composable
 private fun baseTestScreen(
