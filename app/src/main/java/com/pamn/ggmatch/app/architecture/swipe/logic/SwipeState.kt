@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Stable
-class swipeState(
+class SwipeState(
     val coroutineScope: CoroutineScope,
     val swipeThresholdPx: Float,
 ) {
@@ -32,13 +32,23 @@ class swipeState(
         direction: Int,
         cardsSize: Int,
     ) {
-        backgroundColor = if (direction > 0) Color(0xFF4CAF50) else Color(0xFFF44336)
+        backgroundColor =
+            if (direction > 0) {
+                Color(0xFF4CAF50)
+            } else {
+                Color(0xFFF44336)
+            }
+
         nextCard(cardsSize)
         backgroundColor = Color.White
     }
 
-    fun swipe(direction: Int, cardsSize: Int) {
+    fun swipe(
+        direction: Int,
+        cardsSize: Int,
+    ) {
         if (isAnimating) return
+
         coroutineScope.launch {
             isAnimating = true
             val target = direction * 2000f

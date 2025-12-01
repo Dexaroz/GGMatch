@@ -27,7 +27,7 @@ import com.pamn.ggmatch.app.architecture.swipe.model.ProfileCard
 import kotlin.math.roundToInt
 
 @Composable
-fun SwipeCard(
+fun swipeCard(
     card: ProfileCard,
     modifier: Modifier = Modifier,
     scale: Float = 1f,
@@ -35,38 +35,46 @@ fun SwipeCard(
     offsetX: Float = 0f,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxSize()
-            .scale(scale)
-            .alpha(alpha)
-            .offset { IntOffset(offsetX.roundToInt(), 0) },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .scale(scale)
+                .alpha(alpha)
+                .offset { IntOffset(offsetX.roundToInt(), 0) },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = "${card.name}, ${card.age}",
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                style =
+                    MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
                 modifier = Modifier.padding(top = 64.dp),
             )
+
             Text(
                 text = card.description,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp),
             )
+
             Icon(
                 painter = painterResource(id = R.drawable.profile),
                 contentDescription = "Foto de perfil",
-                tint = Color.Gray, // Color fixed
-                modifier = Modifier
-                    .padding(top = 32.dp)
-                    .size(240.dp),
+                tint = Color.Gray,
+                modifier =
+                    Modifier
+                        .padding(top = 32.dp)
+                        .size(240.dp),
             )
         }
     }

@@ -78,7 +78,6 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended")
 
-
     implementation(libs.kotlinx.coroutines.play.services)
 }
 

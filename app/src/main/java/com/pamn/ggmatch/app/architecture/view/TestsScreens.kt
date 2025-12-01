@@ -20,97 +20,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pamn.ggmatch.app.architecture.swipe.SwipeDemoScreen
+import com.pamn.ggmatch.app.architecture.swipe.swipeDemoScreen
 
-private val ScreenPadding = 24.dp
-private val ButtonHeight = 50.dp
-private val ButtonShape = RoundedCornerShape(24.dp)
-private const val TITLEFONTSIZE = 28
-private const val SUBTITLEFONTSIZE = 16
-
-@Composable
-fun test1Screen(
-    onGoToTest2: () -> Unit,
-    onGoToTest3: () -> Unit,
-    onGoToTest4: () -> Unit,
-    onGoToTestSwipe: () -> Unit,
-) {
-    baseTestScreen(
-        title = "TEST 1",
-        description = "Pantalla de prueba 1. Desde aquí puedes navegar al resto.",
-    ) {
-        primaryButton(text = "Ir a Test 2", onClick = onGoToTest2)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test Swipe", onClick = onGoToTestSwipe)
-    }
-}
+private val SCREEN_PADDING = 24.dp
+private val BUTTON_HEIGHT = 50.dp
+private val BUTTON_SHAPE = RoundedCornerShape(24.dp)
+private const val TITLE_FONT_SIZE = 28
+private const val SUBTITLE_FONT_SIZE = 16
 
 @Composable
-fun test2Screen(
-    onBack: () -> Unit,
-    onGoToTest3: () -> Unit,
-) {
-    baseTestScreen(
-        title = "TEST 2",
-        description = "Pantalla de prueba 2.",
-    ) {
-        primaryButton(text = "Volver", onClick = onBack)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test 3", onClick = onGoToTest3)
-    }
-}
-
-@Composable
-fun test3Screen(
-    onBack: () -> Unit,
-    onGoToTest4: () -> Unit,
-) {
-    baseTestScreen(
-        title = "TEST 3",
-        description = "Pantalla de prueba 3.",
-    ) {
-        primaryButton(text = "Volver", onClick = onBack)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test 4", onClick = onGoToTest4)
-    }
-}
-
-@Composable
-fun test4Screen(
-    onBack: () -> Unit,
-    onGoToTest1: () -> Unit,
-) {
-    baseTestScreen(
-        title = "TEST 4",
-        description = "Pantalla de prueba 4.",
-    ) {
-        primaryButton(text = "Volver", onClick = onBack)
-        Spacer(Modifier.height(12.dp))
-        primaryButton(text = "Ir a Test 1 (reset)", onClick = onGoToTest1)
-    }
-}
-
-@Composable
-fun testSwipeScreen(
-    onBack: () -> Unit,
-) {
+fun testSwipeScreen(onBack: () -> Unit) {
     baseTestScreen(
         title = "TEST SWIPE",
         description = "Pantalla de prueba del Swipe Card.",
     ) {
-        SwipeDemoScreen(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp)
+        swipeDemoScreen(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(500.dp),
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        primaryButton(text = "Volver", onClick = onBack)
+        primaryButton(
+            text = "Volver",
+            onClick = onBack,
+        )
     }
 }
 
@@ -128,22 +64,22 @@ private fun baseTestScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(ScreenPadding),
+                    .padding(SCREEN_PADDING),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
         ) {
             Text(
                 text = title,
-                fontSize = TITLEFONTSIZE.sp,
+                fontSize = TITLE_FONT_SIZE.sp,
                 fontWeight = FontWeight.Bold,
             )
 
             Text(
                 text = description,
-                fontSize = SUBTITLEFONTSIZE.sp,
+                fontSize = SUBTITLE_FONT_SIZE.sp,
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -165,8 +101,8 @@ private fun primaryButton(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(ButtonHeight),
-        shape = ButtonShape,
+                .height(BUTTON_HEIGHT),
+        shape = BUTTON_SHAPE,
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 
 @Composable
-fun SwipeButtons(
+fun swipeButtons(
     onNope: () -> Unit,
     onLike: () -> Unit,
 ) {
@@ -26,9 +26,13 @@ fun SwipeButtons(
     ) {
         IconButton(
             onClick = onNope,
-            modifier = Modifier
-                .size(64.dp)
-                .background(Color(0xFFFFEBEE), MaterialTheme.shapes.extraLarge),
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .background(
+                        color = Color(0xFFFFEBEE),
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.no),
@@ -40,9 +44,13 @@ fun SwipeButtons(
 
         IconButton(
             onClick = onLike,
-            modifier = Modifier
-                .size(64.dp)
-                .background(Color(0xFFE8F5E9), MaterialTheme.shapes.extraLarge),
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .background(
+                        color = Color(0xFFE8F5E9),
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.yes),
