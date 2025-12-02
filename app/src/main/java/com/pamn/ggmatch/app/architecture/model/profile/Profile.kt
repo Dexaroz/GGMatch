@@ -5,5 +5,5 @@ data class Profile(
     val name: String,
     val age: Int,
     val description: String,
-    val imageRes: Int
+    val imageRes: Int,
 )

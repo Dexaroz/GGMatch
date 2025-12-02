@@ -5,12 +5,10 @@ import com.pamn.ggmatch.app.architecture.control.swipe.commands.PreviousProfileC
 import com.pamn.ggmatch.app.architecture.model.profile.Profile
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
 
-
 class ProfilePresenterImplementation(
     private val view: ProfileView,
-    private val navigator: ProfileNavigator
+    private val navigator: ProfileNavigator,
 ) : ProfilePresenter {
-
     private val nextCommand = NextProfileCommand(this)
     private val previousCommand = PreviousProfileCommand(this)
 

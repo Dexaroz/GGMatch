@@ -1,7 +1,6 @@
 package com.pamn.ggmatch.app.architecture.model.profile
 
 class ProfileNavigator(private val profiles: List<Profile>) {
-
     private var index = 0
 
     fun current(): Profile = profiles[index]
