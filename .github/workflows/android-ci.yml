@@ -2,10 +2,14 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: 
+      - master
+      - features/swipe2
 
+  pull_request:
+    branches:
+      - master
+      - features/swipe2
 jobs:
   build:
     runs-on: ubuntu-latest
