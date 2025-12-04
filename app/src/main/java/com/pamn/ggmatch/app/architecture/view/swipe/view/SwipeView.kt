@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.swipe.view
+package com.pamn.ggmatch.app.architecture.control.swipe.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,11 +16,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.model.profile.Profile
+import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeActionButton
 import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeCard
+import kotlin.math.abs
 
 @Composable
 fun swipeView(
@@ -41,16 +43,16 @@ fun swipeView(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(Color(0xFF212121))
                 .pointerInput(currentIndex) {
                     detectDragGestures(
                         onDragEnd = {
-                            if (offsetX > 200) { // swipe derecha
+                            if (offsetX > 200) {
                                 presenter.onNextClicked()
                                 currentIndex = (currentIndex + 1) % profiles.size
-                            } else if (offsetX < -200) { // swipe izquierda
-                                presenter.onPreviousClicked()
-                                currentIndex = if (currentIndex - 1 < 0) profiles.size - 1 else currentIndex - 1
+                            } else if (offsetX < -200) {
+                                presenter.onNextClicked()
+                                currentIndex = (currentIndex + 1) % profiles.size
                             }
                             offsetX = 0f
                             scale = 1f
@@ -59,13 +61,12 @@ fun swipeView(
                         onDrag = { _, dragAmount ->
                             val (dx, _) = dragAmount
                             offsetX += dx
-                            scale = 1 - kotlin.math.abs(offsetX) / 2000f
-                            alpha = 1 - kotlin.math.abs(offsetX) / 1000f
+                            scale = 1 - abs(offsetX) / 2500f
+                            alpha = 1 - abs(offsetX) / 1200f
                         },
                     )
                 },
     ) {
-        // Tarjeta principal
         swipeCard(
             card = currentCard,
             offsetX = offsetX,
@@ -73,35 +74,70 @@ fun swipeView(
             alpha = alpha,
         )
 
-        // Botones tipo Tinder
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(32.dp)
+                    .padding(horizontal = 16.dp, vertical = 40.dp) // Ajuste de padding
                     .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Button(onClick = {
+            swipeActionButton(
+                iconRes = R.drawable.undo,
+                iconTint = Color(0xFFFFBC03),
+                backgroundColor = Color(0xFF474747),
+                size = 60.dp,
+                shape = RoundedCornerShape(22.dp),
+            ) {
                 presenter.onPreviousClicked()
+
                 currentIndex = if (currentIndex - 1 < 0) profiles.size - 1 else currentIndex - 1
-            }) {
-                Text("❌")
             }
 
-            Button(onClick = {
+            swipeActionButton(
+                iconRes = R.drawable.no,
+                iconTint = Color(0xFFFE4C6A),
+                backgroundColor = Color(0xFF474747),
+                size = 72.dp,
+                shape = RoundedCornerShape(26.dp),
+            ) {
                 presenter.onNextClicked()
+
                 currentIndex = (currentIndex + 1) % profiles.size
-            }) {
-                Text("⭐")
             }
 
-            Button(onClick = {
+            swipeActionButton(
+                iconRes = R.drawable.star,
+                iconTint = Color(0xFF21BBFF),
+                backgroundColor = Color(0xFF474747),
+                size = 60.dp,
+                shape = RoundedCornerShape(18.dp),
+            ) {
                 presenter.onNextClicked()
+
                 currentIndex = (currentIndex + 1) % profiles.size
-            }) {
-                Text("✅")
             }
+
+            swipeActionButton(
+                iconRes = R.drawable.yes,
+                iconTint = Color(0xFF44EAC5),
+                backgroundColor = Color(0xFF474747),
+                size = 72.dp,
+                shape = RoundedCornerShape(26.dp),
+            ) {
+                presenter.onNextClicked()
+
+                currentIndex = (currentIndex + 1) % profiles.size
+            }
+
+            swipeActionButton(
+                iconRes = R.drawable.lightning,
+                iconTint = Color(0xFFAC52E6),
+                backgroundColor = Color(0xFF474747),
+                size = 60.dp,
+                shape = RoundedCornerShape(20.dp),
+            ) { }
         }
     }
 }
