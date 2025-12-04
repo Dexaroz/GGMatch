@@ -6,14 +6,16 @@ import com.pamn.ggmatch.app.architecture.model.profile.Profile
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
 
 class ProfilePresenterImplementation(
-    private val view: ProfileView,
+    private val view: ProfileView?,
     private val navigator: ProfileNavigator,
 ) : ProfilePresenter {
     private val nextCommand = NextProfileCommand(this)
     private val previousCommand = PreviousProfileCommand(this)
 
     override fun init() {
-        view.showProfile(navigator.current())
+        if (view != null) {
+            view.showProfile(navigator.current())
+        }
     }
 
     override fun onNextClicked() {
@@ -28,6 +30,8 @@ class ProfilePresenterImplementation(
     fun navigator(): ProfileNavigator = navigator
 
     fun show(profile: Profile) {
-        view.showProfile(profile)
+        if (view != null) {
+            view.showProfile(profile)
+        }
     }
 }

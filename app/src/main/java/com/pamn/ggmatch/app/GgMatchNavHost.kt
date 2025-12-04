@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 
@@ -38,6 +39,13 @@ fun ggMatchNavHost(navController: NavHostController) {
                     }
                 },
                 onGoToLogin = { navController.navigate(Router.AUTH_LOGIN) },
+            )
+        }
+
+        composable(Router.HOME) {
+            swipeView(
+                presenter = AppContainer.presenter,
+                profiles = AppContainer.profiles,
             )
         }
     }
