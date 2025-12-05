@@ -1,10 +1,28 @@
 package com.pamn.ggmatch.app
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.rememberNavController
+import com.pamn.ggmatch.app.architecture.view.navBar.navBar
 
 @Composable
 fun ggMatchApp() {
     val navController = rememberNavController()
-    ggMatchNavHost(navController = navController)
+
+    val currentRoute =
+        navController
+            .currentBackStackEntryFlow
+            .collectAsState(initial = navController.currentBackStackEntry)
+            .value?.destination?.route
+
+    Scaffold(
+        topBar = {
+            if (currentRoute in listOf("home", "preferences", "chat", "profile")) {
+                navBar(navController)
+            }
+        },
+    ) { padding ->
+        ggMatchNavHost(navController)
+    }
 }

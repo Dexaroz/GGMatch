@@ -3,12 +3,14 @@ package com.pamn.ggmatch.app
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
+import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
 @Composable
 fun ggMatchNavHost(navController: NavHostController) {
@@ -47,6 +49,18 @@ fun ggMatchNavHost(navController: NavHostController) {
                 presenter = AppContainer.presenter,
                 profiles = AppContainer.profiles,
             )
+        }
+
+        composable(Router.PREFERENCES) {
+            testView(Color.Yellow)
+        }
+
+        composable(Router.CHAT) {
+            testView(Color.Cyan)
+        }
+
+        composable(Router.PROFILE) {
+            testView(Color.Magenta)
         }
     }
 }
