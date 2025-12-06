@@ -78,7 +78,7 @@ fun swipeView(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 40.dp) // Ajuste de padding
+                    .padding(horizontal = 16.dp, vertical = 20.dp) // Ajuste de padding
                     .align(Alignment.BottomCenter),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,

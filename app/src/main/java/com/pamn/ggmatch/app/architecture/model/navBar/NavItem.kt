@@ -1,25 +1,21 @@
 package com.pamn.ggmatch.app.architecture.model.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
+import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.Router
 
 sealed class TopNavItem(
     val route: String,
     val label: String,
-    val icon: ImageVector,
+    @DrawableRes val iconRes: Int,
 ) {
-    object Home : TopNavItem(Router.HOME, "Home", Icons.Default.Home)
+    object Home : TopNavItem(Router.HOME, "Home", R.drawable.home)
 
-    object Preferences : TopNavItem(Router.PREFERENCES, "Chat", Icons.Default.FilterAlt)
+    object Preferences : TopNavItem(Router.PREFERENCES, "Preferences", R.drawable.preferences)
 
-    object Chats : TopNavItem(Router.CHAT, "Chat", Icons.Default.ChatBubble)
+    object Chats : TopNavItem(Router.CHAT, "Chat", R.drawable.chat)
 
-    object Profile : TopNavItem(Router.PROFILE, "Profile", Icons.Default.Person)
+    object Profile : TopNavItem(Router.PROFILE, "Profile", R.drawable.profile)
 }
 
 val topNavItems =

@@ -52,15 +52,15 @@ fun ggMatchNavHost(navController: NavHostController) {
         }
 
         composable(Router.PREFERENCES) {
-            testView(Color.Yellow)
+            testView(Color.White)
         }
 
         composable(Router.CHAT) {
-            testView(Color.Cyan)
+            testView(Color.Black)
         }
 
         composable(Router.PROFILE) {
-            testView(Color.Magenta)
+            testView(Color.White)
         }
     }
 }
