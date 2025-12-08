@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
-import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.model.profile.Profile
 import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeActionButton
 import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeCard
@@ -29,30 +28,26 @@ import kotlin.math.abs
 @Composable
 fun swipeView(
     modifier: Modifier = Modifier,
-    profiles: List<Profile>,
-    presenter: ProfilePresenterImplementation,
+    currentCard: Profile,
+    onNext: () -> Unit,
+    onPrevious: () -> Unit,
 ) {
-    var currentIndex by remember { mutableStateOf(0) }
-    val currentCard = profiles.getOrNull(currentIndex) ?: return
-
-    var offsetX by remember { mutableStateOf(0f) }
-    var scale by remember { mutableStateOf(1f) }
-    var alpha by remember { mutableStateOf(1f) }
+    var offsetX by remember(currentCard.id) { mutableStateOf(0f) }
+    var scale by remember(currentCard.id) { mutableStateOf(1f) }
+    var alpha by remember(currentCard.id) { mutableStateOf(1f) }
 
     Box(
         modifier =
             modifier
                 .fillMaxSize()
                 .background(Color(0xFF212121))
-                .pointerInput(currentIndex) {
+                .pointerInput(currentCard.id) {
                     detectDragGestures(
                         onDragEnd = {
                             if (offsetX > 200) {
-                                presenter.onNextClicked()
-                                currentIndex = (currentIndex + 1) % profiles.size
+                                onNext() // <-- ¡CORREGIDO!
                             } else if (offsetX < -200) {
-                                presenter.onNextClicked()
-                                currentIndex = (currentIndex + 1) % profiles.size
+                                onNext()
                             }
                             offsetX = 0f
                             scale = 1f
@@ -78,7 +73,7 @@ fun swipeView(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 40.dp) // Ajuste de padding
+                    .padding(horizontal = 16.dp, vertical = 40.dp)
                     .align(Alignment.BottomCenter),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
@@ -90,9 +85,7 @@ fun swipeView(
                 size = 60.dp,
                 shape = RoundedCornerShape(22.dp),
             ) {
-                presenter.onPreviousClicked()
-
-                currentIndex = if (currentIndex - 1 < 0) profiles.size - 1 else currentIndex - 1
+                onPrevious()
             }
 
             swipeActionButton(
@@ -102,9 +95,7 @@ fun swipeView(
                 size = 72.dp,
                 shape = RoundedCornerShape(26.dp),
             ) {
-                presenter.onNextClicked()
-
-                currentIndex = (currentIndex + 1) % profiles.size
+                onNext()
             }
 
             swipeActionButton(
@@ -114,9 +105,7 @@ fun swipeView(
                 size = 60.dp,
                 shape = RoundedCornerShape(18.dp),
             ) {
-                presenter.onNextClicked()
-
-                currentIndex = (currentIndex + 1) % profiles.size
+                onNext()
             }
 
             swipeActionButton(
@@ -126,9 +115,7 @@ fun swipeView(
                 size = 72.dp,
                 shape = RoundedCornerShape(26.dp),
             ) {
-                presenter.onNextClicked()
-
-                currentIndex = (currentIndex + 1) % profiles.size
+                onNext()
             }
 
             swipeActionButton(
@@ -137,7 +124,9 @@ fun swipeView(
                 backgroundColor = Color(0xFF474747),
                 size = 60.dp,
                 shape = RoundedCornerShape(20.dp),
-            ) { }
+            ) {
+                onNext()
+            }
         }
     }
 }

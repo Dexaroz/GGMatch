@@ -12,10 +12,10 @@ class ProfilePresenterImplementation(
     private val nextCommand = NextProfileCommand(this)
     private val previousCommand = PreviousProfileCommand(this)
 
+    private var currentProfile: Profile = navigator.current()
+
     override fun init() {
-        if (view != null) {
-            view.showProfile(navigator.current())
-        }
+        view?.showProfile(currentProfile)
     }
 
     override fun onNextClicked() {
@@ -26,12 +26,10 @@ class ProfilePresenterImplementation(
         previousCommand.execute()
     }
 
-    // Métodos internos que usan los commands
     fun navigator(): ProfileNavigator = navigator
 
     fun show(profile: Profile) {
-        if (view != null) {
-            view.showProfile(profile)
-        }
+        currentProfile = profile // 👈 Actualiza el estado del Presenter
+        view?.showProfile(currentProfile) // 👈 Notifica a la View (el único punto de salida)
     }
 }

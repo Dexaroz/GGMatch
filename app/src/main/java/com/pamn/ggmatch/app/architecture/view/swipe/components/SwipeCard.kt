@@ -111,7 +111,7 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = card.description,
+                    text = card.name,
                     style = MaterialTheme.typography.headlineLarge,
                     color = Color.White,
                     textAlign = TextAlign.Center,
@@ -120,7 +120,7 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = card.name,
+                    text = card.description,
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,
