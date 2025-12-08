@@ -45,7 +45,7 @@ fun swipeView(
                     detectDragGestures(
                         onDragEnd = {
                             if (offsetX > 200) {
-                                onNext() // <-- ¡CORREGIDO!
+                                onNext()
                             } else if (offsetX < -200) {
                                 onNext()
                             }

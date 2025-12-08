@@ -11,7 +11,7 @@ object MockProfileRepository : ProfileRepository {
                 nickname = "FoxfireCharm",
                 age = 24,
                 description = "Soy main de Mid Lane (Ahri, Syndra). Busco un Jungla sólido para dúo que sepa rotar y gankear post-6.",
-                imageRes = R.drawable.profile,
+                imageRes = R.drawable.profile_picture,
                 backgroundImageRes = R.drawable.thresh,
             ),
             Profile(
@@ -20,7 +20,7 @@ object MockProfileRepository : ProfileRepository {
                 nickname = "BaronStealer",
                 age = 29,
                 description = "Main Jungla (Elise, Lee Sin). Me especializo en *invades* agresivos y *early pressure*.",
-                imageRes = R.drawable.profile,
+                imageRes = R.drawable.profile_picture,
                 backgroundImageRes = R.drawable.jinx,
             ),
             Profile(
@@ -29,7 +29,7 @@ object MockProfileRepository : ProfileRepository {
                 nickname = "PeelGod",
                 age = 21,
                 description = "Main Soporte *Enchanter* (Lulu, Janna). Soy Plata 1, pero mi *warding* es de Platino.",
-                imageRes = R.drawable.profile,
+                imageRes = R.drawable.profile_picture,
                 backgroundImageRes = R.drawable.twisted,
             ),
             Profile(
@@ -38,7 +38,7 @@ object MockProfileRepository : ProfileRepository {
                 nickname = "GarenAfk",
                 age = 30,
                 description = "Top Laner (Garen, Shen). Mi estrategia es el *split push* constante. No me importa el equipo.",
-                imageRes = R.drawable.profile,
+                imageRes = R.drawable.profile_picture,
                 backgroundImageRes = R.drawable.jinx,
             ),
             Profile(
@@ -47,7 +47,7 @@ object MockProfileRepository : ProfileRepository {
                 nickname = "VayneOneTrick",
                 age = 26,
                 description = "ADC *One Trick* Vayne. Mi KDA es mi vida. Busco un Soporte agresivo (*Engage*) que me dé espacio.",
-                imageRes = R.drawable.profile,
+                imageRes = R.drawable.profile_picture,
                 backgroundImageRes = R.drawable.thresh,
             ),
         )
