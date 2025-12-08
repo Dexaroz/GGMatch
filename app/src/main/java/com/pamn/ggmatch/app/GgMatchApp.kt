@@ -4,7 +4,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.rememberNavController
-import com.pamn.ggmatch.app.architecture.view.navBar.navBar
+import com.pamn.ggmatch.app.architecture.view.navBar.navBarHost
 
 @Composable
 fun ggMatchApp() {
@@ -19,7 +19,7 @@ fun ggMatchApp() {
     Scaffold(
         topBar = {
             if (currentRoute in listOf("home", "preferences", "chat", "profile")) {
-                navBar(navController)
+                navBarHost(navController)
             }
         },
     ) { padding ->

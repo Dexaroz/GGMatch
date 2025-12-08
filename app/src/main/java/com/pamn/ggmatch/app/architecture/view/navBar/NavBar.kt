@@ -22,7 +22,7 @@ import com.pamn.ggmatch.app.architecture.control.navBar.NavPresenter
 import com.pamn.ggmatch.app.architecture.model.navigation.topNavItems
 
 @Composable
-fun navBar(navController: NavHostController) {
+fun navBarHost(navController: NavHostController) {
     val presenter = remember { NavPresenter(navController) }
 
     val currentRoute =
@@ -30,6 +30,17 @@ fun navBar(navController: NavHostController) {
             .collectAsState(initial = navController.currentBackStackEntry)
             .value?.destination?.route
 
+    navBar(
+        currentRoute = currentRoute,
+        onItemClick = { route -> presenter.onItemSelected(route) },
+    )
+}
+
+@Composable
+fun navBar(
+    currentRoute: String?,
+    onItemClick: (route: String) -> Unit,
+) {
     Row(
         modifier =
             Modifier
@@ -40,9 +51,10 @@ fun navBar(navController: NavHostController) {
         verticalAlignment = Alignment.Top,
     ) {
         topNavItems.forEach { item ->
+            val isSelected = currentRoute == item.route
 
             IconButton(
-                onClick = { presenter.onItemSelected(item.route) },
+                onClick = { onItemClick(item.route) },
             ) {
                 Image(
                     painter = painterResource(id = item.iconRes),
@@ -50,7 +62,7 @@ fun navBar(navController: NavHostController) {
                     modifier = Modifier.size(32.dp),
                     colorFilter =
                         ColorFilter.tint(
-                            if (currentRoute == item.route) Color(0xFFFD5068) else Color(0xFFB0B0B0),
+                            if (isSelected) Color(0xFFFD5068) else Color(0xFFB0B0B0),
                         ),
                 )
             }
