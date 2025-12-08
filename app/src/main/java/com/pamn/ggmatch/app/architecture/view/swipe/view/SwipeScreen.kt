@@ -10,11 +10,6 @@ import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView // Importa
 import com.pamn.ggmatch.app.architecture.model.profile.Profile
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
 
-/**
- * 💡 Clase que implementa la interfaz ProfileView.
- * Usa MutableState de Compose para que los cambios notificados por el Presenter
- * se vuelvan observables en la UI.
- */
 class ComposeProfileViewImplementation(
     initialProfile: Profile,
 ) : ProfileView {
@@ -27,13 +22,6 @@ class ComposeProfileViewImplementation(
     }
 }
 
-/**
- * 🧠 SwipeScreen: El Composable Host (Contenedor Inteligente)
- * Se encarga de:
- * 1. Inicializar el Presenter y la View.
- * 2. Observar el estado.
- * 3. Pasar datos y acciones a la View Pura (SwipeView).
- */
 @Composable
 fun swipeScreen(navigator: ProfileNavigator) {
     // 1. Inicializa la View y el Presenter
