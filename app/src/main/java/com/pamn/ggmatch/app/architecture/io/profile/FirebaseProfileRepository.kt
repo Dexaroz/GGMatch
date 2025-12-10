@@ -19,11 +19,10 @@ import kotlinx.datetime.Instant
 class FirebaseProfileRepository(
     firestore: FirebaseFirestore,
 ) : FirebaseRepository<UserId, UserProfile>(
-    firestore = firestore,
-    collectionName = "profiles",
-),
+        firestore = firestore,
+        collectionName = "profiles",
+    ),
     ProfileRepository {
-
     override fun getId(entity: UserProfile): UserId = entity.id
 
     override fun idToString(id: UserId): String = id.value
@@ -38,12 +37,10 @@ class FirebaseProfileRepository(
             "riotTagLine" to riot?.tagLine,
             "riotVerificationStatus" to riot?.verificationStatus?.name,
             "riotLastVerifiedAtEpochMs" to riot?.lastVerifiedAt?.toEpochMilliseconds(),
-
             "favoriteRoles" to entity.preferences.favoriteRoles.map { it.name },
             "languages" to entity.preferences.languages.map { it.name },
             "playSchedule" to entity.preferences.playSchedule.map { it.name },
             "playstyle" to entity.preferences.playstyle.map { it.name },
-
             "createdAtEpochMs" to entity.createdAt.toEpochMilliseconds(),
             "updatedAtEpochMs" to entity.updatedAt.toEpochMilliseconds(),
         )

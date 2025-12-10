@@ -8,7 +8,6 @@ data class Preferences(
     val playSchedule: Set<PlaySchedule>,
     val playstyle: Set<Playstyle>,
 ) : ValueObject {
-
     init {
         require(favoriteRoles.size in 1..MAX_FAVORITE_ROLES) {
             "favoriteRoles must contain between 1 and $MAX_FAVORITE_ROLES roles"
