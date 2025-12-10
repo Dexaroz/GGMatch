@@ -7,6 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
+import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
+import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
@@ -21,9 +23,6 @@ import com.pamn.ggmatch.app.controllers.AuthController
 object AppContainer {
     private var initialized = false
 
-    // -------------------------
-    // 🔥 AUTH / FIREBASE
-    // -------------------------
     lateinit var timeProvider: TimeProvider
         private set
 
@@ -34,6 +33,9 @@ object AppContainer {
         private set
 
     lateinit var userRepository: UserRepository
+        private set
+
+    lateinit var profileRepository: ProfileRepository
         private set
 
     lateinit var authRepository: AuthRepository
