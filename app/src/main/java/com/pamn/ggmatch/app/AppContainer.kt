@@ -6,6 +6,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
+import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
+import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
@@ -29,11 +31,16 @@ object AppContainer {
     lateinit var userRepository: UserRepository
         private set
 
+    lateinit var profileRepository: ProfileRepository
+        private set
+
     lateinit var authRepository: AuthRepository
         private set
 
     lateinit var authController: AuthController
         private set
+
+    lateinit var
 
     fun init(context: Context) {
         if (initialized) return

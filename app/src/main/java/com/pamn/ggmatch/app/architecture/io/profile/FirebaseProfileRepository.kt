@@ -4,12 +4,16 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.io.FirebaseRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccount
-import com.pamn.ggmatch.app.architecture.model.user.Email
-import com.pamn.ggmatch.app.architecture.model.user.User
+import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.model.user.UserStatus
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.datetime.Instant
 
 class FirebaseProfileRepository(
@@ -32,7 +36,8 @@ class FirebaseProfileRepository(
         return mapOf(
             "riotGameName" to riot?.gameName,
             "riotTagLine" to riot?.tagLine,
-            "riotVerified" to riot?.lastVerifiedAt,
+            "riotVerificationStatus" to riot?.verificationStatus?.name,
+            "riotLastVerifiedAtEpochMs" to riot?.lastVerifiedAt?.toEpochMilliseconds(),
 
             "favoriteRoles" to entity.preferences.favoriteRoles.map { it.name },
             "languages" to entity.preferences.languages.map { it.name },
@@ -50,14 +55,27 @@ class FirebaseProfileRepository(
     ): UserProfile {
         val riotGameName = doc.getString("riotGameName")
         val riotTagLine = doc.getString("riotTagLine")
-        val riotVerified = doc.getBoolean("riotVerified") ?: false
+
+        val verificationStatusName = doc.getString("riotVerificationStatus")
+        val verificationStatus =
+            verificationStatusName
+                ?.let { name ->
+                    runCatching { RiotAccountStatus.valueOf(name) }
+                        .getOrElse { RiotAccountStatus.UNVERIFIED }
+                }
+                ?: RiotAccountStatus.UNVERIFIED
+
+        val lastVerifiedAtMs = doc.getLong("riotLastVerifiedAtEpochMs")
+        val lastVerifiedAt =
+            lastVerifiedAtMs?.let { ms -> Instant.fromEpochMilliseconds(ms) }
 
         val riotAccount =
             if (!riotGameName.isNullOrBlank() && !riotTagLine.isNullOrBlank()) {
                 RiotAccount(
                     gameName = riotGameName,
                     tagLine = riotTagLine,
-                    lastVerifiedAt = riotVerified,
+                    verificationStatus = verificationStatus,
+                    lastVerifiedAt = lastVerifiedAt,
                 )
             } else {
                 null
@@ -65,36 +83,36 @@ class FirebaseProfileRepository(
 
         fun rolesFromDoc(field: String): Set<LolRole> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
-            return raw.mapNotNull { name ->
-                (name as? String)?.let {
-                    runCatching { LolRole.valueOf(it) }.getOrNull()
+            return raw.mapNotNull { value ->
+                (value as? String)?.let { name ->
+                    runCatching { LolRole.valueOf(name) }.getOrNull()
                 }
             }.toSet()
         }
 
         fun languagesFromDoc(field: String): Set<Language> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
-            return raw.mapNotNull { name ->
-                (name as? String)?.let {
-                    runCatching { Language.valueOf(it) }.getOrNull()
+            return raw.mapNotNull { value ->
+                (value as? String)?.let { name ->
+                    runCatching { Language.valueOf(name) }.getOrNull()
                 }
             }.toSet()
         }
 
         fun scheduleFromDoc(field: String): Set<PlaySchedule> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
-            return raw.mapNotNull { name ->
-                (name as? String)?.let {
-                    runCatching { PlaySchedule.valueOf(it) }.getOrNull()
+            return raw.mapNotNull { value ->
+                (value as? String)?.let { name ->
+                    runCatching { PlaySchedule.valueOf(name) }.getOrNull()
                 }
             }.toSet()
         }
 
         fun playstyleFromDoc(field: String): Set<Playstyle> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
-            return raw.mapNotNull { name ->
-                (name as? String)?.let {
-                    runCatching { Playstyle.valueOf(it) }.getOrNull()
+            return raw.mapNotNull { value ->
+                (value as? String)?.let { name ->
+                    runCatching { Playstyle.valueOf(name) }.getOrNull()
                 }
             }.toSet()
         }
@@ -125,4 +143,15 @@ class FirebaseProfileRepository(
             updatedAt = Instant.fromEpochMilliseconds(updatedAtMs),
         )
     }
+
+    override suspend fun addOrUpdate(profile: UserProfile): Result<Unit, AppError> =
+        when (val existing = get(profile.id)) {
+            is Result.Error -> existing
+            is Result.Ok ->
+                if (existing.value == null) {
+                    add(profile)
+                } else {
+                    update(profile)
+                }
+        }
 }
