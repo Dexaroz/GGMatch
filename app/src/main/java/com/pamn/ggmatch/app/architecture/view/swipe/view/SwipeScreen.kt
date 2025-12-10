@@ -13,8 +13,8 @@ import com.pamn.ggmatch.app.architecture.control.swipe.commands.PreviousProfileC
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.PreviousProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
-import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 
@@ -37,27 +37,30 @@ fun swipeScreen(
     val initialProfile = navigator.current()
     val viewImplementation = remember { ComposeProfileViewImplementation(initialProfile) }
 
-    val presenter = remember {
-        lateinit var pInstance: ProfilePresenterImplementation
+    val presenter =
+        remember {
+            lateinit var pInstance: ProfilePresenterImplementation
 
-        val presenterProvider = object : ProfilePresenterProvider {
-            override fun get(): ProfilePresenterImplementation = pInstance
+            val presenterProvider =
+                object : ProfilePresenterProvider {
+                    override fun get(): ProfilePresenterImplementation = pInstance
+                }
+
+            val nextHandler = NextProfileCommandHandler(presenterProvider = presenterProvider)
+            val prevHandler = PreviousProfileCommandHandler(presenterProvider = presenterProvider)
+
+            pInstance =
+                ProfilePresenterImplementation(
+                    view = viewImplementation,
+                    navigator = navigator,
+                    nextProfileCommandHandler = nextHandler as CommandHandler<NextProfileCommand, Unit>,
+                    previousProfileCommandHandler = prevHandler as CommandHandler<PreviousProfileCommand, Unit>,
+                    scope = scope,
+                    currentUserId = currentUserId,
+                )
+
+            pInstance
         }
-
-        val nextHandler = NextProfileCommandHandler(presenterProvider = presenterProvider)
-        val prevHandler = PreviousProfileCommandHandler(presenterProvider = presenterProvider)
-
-        pInstance = ProfilePresenterImplementation(
-            view = viewImplementation,
-            navigator = navigator,
-            nextProfileCommandHandler = nextHandler as CommandHandler<NextProfileCommand, Unit>,
-            previousProfileCommandHandler = prevHandler as CommandHandler<PreviousProfileCommand, Unit>,
-            scope = scope,
-            currentUserId = currentUserId,
-        )
-
-        pInstance
-    }
 
     val currentCard = viewImplementation.currentProfileState.value
 

@@ -4,5 +4,4 @@ import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
 interface ProfileView {
     fun showProfile(profile: UserProfile) // AHORA RECIBE UserProfile
-
 }

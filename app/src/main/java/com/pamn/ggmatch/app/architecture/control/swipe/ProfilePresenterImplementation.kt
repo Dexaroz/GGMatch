@@ -6,7 +6,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
-import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

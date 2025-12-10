@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.model.profile.DummyProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
@@ -54,7 +53,8 @@ fun ggMatchNavHost(navController: NavHostController) {
             swipeScreen(
                 navigator = navigator,
                 currentUserId = userId,
-            )        }
+            )
+        }
 
         composable(Router.PREFERENCES) {
             testView(Color.White)

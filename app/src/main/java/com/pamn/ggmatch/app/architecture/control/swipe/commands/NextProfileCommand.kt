@@ -4,5 +4,5 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.Command
 
 data class NextProfileCommand(
-    val requestingUserId: UserId
+    val requestingUserId: UserId,
 ) : Command
