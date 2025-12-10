@@ -85,7 +85,7 @@ object AppContainer {
                     nickname = "lau21",
                     age = 21,
                     description = "Amo los perros y la fotografía",
-                    imageRes = R.drawable.profile,
+                    imageRes = R.drawable.profile_picture,
                     backgroundImageRes = R.drawable.twisted,
                 ),
                 Profile(
@@ -94,7 +94,7 @@ object AppContainer {
                     nickname = "carlitos",
                     age = 22,
                     description = "Me encanta viajar y probar comida nueva",
-                    imageRes = R.drawable.profile,
+                    imageRes = R.drawable.profile_picture,
                     backgroundImageRes = R.drawable.jinx,
                 ),
                 Profile(
@@ -103,7 +103,7 @@ object AppContainer {
                     nickname = "marti",
                     age = 19,
                     description = "Fan del cine y atardeceres",
-                    imageRes = R.drawable.profile,
+                    imageRes = R.drawable.profile_picture,
                     backgroundImageRes = R.drawable.thresh,
                 ),
             )

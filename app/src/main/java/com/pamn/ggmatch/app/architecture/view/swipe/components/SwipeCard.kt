@@ -44,7 +44,7 @@ fun swipeCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 50.dp)
+                .padding(horizontal = 24.dp, vertical = 100.dp)
                 .graphicsLayer {
                     translationX = offsetX
                     scaleX = scale
