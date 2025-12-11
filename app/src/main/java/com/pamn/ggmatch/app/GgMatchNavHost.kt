@@ -9,9 +9,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.pamn.ggmatch.app.architecture.model.profile.DummyProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
+import com.pamn.ggmatch.app.architecture.view.preferences.view.preferencesScreen
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
 import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
@@ -19,7 +25,7 @@ import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 fun ggMatchNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Router.AUTH_LOGIN,
+        startDestination = Router.HOME,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
@@ -66,6 +72,32 @@ fun ggMatchNavHost(navController: NavHostController) {
 
         composable(Router.PROFILE) {
             testView(Color.White)
+        }
+
+        composable(Router.PREFERENCES) {
+            val initialPreferences =
+                remember {
+                    Preferences(
+                        favoriteRoles = setOf(LolRole.TOP),
+                        languages = setOf(Language.SPANISH),
+                        playSchedule = setOf(PlaySchedule.NIGHT),
+                        playstyle = setOf(Playstyle.ARAM),
+                    )
+                }
+
+            preferencesScreen(
+                initial = initialPreferences,
+                allRoles = LolRole.entries,
+                allLanguages = Language.entries,
+                allSchedules = PlaySchedule.entries,
+                allPlaystyles = Playstyle.entries,
+                onSave = { newPrefs ->
+                    navController.popBackStack()
+                },
+                onBack = {
+                    navController.popBackStack()
+                },
+            )
         }
     }
 }
