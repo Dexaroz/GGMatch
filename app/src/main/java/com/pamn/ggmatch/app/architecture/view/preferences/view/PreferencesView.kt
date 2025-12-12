@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.*
 import com.pamn.ggmatch.app.architecture.view.preferences.components.preferenceChip
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import com.pamn.ggmatch.app.architecture.control.preferences.PreferencesContract
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -74,10 +74,10 @@ fun PreferencesView(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
+            // Languages
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Language", color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
-
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
@@ -93,10 +93,10 @@ fun PreferencesView(
                 }
             }
 
+            // Roles
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Roles", color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
-
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
@@ -114,10 +114,10 @@ fun PreferencesView(
                 }
             }
 
+            // Schedule
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Schedule", color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
-
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
@@ -133,10 +133,10 @@ fun PreferencesView(
                 }
             }
 
+            // Playstyle
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Playstyle", color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
-
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),

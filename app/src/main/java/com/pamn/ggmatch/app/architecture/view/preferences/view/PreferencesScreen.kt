@@ -22,6 +22,7 @@ fun preferencesScreen(
         )
     }
 
+    val originalState = remember { initial } // Para comparar cambios
     var uiState by remember { mutableStateOf(initial) }
 
     val view = remember {
@@ -31,14 +32,13 @@ fun preferencesScreen(
             }
 
             override fun showError(message: String) {
-                // Snackbars si quieres
+                // Puedes mostrar un Snackbar aquí si quieres
             }
         }
     }
 
     DisposableEffect(Unit) {
         presenter.attachView(view)
-
         onDispose {
             presenter.detachView()
         }
@@ -51,6 +51,12 @@ fun preferencesScreen(
         allSchedules = allSchedules,
         allPlaystyles = allPlaystyles,
         presenter = presenter,
-        onBack = onBack
+        onBack = {
+            if (uiState != originalState) {
+                onSave(uiState)
+            } else {
+                onBack()
+            }
+        }
     )
 }
