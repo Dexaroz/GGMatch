@@ -7,15 +7,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matchmaking.FindPotentialMatchesUseCase
+import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler // NUEVO
+import com.pamn.ggmatch.app.architecture.io.matchmaking.FirebaseMatchPreferencesRepository // NUEVO
+import com.pamn.ggmatch.app.architecture.io.matchmaking.MatchPreferencesRepository // NUEVO
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
 import com.pamn.ggmatch.app.architecture.io.user.UserRepository
+import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
+import com.pamn.ggmatch.app.controllers.MatchPreferencesController // NUEVO
 
 object AppContainer {
     private var initialized = false
@@ -44,6 +49,24 @@ object AppContainer {
     lateinit var findPotentialMatchesUseCase: FindPotentialMatchesUseCase
         private set
 
+    // --- DEPENDENCIAS AÑADIDAS PARA PREFERENCIAS DE EMPAREJAMIENTO ---
+
+    lateinit var matchPreferencesRepository: MatchPreferencesRepository // 1. Repositorio
+        private set
+
+    lateinit var upsertMatchPreferencesHandler: UpsertMatchPreferencesCommandHandler // 2. Handler
+        private set
+
+    lateinit var matchPreferencesController: MatchPreferencesController // 3. Controlador
+        private set
+
+    // -------------------------------------------------------------------
+
+    val currentUserId: UserId
+        get() =
+            firebaseAuth.currentUser?.uid?.let(::UserId)
+                ?: throw IllegalStateException("Current user not authenticated.")
+
     fun init(context: Context) {
         if (initialized) return
 
@@ -68,6 +91,22 @@ object AppContainer {
         profileRepository =
             FirebaseProfileRepository(
                 firestore = firestore,
+            )
+
+        matchPreferencesRepository =
+            FirebaseMatchPreferencesRepository(
+                firestore = firestore,
+            )
+
+        upsertMatchPreferencesHandler =
+            UpsertMatchPreferencesCommandHandler(
+                matchPreferencesRepository = matchPreferencesRepository,
+                timeProvider = timeProvider,
+            )
+
+        matchPreferencesController =
+            MatchPreferencesController(
+                upsertMatchPreferences = upsertMatchPreferencesHandler,
             )
 
         findPotentialMatchesUseCase =

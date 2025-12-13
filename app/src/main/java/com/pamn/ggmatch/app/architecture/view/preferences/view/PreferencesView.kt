@@ -2,7 +2,18 @@ package com.pamn.ggmatch.app.architecture.view.preferences.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -15,45 +26,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import com.pamn.ggmatch.R
-import com.pamn.ggmatch.app.architecture.model.profile.preferences.*
+import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
+import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
+import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
 import com.pamn.ggmatch.app.architecture.view.preferences.components.preferenceChip
-import com.pamn.ggmatch.app.architecture.control.preferences.PreferencesContract
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PreferencesView(
-    uiState: Preferences,
+fun preferencesView(
+    uiState: MatchPreferences,
     allRoles: List<LolRole>,
     allLanguages: List<Language>,
     allSchedules: List<PlaySchedule>,
     allPlaystyles: List<Playstyle>,
-    presenter: PreferencesContract.Presenter,
-    onBack: () -> Unit
+    presenter: MatchPreferencesContract.Presenter,
+    onBack: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF212121))
-            .padding(horizontal = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF212121))
+                .padding(horizontal = 24.dp),
     ) {
         Spacer(Modifier.height(32.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.undo),
                 contentDescription = "Back",
                 tint = Color.White,
-                modifier = Modifier
-                    .size(28.dp)
-                    .clickable { onBack() },
+                modifier =
+                    Modifier
+                        .size(28.dp)
+                        .clickable { onBack() },
             )
 
             Spacer(Modifier.width(12.dp))
@@ -66,14 +82,14 @@ fun PreferencesView(
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(top = 20.dp, bottom = 32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 20.dp, bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             // Languages
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("Language", color = Color.White, fontSize = 18.sp)
@@ -103,11 +119,10 @@ fun PreferencesView(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     allRoles.forEach { role ->
-                        val isSelected = role in uiState.favoriteRoles
+                        val isSelected = role in uiState.roles
                         preferenceChip(
                             label = role.name,
                             selected = isSelected,
-                            enabled = isSelected || uiState.favoriteRoles.size < 2,
                             onClick = { presenter.toggleRole(role) },
                         )
                     }
@@ -126,7 +141,7 @@ fun PreferencesView(
                     allSchedules.forEach { schedule ->
                         preferenceChip(
                             label = schedule.name,
-                            selected = schedule in uiState.playSchedule,
+                            selected = schedule in uiState.schedules,
                             onClick = { presenter.toggleSchedule(schedule) },
                         )
                     }
@@ -145,7 +160,7 @@ fun PreferencesView(
                     allPlaystyles.forEach { style ->
                         preferenceChip(
                             label = style.name,
-                            selected = style in uiState.playstyle,
+                            selected = style in uiState.playstyles,
                             onClick = { presenter.togglePlaystyle(style) },
                         )
                     }
