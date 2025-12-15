@@ -1,46 +1,40 @@
-package com.pamn.ggmatch.app.architecture.io.profile
+package com.pamn.ggmatch.app.architecture.io.matchmaking
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.io.FirebaseRepository
-import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.matchmaking.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
-import com.pamn.ggmatch.app.architecture.model.profile.preferences.Preferences
-import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccount
-import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.datetime.Instant
 
-class FirebaseProfileRepository(
+class FirebaseMatchPreferencesRepository(
     firestore: FirebaseFirestore,
-) : FirebaseRepository<UserId, UserProfile>(
+) : FirebaseRepository<UserId, MatchPreferencesProfile>(
         firestore = firestore,
-        collectionName = "profiles",
+        collectionName = "match-preferences",
     ),
-    ProfileRepository {
-    override fun getId(entity: UserProfile): UserId = entity.id
+    MatchPreferencesRepository {
+    override fun getId(entity: MatchPreferencesProfile): UserId = entity.id
 
     override fun idToString(id: UserId): String = id.value
 
     override fun stringToId(id: String): UserId = UserId(id)
 
-    override fun toDocument(entity: UserProfile): Map<String, Any?> {
-        val riot = entity.riotAccount
+    override fun toDocument(entity: MatchPreferencesProfile): Map<String, Any?> {
+        val prefs = entity.preferences
 
         return mapOf(
-            "riotGameName" to riot?.gameName,
-            "riotTagLine" to riot?.tagLine,
-            "riotVerificationStatus" to riot?.verificationStatus?.name,
-            "riotLastVerifiedAtEpochMs" to riot?.lastVerifiedAt?.toEpochMilliseconds(),
-            "favoriteRoles" to entity.preferences.favoriteRoles.map { it.name },
-            "languages" to entity.preferences.languages.map { it.name },
-            "playSchedule" to entity.preferences.playSchedule.map { it.name },
-            "playstyle" to entity.preferences.playstyle.map { it.name },
+            "roles" to prefs.roles.map { it.name },
+            "languages" to prefs.languages.map { it.name },
+            "schedules" to prefs.schedules.map { it.name },
+            "playstyles" to prefs.playstyles.map { it.name },
             "createdAtEpochMs" to entity.createdAt.toEpochMilliseconds(),
             "updatedAtEpochMs" to entity.updatedAt.toEpochMilliseconds(),
         )
@@ -49,35 +43,7 @@ class FirebaseProfileRepository(
     override fun fromDocument(
         id: UserId,
         doc: DocumentSnapshot,
-    ): UserProfile {
-        val riotGameName = doc.getString("riotGameName")
-        val riotTagLine = doc.getString("riotTagLine")
-
-        val verificationStatusName = doc.getString("riotVerificationStatus")
-        val verificationStatus =
-            verificationStatusName
-                ?.let { name ->
-                    runCatching { RiotAccountStatus.valueOf(name) }
-                        .getOrElse { RiotAccountStatus.UNVERIFIED }
-                }
-                ?: RiotAccountStatus.UNVERIFIED
-
-        val lastVerifiedAtMs = doc.getLong("riotLastVerifiedAtEpochMs")
-        val lastVerifiedAt =
-            lastVerifiedAtMs?.let { ms -> Instant.fromEpochMilliseconds(ms) }
-
-        val riotAccount =
-            if (!riotGameName.isNullOrBlank() && !riotTagLine.isNullOrBlank()) {
-                RiotAccount(
-                    gameName = riotGameName,
-                    tagLine = riotTagLine,
-                    verificationStatus = verificationStatus,
-                    lastVerifiedAt = lastVerifiedAt,
-                )
-            } else {
-                null
-            }
-
+    ): MatchPreferencesProfile {
         fun rolesFromDoc(field: String): Set<LolRole> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
             return raw.mapNotNull { value ->
@@ -115,11 +81,11 @@ class FirebaseProfileRepository(
         }
 
         val preferences =
-            Preferences(
-                favoriteRoles = rolesFromDoc("favoriteRoles"),
+            MatchPreferences(
+                roles = rolesFromDoc("roles"),
                 languages = languagesFromDoc("languages"),
-                playSchedule = scheduleFromDoc("playSchedule"),
-                playstyle = playstyleFromDoc("playstyle"),
+                schedules = scheduleFromDoc("schedules"),
+                playstyles = playstyleFromDoc("playstyles"),
             )
 
         val createdAtMs =
@@ -129,19 +95,15 @@ class FirebaseProfileRepository(
             doc.getLong("updatedAtEpochMs")
                 ?: createdAtMs
 
-        return UserProfile.fromPersistence(
-            id = id,
-            riotAccount = riotAccount,
-            favoriteRoles = preferences.favoriteRoles,
-            languages = preferences.languages,
-            playSchedule = preferences.playSchedule,
-            playstyle = preferences.playstyle,
+        return MatchPreferencesProfile.fromPersistence(
+            userId = id,
+            preferences = preferences,
             createdAt = Instant.fromEpochMilliseconds(createdAtMs),
             updatedAt = Instant.fromEpochMilliseconds(updatedAtMs),
         )
     }
 
-    override suspend fun addOrUpdate(profile: UserProfile): Result<Unit, AppError> =
+    override suspend fun addOrUpdate(profile: MatchPreferencesProfile): Result<Unit, AppError> =
         when (val existing = get(profile.id)) {
             is Result.Error -> existing
             is Result.Ok ->
