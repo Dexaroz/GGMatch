@@ -81,7 +81,6 @@ fun swipeScreen(
         remember {
             SwipeProfileCommandHandler(
                 repository = swipeInteractionsRepository,
-                nextProfileCommandHandler = nextProfileCommandHandler,
             )
         }
 

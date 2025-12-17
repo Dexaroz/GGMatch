@@ -1,11 +1,7 @@
 package com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers
 
-// package com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers
-
-import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.SwipeProfileCommand
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository
-import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.swipe.SwipeInteraction
 import com.pamn.ggmatch.app.architecture.model.swipe.SwipeInteractionsProfile
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
@@ -16,16 +12,13 @@ import kotlinx.datetime.Instant
 
 class SwipeProfileCommandHandler(
     private val repository: SwipeInteractionsRepository,
-    private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, UserProfile?>,
     private val clock: Clock = Clock.System,
 ) : CommandHandler<SwipeProfileCommand, Unit> {
     override suspend fun invoke(command: SwipeProfileCommand): Result<Unit, AppError> {
         val now: Instant = clock.now()
 
-        val getResult = repository.get(command.fromUserId)
-
         val interactionsProfile =
-            when (getResult) {
+            when (val getResult = repository.get(command.fromUserId)) {
                 is Result.Ok ->
                     getResult.value ?: SwipeInteractionsProfile.create(
                         userId = command.fromUserId,
@@ -46,12 +39,7 @@ class SwipeProfileCommandHandler(
         val updatedProfile = interactionsProfile.addInteraction(newInteraction)
 
         return when (val saveResult = repository.addOrUpdate(updatedProfile)) {
-            is Result.Ok -> {
-                when (val nextResult = nextProfileCommandHandler(NextProfileCommand(command.fromUserId))) {
-                    is Result.Ok -> Result.Ok(Unit)
-                    is Result.Error -> Result.Error(nextResult.error)
-                }
-            }
+            is Result.Ok -> Result.Ok(Unit)
             is Result.Error -> Result.Error(saveResult.error)
         }
     }
