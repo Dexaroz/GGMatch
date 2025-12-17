@@ -6,12 +6,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
-import com.pamn.ggmatch.app.architecture.control.matchmaking.FindPotentialMatchesUseCase
-import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler // NUEVO
-import com.pamn.ggmatch.app.architecture.io.matchmaking.FirebaseMatchPreferencesRepository // NUEVO
-import com.pamn.ggmatch.app.architecture.io.matchmaking.MatchPreferencesRepository // NUEVO
+import com.pamn.ggmatch.app.architecture.control.matching.FindPotentialMatchesUseCase
+import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
+import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler // ⭐️ NUEVO IMPORT
+import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
+import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeInteractionsRepository // ⭐️ NUEVO IMPORT
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository // ⭐️ NUEVO IMPORT
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
@@ -20,7 +23,7 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
-import com.pamn.ggmatch.app.controllers.MatchPreferencesController // NUEVO
+import com.pamn.ggmatch.app.controllers.MatchPreferencesController
 
 object AppContainer {
     private var initialized = false
@@ -49,18 +52,20 @@ object AppContainer {
     lateinit var findPotentialMatchesUseCase: FindPotentialMatchesUseCase
         private set
 
-    // --- DEPENDENCIAS AÑADIDAS PARA PREFERENCIAS DE EMPAREJAMIENTO ---
-
-    lateinit var matchPreferencesRepository: MatchPreferencesRepository // 1. Repositorio
+    lateinit var matchPreferencesRepository: MatchPreferencesRepository
         private set
 
-    lateinit var upsertMatchPreferencesHandler: UpsertMatchPreferencesCommandHandler // 2. Handler
+    lateinit var upsertMatchPreferencesHandler: UpsertMatchPreferencesCommandHandler
         private set
 
-    lateinit var matchPreferencesController: MatchPreferencesController // 3. Controlador
+    lateinit var matchPreferencesController: MatchPreferencesController
         private set
 
-    // -------------------------------------------------------------------
+    lateinit var swipeInteractionsRepository: SwipeInteractionsRepository //
+        private set
+
+    lateinit var swipeProfileCommandHandler: SwipeProfileCommandHandler //
+        private set
 
     val currentUserId: UserId
         get() =
@@ -90,6 +95,11 @@ object AppContainer {
 
         profileRepository =
             FirebaseProfileRepository(
+                firestore = firestore,
+            )
+
+        swipeInteractionsRepository =
+            FirebaseSwipeInteractionsRepository(
                 firestore = firestore,
             )
 

@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.control.matchmaking
+package com.pamn.ggmatch.app.architecture.control.matching
 
 import MatchScoreCalculator
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository

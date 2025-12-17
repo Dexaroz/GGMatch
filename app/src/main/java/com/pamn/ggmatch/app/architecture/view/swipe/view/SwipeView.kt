@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Snackbar // ⭐️ NUEVO: Import para mostrar el mensaje de error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +30,10 @@ import kotlin.math.abs
 fun swipeView(
     modifier: Modifier = Modifier,
     currentCard: UserProfile,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
+    // ⭐️ ELIMINAMOS onNext:
+    onLike: () -> Unit,
+    onDislike: () -> Unit,
+    errorMessage: String?,
 ) {
     var offsetX by remember(currentCard.id) { mutableStateOf(0f) }
     var scale by remember(currentCard.id) { mutableStateOf(1f) }
@@ -45,9 +48,11 @@ fun swipeView(
                     detectDragGestures(
                         onDragEnd = {
                             if (offsetX > 200) {
-                                onNext()
+                                // ⭐️ CORRECCIÓN: SOLO llamar a onLike() (ya corregido en pasos anteriores)
+                                onLike()
                             } else if (offsetX < -200) {
-                                onNext()
+                                // ⭐️ CORRECCIÓN: SOLO llamar a onDislike() (ya corregido en pasos anteriores)
+                                onDislike()
                             }
                             offsetX = 0f
                             scale = 1f
@@ -79,33 +84,14 @@ fun swipeView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             swipeActionButton(
-                iconRes = R.drawable.undo,
-                iconTint = Color(0xFFFFBC03),
-                backgroundColor = Color(0xFF474747),
-                size = 60.dp,
-                shape = RoundedCornerShape(22.dp),
-            ) {
-                onPrevious()
-            }
-
-            swipeActionButton(
                 iconRes = R.drawable.no,
                 iconTint = Color(0xFFFE4C6A),
                 backgroundColor = Color(0xFF474747),
                 size = 72.dp,
                 shape = RoundedCornerShape(26.dp),
             ) {
-                onNext()
-            }
-
-            swipeActionButton(
-                iconRes = R.drawable.star,
-                iconTint = Color(0xFF21BBFF),
-                backgroundColor = Color(0xFF474747),
-                size = 60.dp,
-                shape = RoundedCornerShape(18.dp),
-            ) {
-                onNext()
+                // Llama a onDislike, que avanza internamente
+                onDislike()
             }
 
             swipeActionButton(
@@ -115,17 +101,25 @@ fun swipeView(
                 size = 72.dp,
                 shape = RoundedCornerShape(26.dp),
             ) {
-                onNext()
+                // Llama a onLike, que avanza internamente
+                onLike()
             }
+        }
 
-            swipeActionButton(
-                iconRes = R.drawable.lightning,
-                iconTint = Color(0xFFAC52E6),
-                backgroundColor = Color(0xFF474747),
-                size = 60.dp,
-                shape = RoundedCornerShape(20.dp),
+        if (errorMessage != null) {
+            Box(
+                modifier =
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(16.dp),
             ) {
-                onNext()
+                Snackbar(
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = Color(0xFFFE4C6A),
+                    content = {
+                        androidx.compose.material3.Text(errorMessage)
+                    },
+                )
             }
         }
     }

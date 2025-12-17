@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.model.matchmaking.preferences
+package com.pamn.ggmatch.app.architecture.model.preferences.preferences
 
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
@@ -28,7 +28,6 @@ data class MatchPreferences(
                 schedules = PlaySchedule.entries.toSet(),
                 playstyles = Playstyle.entries.toSet(),
             )
-
         }
     }
 }

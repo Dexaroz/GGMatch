@@ -17,7 +17,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
-import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
@@ -35,7 +34,7 @@ fun ggMatchNavHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Router.HOME,
+        startDestination = Router.AUTH_LOGIN,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },

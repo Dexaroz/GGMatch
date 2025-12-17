@@ -1,9 +1,9 @@
 package com.pamn.ggmatch.app.architecture.control.swipe
 
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
-import com.pamn.ggmatch.app.architecture.control.swipe.commands.PreviousProfileCommand
-import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.swipe.commands.SwipeProfileCommand
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.swipe.SwipeDecision
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
@@ -11,48 +11,64 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class ProfilePresenterImplementation(
-    private val view: ProfileView?,
-    private val navigator: ProfileNavigator,
-    private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, Unit>,
-    private val previousProfileCommandHandler: CommandHandler<PreviousProfileCommand, Unit>,
+    private val view: ProfileView,
+    private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Unit>,
+    private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, UserProfile?>,
     private val scope: CoroutineScope,
+    currentProfile: UserProfile?,
     private val currentUserId: UserId,
 ) : ProfilePresenter {
-    private val nextCommand = NextProfileCommand(currentUserId)
-    private val previousCommand = PreviousProfileCommand(currentUserId)
-
-    private var currentProfile: UserProfile = navigator.current()
+    private var profile: UserProfile? = currentProfile
 
     override fun init() {
-        view?.showProfile(currentProfile)
+        profile?.let { view.showProfile(it) } ?: run {
+            scope.launch {
+                when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                    is Result.Ok -> view.showProfile(result.value) // puede ser null
+                    is Result.Error -> view.showError(result.error.message)
+                }
+            }
+        }
     }
 
     override fun onNextClicked() {
         scope.launch {
-            when (val result = nextProfileCommandHandler(nextCommand)) {
-                is Result.Ok -> {
-                }
-                is Result.Error -> {
-                }
+            when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                is Result.Ok -> view.showProfile(result.value)
+                is Result.Error -> view.showError(result.error.message)
             }
         }
     }
 
-    override fun onPreviousClicked() {
+    override fun onLikeClicked(targetProfile: UserProfile) {
+        handleSwipe(targetProfile, SwipeDecision.LIKE)
+    }
+
+    override fun onDislikeClicked(targetProfile: UserProfile) {
+        handleSwipe(targetProfile, SwipeDecision.DISLIKE)
+    }
+
+    private fun handleSwipe(
+        targetProfile: UserProfile,
+        decision: SwipeDecision,
+    ) {
+        val swipeCommand =
+            SwipeProfileCommand(
+                fromUserId = currentUserId,
+                toUserId = targetProfile.id,
+                decision = decision,
+            )
+
         scope.launch {
-            when (val result = previousProfileCommandHandler(previousCommand)) {
+            when (swipeProfileCommandHandler.invoke(swipeCommand)) {
                 is Result.Ok -> {
+                    when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                        is Result.Ok -> view.showProfile(result.value) // puede ser null
+                        is Result.Error -> view.showError("Interacción guardada, pero no se pudo cargar el siguiente perfil.")
+                    }
                 }
-                is Result.Error -> {
-                }
+                is Result.Error -> view.showError("Error al guardar la interacción.")
             }
         }
-    }
-
-    fun navigator(): ProfileNavigator = navigator
-
-    fun show(profile: UserProfile) {
-        currentProfile = profile
-        view?.showProfile(currentProfile)
     }
 }

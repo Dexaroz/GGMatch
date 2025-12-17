@@ -10,7 +10,6 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import kotlinx.datetime.Instant
 
 class DummyProfileNavigator : ProfileNavigator {
-
     private val profiles: List<UserProfile> =
         listOf(
             UserProfile.fromPersistence(
@@ -64,22 +63,19 @@ class DummyProfileNavigator : ProfileNavigator {
         )
 
     private var currentIndex = 0
+    private val totalSize = profiles.size // Valor: 3
 
-    override fun current(): UserProfile = profiles[currentIndex]
+    // Hacemos que sea nullable para ser robustos si la lista se vacía
+    override fun current(): UserProfile? = profiles.getOrNull(currentIndex)
 
-    override fun next(): UserProfile? =
-        if (currentIndex < profiles.lastIndex) {
-            currentIndex++
-            profiles[currentIndex]
+    override fun next(): UserProfile? {
+        val nextIndex = currentIndex + 1
+
+        if (nextIndex < totalSize) {
+            currentIndex = nextIndex
+            return profiles[currentIndex]
         } else {
-            null
+            return null
         }
-
-    override fun previous(): UserProfile? =
-        if (currentIndex > 0) {
-            currentIndex--
-            profiles[currentIndex]
-        } else {
-            null
-        }
+    }
 }

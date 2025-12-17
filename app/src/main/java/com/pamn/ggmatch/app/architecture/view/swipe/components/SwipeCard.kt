@@ -44,11 +44,12 @@ fun swipeCard(
     scale: Float = 1f,
     alpha: Float = 1f,
 ) {
-    val backgroundImages = listOf(
-        R.drawable.jinx,
-        R.drawable.thresh,
-        R.drawable.twisted
-    )
+    val backgroundImages =
+        listOf(
+            R.drawable.jinx,
+            R.drawable.thresh,
+            R.drawable.twisted,
+        )
     val numberOfBackgrounds = backgroundImages.size
 
     val profileIdInt = userIdToConsistentInt(card.id)

@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
-import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
