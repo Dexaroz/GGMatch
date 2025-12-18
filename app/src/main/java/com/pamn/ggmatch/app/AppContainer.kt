@@ -6,15 +6,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
-import com.pamn.ggmatch.app.architecture.control.matching.FindPotentialMatchesUseCase
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
-import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler // ⭐️ NUEVO IMPORT
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
-import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeInteractionsRepository // ⭐️ NUEVO IMPORT
-import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository // ⭐️ NUEVO IMPORT
+import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeInteractionsRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
@@ -49,9 +47,6 @@ object AppContainer {
     lateinit var authController: AuthController
         private set
 
-    lateinit var findPotentialMatchesUseCase: FindPotentialMatchesUseCase
-        private set
-
     lateinit var matchPreferencesRepository: MatchPreferencesRepository
         private set
 
@@ -61,10 +56,7 @@ object AppContainer {
     lateinit var matchPreferencesController: MatchPreferencesController
         private set
 
-    lateinit var swipeInteractionsRepository: SwipeInteractionsRepository //
-        private set
-
-    lateinit var swipeProfileCommandHandler: SwipeProfileCommandHandler //
+    lateinit var swipeInteractionsRepository: SwipeInteractionsRepository
         private set
 
     val currentUserId: UserId
@@ -117,11 +109,6 @@ object AppContainer {
         matchPreferencesController =
             MatchPreferencesController(
                 upsertMatchPreferences = upsertMatchPreferencesHandler,
-            )
-
-        findPotentialMatchesUseCase =
-            FindPotentialMatchesUseCase(
-                repository = profileRepository,
             )
 
         authController =

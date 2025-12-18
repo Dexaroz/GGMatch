@@ -1,5 +1,7 @@
 package com.pamn.ggmatch.app.architecture.model.profile
 
+import com.pamn.ggmatch.app.architecture.control.matching.ProfileMatcher
+import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -9,7 +11,11 @@ import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountSt
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import kotlinx.datetime.Instant
 
-class DummyProfileNavigator : ProfileNavigator {
+class DummyProfileNavigator(
+    private val currentUserPreferences: MatchPreferencesProfile,
+) : ProfileNavigator {
+    private val profileMatcher = ProfileMatcher()
+
     private val profiles: List<UserProfile> =
         listOf(
             UserProfile.fromPersistence(
@@ -62,20 +68,17 @@ class DummyProfileNavigator : ProfileNavigator {
             ),
         )
 
-    private var currentIndex = 0
-    private val totalSize = profiles.size // Valor: 3
+    private val filteredProfiles: List<UserProfile> =
+        profiles.filter { profileMatcher.matches(currentUserPreferences, it) }
 
-    // Hacemos que sea nullable para ser robustos si la lista se vacía
-    override fun current(): UserProfile? = profiles.getOrNull(currentIndex)
+    private var currentIndex = 0
+    private val totalSize = profiles.size
+
+    override fun current(): UserProfile? = filteredProfiles.getOrNull(currentIndex)
 
     override fun next(): UserProfile? {
+        if (filteredProfiles.isEmpty()) return null
         val nextIndex = currentIndex + 1
-
-        if (nextIndex < totalSize) {
-            currentIndex = nextIndex
-            return profiles[currentIndex]
-        } else {
-            return null
-        }
+        return filteredProfiles.getOrNull(nextIndex)?.also { currentIndex = nextIndex }
     }
 }
