@@ -5,7 +5,9 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
+import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginWithGoogleCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
+import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.SendPasswordResetEmailCommandHandler
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
@@ -65,6 +67,14 @@ object AppContainer {
                     ),
                 loginUser =
                     LoginUserCommandHandler(
+                        authRepository = authRepository,
+                    ),
+                loginWithGoogle =
+                    LoginWithGoogleCommandHandler(
+                        authRepository = authRepository,
+                    ),
+                resetPassword =
+                    SendPasswordResetEmailCommandHandler(
                         authRepository = authRepository,
                     ),
             )

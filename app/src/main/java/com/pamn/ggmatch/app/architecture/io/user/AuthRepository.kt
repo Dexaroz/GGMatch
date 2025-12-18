@@ -2,6 +2,7 @@ package com.pamn.ggmatch.app.architecture.io.user
 
 import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.model.user.User
+import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.model.user.Username
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
@@ -17,6 +18,10 @@ interface AuthRepository {
         email: Email,
         password: String,
     ): Result<User, AppError>
+
+    suspend fun loginWithGoogle(idToken: String): Result<UserId, AppError>
+
+    suspend fun sendPasswordResetEmail(email: Email): Result<Unit, AppError>
 
     suspend fun logout(): Result<Unit, AppError>
 
