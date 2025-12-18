@@ -1,10 +1,10 @@
-package com.pamn.ggmatch.app.architecture.io.matchmaking
+package com.pamn.ggmatch.app.architecture.io.preferences
 
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.io.FirebaseRepository
-import com.pamn.ggmatch.app.architecture.model.matchmaking.MatchPreferencesProfile
-import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule

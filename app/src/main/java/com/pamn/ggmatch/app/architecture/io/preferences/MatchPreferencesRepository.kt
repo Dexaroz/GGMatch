@@ -1,6 +1,6 @@
-package com.pamn.ggmatch.app.architecture.io.matchmaking
+package com.pamn.ggmatch.app.architecture.io.preferences
 
-import com.pamn.ggmatch.app.architecture.model.matchmaking.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result

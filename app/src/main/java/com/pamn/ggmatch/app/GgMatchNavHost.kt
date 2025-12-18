@@ -3,6 +3,7 @@ package com.pamn.ggmatch.app
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
@@ -12,12 +13,13 @@ import androidx.navigation.compose.composable
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
+import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
 import com.pamn.ggmatch.app.architecture.model.profile.DummyProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
-import com.pamn.ggmatch.app.architecture.model.user.UserId
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
@@ -63,14 +65,30 @@ fun ggMatchNavHost(navController: NavHostController) {
             )
         }
 
-        // HOME mockup
+        // HOME con preferencias reales
         composable(Router.HOME) {
-            val userId = remember { UserId("current_user_id_123") }
-            val navigator = remember { DummyProfileNavigator() }
-            swipeScreen(
-                navigator = navigator,
-                currentUserId = userId,
-            )
+            // Estado para las preferencias del usuario
+            val currentUserPreferences = remember { androidx.compose.runtime.mutableStateOf<MatchPreferencesProfile?>(null) }
+
+            // Cargar preferencias desde Firebase
+            LaunchedEffect(Unit) {
+                when (val result = AppContainer.matchPreferencesRepository.get(AppContainer.currentUserId)) {
+                    is Result.Ok -> currentUserPreferences.value = result.value
+                    is Result.Error -> {
+                        // manejar error según tu lógica, aquí solo logueamos
+                        println("Error cargando preferencias: ${result.error}")
+                    }
+                }
+            }
+
+            // Si las preferencias están cargadas, crear el navigator
+            currentUserPreferences.value?.let { prefs ->
+                val navigator = remember { DummyProfileNavigator(currentUserPreferences = prefs) }
+                swipeScreen(navigator = navigator)
+            } ?: run {
+                // Mientras cargan, mostrar un placeholder/loading
+                loadingScreen()
+            }
         }
 
         // CHAT y PROFILE mockups
@@ -88,4 +106,10 @@ fun ggMatchNavHost(navController: NavHostController) {
             )
         }
     }
+}
+
+// Ejemplo simple de pantalla de carga
+@Composable
+fun loadingScreen() {
+    androidx.compose.material3.Text(text = "Cargando preferencias...", color = Color.Gray)
 }

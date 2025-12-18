@@ -29,8 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pamn.ggmatch.R // Asumimos R es accesible para recursos dummy
-import com.pamn.ggmatch.app.architecture.model.profile.UserProfile // 👈 CAMBIO: Usar UserProfile
+import com.pamn.ggmatch.R
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.user.UserId
+
+private fun userIdToConsistentInt(userId: UserId): Int {
+    return (userId.hashCode() and 0x7FFFFFFF)
+}
 
 @Composable
 fun swipeCard(
@@ -39,10 +44,19 @@ fun swipeCard(
     scale: Float = 1f,
     alpha: Float = 1f,
 ) {
-    val defaultImageRes = R.drawable.profile_picture
-    val defaultBackgroundRes = R.drawable.jinx
+    val backgroundImages =
+        listOf(
+            R.drawable.jinx,
+            R.drawable.thresh,
+            R.drawable.twisted,
+        )
+    val numberOfBackgrounds = backgroundImages.size
 
-    // 1. Obtener datos del Perfil
+    val profileIdInt = userIdToConsistentInt(card.id)
+    val imageIndex = profileIdInt % numberOfBackgrounds
+    val backgroundRes = backgroundImages[imageIndex]
+
+    val defaultImageRes = R.drawable.profile_picture
     val gameName = card.riotAccount?.gameName ?: "Invocador Desconocido"
     val tagLine = card.riotAccount?.tagLine ?: "EUW"
     val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
@@ -70,7 +84,7 @@ fun swipeCard(
                     .background(Color.Black),
         ) {
             Image(
-                painter = painterResource(id = defaultBackgroundRes),
+                painter = painterResource(id = backgroundRes),
                 contentDescription = "Background image for $gameName",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

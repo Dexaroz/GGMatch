@@ -3,8 +3,8 @@
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commands.UpsertMatchPreferencesCommand
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
 import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
-import com.pamn.ggmatch.app.architecture.io.matchmaking.MatchPreferencesRepository
-import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
+import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -49,7 +49,6 @@ class MatchPreferencesPresenter(
             when (val result = repository.get(userId)) {
                 is Result.Ok -> {
                     val profile = result.value
-
 
                     val loadedMatchPreferences =
                         profile?.preferences

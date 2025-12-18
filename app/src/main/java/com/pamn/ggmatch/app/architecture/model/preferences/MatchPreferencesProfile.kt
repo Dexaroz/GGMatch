@@ -1,5 +1,5 @@
-package com.pamn.ggmatch.app.architecture.model.matchmaking
-import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+package com.pamn.ggmatch.app.architecture.model.preferences
+import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.domain.AggregateRoot
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider

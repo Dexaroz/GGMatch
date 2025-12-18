@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
-import com.pamn.ggmatch.app.architecture.model.matchmaking.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
