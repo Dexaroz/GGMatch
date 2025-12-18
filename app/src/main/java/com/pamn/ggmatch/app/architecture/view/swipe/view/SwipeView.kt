@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
-import com.pamn.ggmatch.app.architecture.model.profile.Profile
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeActionButton
 import com.pamn.ggmatch.app.architecture.view.swipe.components.swipeCard
 import kotlin.math.abs
@@ -28,7 +28,7 @@ import kotlin.math.abs
 @Composable
 fun swipeView(
     modifier: Modifier = Modifier,
-    currentCard: Profile,
+    currentCard: UserProfile,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
 ) {

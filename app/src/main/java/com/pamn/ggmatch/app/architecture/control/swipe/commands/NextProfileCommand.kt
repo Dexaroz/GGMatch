@@ -1,12 +1,8 @@
 package com.pamn.ggmatch.app.architecture.control.swipe.commands
 
-import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
+import com.pamn.ggmatch.app.architecture.model.user.UserId
+import com.pamn.ggmatch.app.architecture.sharedKernel.control.Command
 
-class NextProfileCommand(
-    private val presenter: ProfilePresenterImplementation,
-) : Command {
-    override fun execute() {
-        val newProfile = presenter.navigator().next()
-        presenter.show(newProfile)
-    }
-}
+data class NextProfileCommand(
+    val requestingUserId: UserId,
+) : Command

@@ -4,35 +4,66 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
+import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterProvider
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
-import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView // Importa la View Pura
-import com.pamn.ggmatch.app.architecture.model.profile.Profile
+import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
+import com.pamn.ggmatch.app.architecture.control.swipe.commands.PreviousProfileCommand
+import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
+import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.PreviousProfileCommandHandler
+import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.user.UserId
+import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 
 class ComposeProfileViewImplementation(
-    initialProfile: Profile,
+    initialProfile: UserProfile,
 ) : ProfileView {
-    // ⚠️ Estado que la UI de Compose leerá.
-    val currentProfileState: MutableState<Profile> = mutableStateOf(initialProfile)
+    val currentProfileState: MutableState<UserProfile> = mutableStateOf(initialProfile)
 
-    override fun showProfile(profile: Profile) {
-        // Cuando el Presenter notifica, actualizamos el estado.
+    override fun showProfile(profile: UserProfile) {
         currentProfileState.value = profile
     }
 }
 
 @Composable
-fun swipeScreen(navigator: ProfileNavigator) {
-    // 1. Inicializa la View y el Presenter
+fun swipeScreen(
+    navigator: ProfileNavigator,
+    currentUserId: UserId,
+) {
+    val scope = rememberCoroutineScope()
     val initialProfile = navigator.current()
     val viewImplementation = remember { ComposeProfileViewImplementation(initialProfile) }
-    val presenter = remember { ProfilePresenterImplementation(viewImplementation, navigator) }
 
-    // 2. Observa el estado (el perfil actual)
+    val presenter =
+        remember {
+            lateinit var pInstance: ProfilePresenterImplementation
+
+            val presenterProvider =
+                object : ProfilePresenterProvider {
+                    override fun get(): ProfilePresenterImplementation = pInstance
+                }
+
+            val nextHandler = NextProfileCommandHandler(presenterProvider = presenterProvider)
+            val prevHandler = PreviousProfileCommandHandler(presenterProvider = presenterProvider)
+
+            pInstance =
+                ProfilePresenterImplementation(
+                    view = viewImplementation,
+                    navigator = navigator,
+                    nextProfileCommandHandler = nextHandler as CommandHandler<NextProfileCommand, Unit>,
+                    previousProfileCommandHandler = prevHandler as CommandHandler<PreviousProfileCommand, Unit>,
+                    scope = scope,
+                    currentUserId = currentUserId,
+                )
+
+            pInstance
+        }
+
     val currentCard = viewImplementation.currentProfileState.value
 
-    // 3. Pasa el estado y las acciones a la View pura (SwipeView)
     swipeView(
         currentCard = currentCard,
         onNext = presenter::onNextClicked,

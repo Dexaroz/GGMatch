@@ -26,17 +26,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pamn.ggmatch.app.architecture.model.profile.Profile
+import com.pamn.ggmatch.R // Asumimos R es accesible para recursos dummy
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile // 👈 CAMBIO: Usar UserProfile
 
 @Composable
 fun swipeCard(
-    card: Profile,
+    card: UserProfile,
     offsetX: Float = 0f,
     scale: Float = 1f,
     alpha: Float = 1f,
 ) {
+    val defaultImageRes = R.drawable.profile_picture
+    val defaultBackgroundRes = R.drawable.jinx
+
+    // 1. Obtener datos del Perfil
+    val gameName = card.riotAccount?.gameName ?: "Invocador Desconocido"
+    val tagLine = card.riotAccount?.tagLine ?: "EUW"
+    val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
+    val languages = card.preferences.languages.joinToString(separator = ", ") { it.name.take(2) }
+
     Card(
         shape = RoundedCornerShape(24.dp),
         modifier =
@@ -58,14 +69,13 @@ fun swipeCard(
                     .fillMaxSize()
                     .background(Color.Black),
         ) {
-            // 1. Imagen de Fondo
             Image(
-                painter = painterResource(id = card.backgroundImageRes),
-                contentDescription = "Background image for ${card.name}",
+                painter = painterResource(id = defaultBackgroundRes),
+                contentDescription = "Background image for $gameName",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
-            // 2. Degradado Inferior (para que el texto y el círculo se integren mejor)
+
             Box(
                 modifier =
                     Modifier
@@ -85,7 +95,6 @@ fun swipeCard(
                         ),
             )
 
-            // 3. Contenido de Perfil (Imagen, Nombre, Descripción)
             Column(
                 modifier =
                     Modifier
@@ -96,8 +105,8 @@ fun swipeCard(
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 Image(
-                    painter = painterResource(id = card.imageRes),
-                    contentDescription = "${card.name} profile picture",
+                    painter = painterResource(id = defaultImageRes),
+                    contentDescription = "$gameName profile picture",
                     modifier =
                         Modifier
                             .size(width = 250.dp, height = 350.dp)
@@ -109,16 +118,26 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = card.name,
+                    text = "$gameName#$tagLine",
                     style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
                     color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Roles: $mainRoles",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF44EAC5),
                     textAlign = TextAlign.Center,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = card.description,
+                    text = "Idiomas: $languages",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,
