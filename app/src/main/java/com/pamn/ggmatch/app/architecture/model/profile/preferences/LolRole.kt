@@ -1,9 +1,11 @@
 package com.pamn.ggmatch.app.architecture.model.profile.preferences
 
-enum class LolRole {
-    TOP,
-    JUNGLE,
-    MID,
-    ADC,
-    SUPPORT,
+import com.pamn.ggmatch.R
+
+enum class LolRole(val iconRes: Int) {
+    TOP(R.drawable.top),
+    JUNGLE(R.drawable.jungle),
+    MID(R.drawable.mid),
+    ADC(R.drawable.bot),
+    SUPPORT(R.drawable.sup)
 }
