@@ -21,7 +21,6 @@ data class Preferences(
 
     companion object {
         fun default(): Preferences {
-            // Aseguramos que cada conjunto contenga al menos un valor.
             return Preferences(
                 roles = LolRole.entries.toSet(),
                 languages = Language.entries.toSet(),

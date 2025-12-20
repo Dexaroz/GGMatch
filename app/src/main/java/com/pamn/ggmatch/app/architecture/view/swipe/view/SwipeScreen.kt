@@ -25,11 +25,11 @@ import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplement
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
-import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_MESSAGE
 import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_SUGGESTION
+import com.pamn.ggmatch.app.architecture.view.swipe.view.swipeView
 
 class ComposeProfileViewImplementation(
     initialProfile: UserProfile?,
@@ -112,9 +112,7 @@ fun swipeScreen(
                 Text("ERROR: ${view.errorState.value}", color = Color.Red, textAlign = TextAlign.Center)
             }
         }
-        else -> {
-            // Estado de carga o inicialización
-        }
+        else -> {}
     }
 }
 
@@ -132,7 +130,6 @@ fun emptyProfilesView() {
             modifier = Modifier.padding(24.dp),
         ) {
             Text(
-                // Uso de constante corregida
                 text = "⚠️ $EMPTY_DECK_MESSAGE",
                 color = Color.White,
                 fontSize = 20.sp,
@@ -141,7 +138,6 @@ fun emptyProfilesView() {
                 modifier = Modifier.padding(bottom = 8.dp),
             )
             Text(
-                // Uso de constante corregida
                 text = EMPTY_DECK_SUGGESTION,
                 color = Color.LightGray,
                 fontSize = 16.sp,

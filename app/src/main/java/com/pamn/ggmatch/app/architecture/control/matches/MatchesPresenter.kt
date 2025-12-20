@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 
 class MatchesPresenter(
     private val repository: ProfileRepository,
-    private val onBack: () -> Unit,
 ) : MatchesContract.Presenter {
     private var view: MatchesContract.View? = null
 

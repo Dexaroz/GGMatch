@@ -37,7 +37,6 @@ data class SwipeHistory(
         }
     }
 
-    // Changed from addInteraction to add
     fun add(newSwipe: Swipe): SwipeHistory {
         require(newSwipe.fromUserId == this.userId) {
             "The swipe must belong to the history owner."

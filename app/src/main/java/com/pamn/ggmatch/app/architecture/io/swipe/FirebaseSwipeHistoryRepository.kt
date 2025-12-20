@@ -26,13 +26,11 @@ class FirebaseSwipeHistoryRepository(
 
     override fun toDocument(entity: SwipeHistory): Map<String, Any?> {
         return mapOf(
-            // Changed from 'interactions' to 'items'
             "items" to
                 entity.items.mapKeys { (targetId, _) ->
                     idToString(targetId)
                 }.mapValues { (_, swipe) ->
                     mapOf(
-                        // Changed from 'decision' to 'type'
                         "type" to swipe.type.name,
                         "createdAtEpochMs" to swipe.createdAt.toEpochMilliseconds(),
                         "updatedAtEpochMs" to swipe.updatedAt.toEpochMilliseconds(),
@@ -47,7 +45,6 @@ class FirebaseSwipeHistoryRepository(
         id: UserId,
         doc: DocumentSnapshot,
     ): SwipeHistory {
-        // Updated to read 'items' from Firestore
         val rawItems =
             doc.get("items") as? Map<*, *> ?: emptyMap<String, Any?>()
 
@@ -56,7 +53,6 @@ class FirebaseSwipeHistoryRepository(
                 val targetId = (key as? String)?.let(::UserId) ?: return@mapNotNull null
                 val data = value as? Map<*, *> ?: return@mapNotNull null
 
-                // Updated to read 'type'
                 val type =
                     (data["type"] as? String)
                         ?.let { runCatching { SwipeType.valueOf(it) }.getOrNull() }

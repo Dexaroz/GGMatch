@@ -2,12 +2,21 @@ package com.pamn.ggmatch.app
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -78,10 +87,8 @@ fun ggMatchNavHost(navController: NavHostController) {
                 when (result) {
                     is Result.Ok -> {
                         if (result.value != null) {
-                            // Caso A: El usuario ya tenía preferencias
                             currentUserPreferences.value = result.value
                         } else {
-                            // Caso B: El usuario es nuevo (result es Ok, pero el valor es null)
                             val defaultPrefs =
                                 MatchPreferences.createNew(
                                     userId = userId,
@@ -110,7 +117,6 @@ fun ggMatchNavHost(navController: NavHostController) {
             }
         }
 
-        // MATCHES y PROFILE mockups
         composable(Router.MATCHES) {
             profileListView(
                 profiles = DummyUserProfiles.all,
@@ -120,7 +126,6 @@ fun ggMatchNavHost(navController: NavHostController) {
 
         composable(Router.PROFILE) { testView(Color.White) }
 
-        // PREFERENCES
         composable(Router.PREFERENCES) {
             preferencesScreen(
                 allRoles = LolRole.entries.toList(),
@@ -133,8 +138,27 @@ fun ggMatchNavHost(navController: NavHostController) {
     }
 }
 
-// Ejemplo simple de pantalla de carga
 @Composable
 fun loadingScreen() {
-    androidx.compose.material3.Text(text = "Cargando preferencias...", color = Color.Gray)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color(0xFF1A1A1A), Color(0xFF322E3D), Color(0xFF1A1A1A)),
+                        ),
+                    ),
+        )
+
+        CircularProgressIndicator(
+            modifier = Modifier.size(50.dp),
+            color = Color(0xFFFFFFFF),
+            strokeWidth = 5.dp,
+        )
+    }
 }

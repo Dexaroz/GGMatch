@@ -1,12 +1,12 @@
 package com.pamn.ggmatch.app.architecture.view.swipe
 
 object SwipeTextVariables {
-    const val UNKNOWN_SUMMONER = "Invocador Desconocido"
+    const val UNKNOWN_SUMMONER = "Unknown summoner"
     const val DEFAULT_SERVER = "EUW"
     const val ROLES_PREFIX = "Roles: "
-    const val LANGUAGES_PREFIX = "Idiomas: "
+    const val LANGUAGES_PREFIX = "Languages: "
     const val EMPTY_DECK_MESSAGE =
-        "Agotamiento de Perfiles. No hay perfiles con sus preferencias actualmente disponibles."
+        "No more profiles. There are no profiles with your preferences currently available."
     const val EMPTY_DECK_SUGGESTION =
-        "Por favor, espere nuevos usuarios o amplíe sus preferencias de emparejamiento."
+        "Please wait for new users or expand your matchmaking preferences."
 }

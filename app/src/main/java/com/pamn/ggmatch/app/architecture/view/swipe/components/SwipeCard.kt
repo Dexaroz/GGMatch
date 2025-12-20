@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.DEFAULT_SERVER
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
@@ -62,9 +61,7 @@ fun swipeCard(
 
     val defaultImageRes = R.drawable.profile_picture
 
-    // Uso de constantes corregidas
     val gameName = card.riotAccount?.gameName ?: UNKNOWN_SUMMONER
-    val tagLine = card.riotAccount?.tagLine ?: DEFAULT_SERVER
 
     val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
     val languages = card.preferences.languages.joinToString(separator = ", ") { it.name.take(2) }
@@ -140,7 +137,6 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    // Uso de constante corregida
                     text = "$ROLES_PREFIX$mainRoles",
                     style = MaterialTheme.typography.titleMedium,
                     color = Color(0xFF44EAC5),
@@ -150,7 +146,6 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    // Uso de constante corregida
                     text = "$LANGUAGES_PREFIX$languages",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.LightGray,

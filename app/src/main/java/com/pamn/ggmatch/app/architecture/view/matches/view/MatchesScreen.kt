@@ -19,7 +19,6 @@ fun profileListScreen(onBack: () -> Unit) {
         remember {
             MatchesPresenter(
                 repository = repository,
-                onBack = onBack,
             )
         }
 
@@ -33,7 +32,6 @@ fun profileListScreen(onBack: () -> Unit) {
                 }
 
                 override fun showError(message: String) {
-                    // handle error (toast/snackbar)
                 }
             }
         }

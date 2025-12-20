@@ -24,7 +24,7 @@ class ProfilePresenterImplementation(
         profile?.let { view.showProfile(it) } ?: run {
             scope.launch {
                 when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
-                    is Result.Ok -> view.showProfile(result.value) // puede ser null
+                    is Result.Ok -> view.showProfile(result.value)
                     is Result.Error -> view.showError(result.error.message)
                 }
             }
@@ -63,7 +63,7 @@ class ProfilePresenterImplementation(
             when (swipeProfileCommandHandler.invoke(swipeCommand)) {
                 is Result.Ok -> {
                     when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
-                        is Result.Ok -> view.showProfile(result.value) // puede ser null
+                        is Result.Ok -> view.showProfile(result.value)
                         is Result.Error -> view.showError("Interacción guardada, pero no se pudo cargar el siguiente perfil.")
                     }
                 }
