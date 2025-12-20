@@ -103,14 +103,7 @@ class FirebaseMatchPreferencesRepository(
         )
     }
 
-    override suspend fun addOrUpdate(profile: MatchPreferences): Result<Unit, AppError> =
-        when (val existing = get(profile.id)) {
-            is Result.Error -> existing
-            is Result.Ok ->
-                if (existing.value == null) {
-                    add(profile)
-                } else {
-                    update(profile)
-                }
-        }
+    override suspend fun addOrUpdate(profile: MatchPreferences): Result<Unit, AppError> {
+        return add(profile)
+    }
 }

@@ -20,7 +20,7 @@ class FirebaseProfileRepository(
     firestore: FirebaseFirestore,
 ) : FirebaseRepository<UserId, UserProfile>(
         firestore = firestore,
-        collectionName = "profiles",
+        collectionName = "users-profiles",
     ),
     ProfileRepository {
     override fun getId(entity: UserProfile): UserId = entity.id

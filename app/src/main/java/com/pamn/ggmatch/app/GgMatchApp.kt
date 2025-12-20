@@ -18,7 +18,7 @@ fun ggMatchApp() {
 
     Scaffold(
         topBar = {
-            if (currentRoute in listOf("home", "chat", "profile")) {
+            if (currentRoute in listOf("home", "profile")) {
                 navBarHost(navController)
             }
         },
