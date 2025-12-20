@@ -1,6 +1,5 @@
+package com.pamn.ggmatch.app.architecture.control.matchPreferences
 
-
-import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesContract
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commands.UpsertMatchPreferencesCommand
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository

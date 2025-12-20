@@ -6,10 +6,8 @@ import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 class ProfileFilter(
     private val profileMatcher: ProfileMatcher = ProfileMatcher(),
 ) {
-
     fun filter(
         profiles: List<UserProfile>,
         preferences: MatchPreferences,
-    ): List<UserProfile> =
-        profiles.filter { profileMatcher.matches(preferences, it) }
+    ): List<UserProfile> = profiles.filter { profileMatcher.matches(preferences, it) }
 }

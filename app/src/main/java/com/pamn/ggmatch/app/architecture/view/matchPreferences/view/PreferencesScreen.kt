@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.view.matchPreferences.view
 
-import MatchPreferencesPresenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -9,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesContract
+import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesPresenter
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole

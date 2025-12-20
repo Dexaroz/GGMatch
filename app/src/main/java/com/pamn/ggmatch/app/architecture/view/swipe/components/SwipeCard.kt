@@ -132,7 +132,7 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "$gameName#$tagLine",
+                    text = gameName,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,

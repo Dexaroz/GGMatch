@@ -4,11 +4,9 @@ import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.DummyUserProfiles
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
-
 class DummyProfileNavigator(
     private val currentUserPreferences: MatchPreferences,
 ) : ProfileNavigator {
-
     private val profileFilter = ProfileFilter()
 
     private val profiles: List<UserProfile> =
@@ -19,8 +17,7 @@ class DummyProfileNavigator(
 
     private var currentIndex = 0
 
-    override fun current(): UserProfile? =
-        filteredProfiles.getOrNull(currentIndex)
+    override fun current(): UserProfile? = filteredProfiles.getOrNull(currentIndex)
 
     override fun next(): UserProfile? {
         if (filteredProfiles.isEmpty()) return null
@@ -29,5 +26,3 @@ class DummyProfileNavigator(
             ?.also { currentIndex = nextIndex }
     }
 }
-
-

@@ -11,7 +11,6 @@ class ProfileNavigatorImplementation(
     private val profileFilter: ProfileFilter,
     private val preferences: MatchPreferences,
 ) : ProfileNavigator {
-
     private var profiles: List<UserProfile> = emptyList()
     private var currentIndex = 0
 
@@ -29,8 +28,7 @@ class ProfileNavigatorImplementation(
             }
         }
 
-    override fun current(): UserProfile? =
-        profiles.getOrNull(currentIndex)
+    override fun current(): UserProfile? = profiles.getOrNull(currentIndex)
 
     override fun next(): UserProfile? =
         profiles.getOrNull(currentIndex + 1)
