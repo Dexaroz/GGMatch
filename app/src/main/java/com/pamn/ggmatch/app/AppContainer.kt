@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
+import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginWithGoogleCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
@@ -115,6 +116,7 @@ object AppContainer {
             AuthController(
                 registerUser = RegisterUserCommandHandler(authRepository),
                 loginUser = LoginUserCommandHandler(authRepository),
+                loginWithGoogle = LoginWithGoogleCommandHandler(authRepository),
             )
 
         initialized = true

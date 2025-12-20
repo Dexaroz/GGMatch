@@ -11,4 +11,5 @@ data class LoginTextVariables(
     val emptyFieldsErrorText: String = "Email and password are required",
     val invalidEmailErrorText: String = "Please enter a valid email address",
     val genericErrorText: String = "We couldn't log you in. Try again.",
+    val googleButtonText: String = "Continuar con Google",
 )

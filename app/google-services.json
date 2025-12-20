@@ -12,7 +12,12 @@
           "package_name": "com.pamn.ggmatch"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1019099012768-id70i6rvschq6cgfrv20u2fc76r05u8v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAgLl6OKh-0Ck-1SBLxNGz5aiemQHhUtYA"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019099012768-id70i6rvschq6cgfrv20u2fc76r05u8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
