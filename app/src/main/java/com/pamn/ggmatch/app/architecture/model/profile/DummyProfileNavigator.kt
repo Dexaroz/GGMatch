@@ -1,7 +1,7 @@
 package com.pamn.ggmatch.app.architecture.model.profile
 
 import com.pamn.ggmatch.app.architecture.control.matching.ProfileMatcher
-import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -12,7 +12,7 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import kotlinx.datetime.Instant
 
 class DummyProfileNavigator(
-    private val currentUserPreferences: MatchPreferencesProfile,
+    private val currentUserPreferences: MatchPreferences,
 ) : ProfileNavigator {
     private val profileMatcher = ProfileMatcher()
 

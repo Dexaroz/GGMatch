@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.model.preferences.preferences
+package com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences
 
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
@@ -6,7 +6,7 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
 import com.pamn.ggmatch.app.architecture.sharedKernel.domain.ValueObject
 
-data class MatchPreferences(
+data class Preferences(
     val roles: Set<LolRole>,
     val languages: Set<Language>,
     val schedules: Set<PlaySchedule>,
@@ -20,9 +20,9 @@ data class MatchPreferences(
     }
 
     companion object {
-        fun default(): MatchPreferences {
+        fun default(): Preferences {
             // Aseguramos que cada conjunto contenga al menos un valor.
-            return MatchPreferences(
+            return Preferences(
                 roles = LolRole.entries.toSet(),
                 languages = Language.entries.toSet(),
                 schedules = PlaySchedule.entries.toSet(),

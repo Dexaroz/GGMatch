@@ -1,12 +1,12 @@
 package com.pamn.ggmatch.app.architecture.control.matching
 
-import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 
 class ProfileMatcher {
     fun matches(
-        currentUserPreferences: MatchPreferencesProfile,
+        currentUserPreferences: MatchPreferences,
         candidate: UserProfile,
     ): Boolean {
         val riotAccount =

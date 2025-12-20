@@ -1,24 +1,24 @@
-package com.pamn.ggmatch.app.architecture.model.preferences
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+package com.pamn.ggmatch.app.architecture.model.matchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.domain.AggregateRoot
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import kotlinx.datetime.Instant
 
-class MatchPreferencesProfile private constructor(
+class MatchPreferences private constructor(
     id: UserId,
-    var preferences: MatchPreferences,
+    var preferences: Preferences,
     val createdAt: Instant,
     var updatedAt: Instant,
 ) : AggregateRoot<UserId>(id) {
     companion object {
         fun createNew(
             userId: UserId,
-            preferences: MatchPreferences,
+            preferences: Preferences,
             timeProvider: TimeProvider,
-        ): MatchPreferencesProfile {
+        ): MatchPreferences {
             val now = timeProvider.now()
-            return MatchPreferencesProfile(
+            return MatchPreferences(
                 id = userId,
                 preferences = preferences,
                 createdAt = now,
@@ -28,10 +28,10 @@ class MatchPreferencesProfile private constructor(
 
         fun fromPersistence(
             userId: UserId,
-            preferences: MatchPreferences,
+            preferences: Preferences,
             createdAt: Instant,
             updatedAt: Instant,
-        ) = MatchPreferencesProfile(
+        ) = MatchPreferences(
             id = userId,
             preferences = preferences,
             createdAt = createdAt,
@@ -40,7 +40,7 @@ class MatchPreferencesProfile private constructor(
     }
 
     fun update(
-        newPreferences: MatchPreferences,
+        newPreferences: Preferences,
         timeProvider: TimeProvider,
     ) {
         if (preferences == newPreferences) return

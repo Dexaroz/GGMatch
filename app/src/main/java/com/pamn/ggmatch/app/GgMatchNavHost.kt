@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
-import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.DummyProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
@@ -23,7 +23,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
-import com.pamn.ggmatch.app.architecture.view.preferences.view.preferencesScreen
+import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
 import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
@@ -68,7 +68,7 @@ fun ggMatchNavHost(navController: NavHostController) {
         // HOME con preferencias reales
         composable(Router.HOME) {
             // Estado para las preferencias del usuario
-            val currentUserPreferences = remember { androidx.compose.runtime.mutableStateOf<MatchPreferencesProfile?>(null) }
+            val currentUserPreferences = remember { androidx.compose.runtime.mutableStateOf<MatchPreferences?>(null) }
 
             // Cargar preferencias desde Firebase
             LaunchedEffect(Unit) {

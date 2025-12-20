@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.view.preferences.view
+package com.pamn.ggmatch.app.architecture.view.matchPreferences.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,18 +27,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.R
-import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesContract
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
-import com.pamn.ggmatch.app.architecture.view.preferences.components.preferenceChip
+import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun preferencesView(
-    uiState: MatchPreferences,
+    uiState: Preferences,
     allRoles: List<LolRole>,
     allLanguages: List<Language>,
     allSchedules: List<PlaySchedule>,
@@ -100,7 +100,7 @@ fun preferencesView(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     allLanguages.forEach { lang ->
-                        preferenceChip(
+                        matchPreferenceChip(
                             label = lang.name,
                             selected = lang in uiState.languages,
                             onClick = { presenter.toggleLanguage(lang) },
@@ -120,7 +120,7 @@ fun preferencesView(
                 ) {
                     allRoles.forEach { role ->
                         val isSelected = role in uiState.roles
-                        preferenceChip(
+                        matchPreferenceChip(
                             label = role.name,
                             selected = isSelected,
                             onClick = { presenter.toggleRole(role) },
@@ -139,7 +139,7 @@ fun preferencesView(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     allSchedules.forEach { schedule ->
-                        preferenceChip(
+                        matchPreferenceChip(
                             label = schedule.name,
                             selected = schedule in uiState.schedules,
                             onClick = { presenter.toggleSchedule(schedule) },
@@ -158,7 +158,7 @@ fun preferencesView(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     allPlaystyles.forEach { style ->
-                        preferenceChip(
+                        matchPreferenceChip(
                             label = style.name,
                             selected = style in uiState.playstyles,
                             onClick = { presenter.togglePlaystyle(style) },

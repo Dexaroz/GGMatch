@@ -1,10 +1,10 @@
 
 
+import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesContract
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commands.UpsertMatchPreferencesCommand
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
-import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -28,9 +28,9 @@ class MatchPreferencesPresenter(
 
     private var view: MatchPreferencesContract.View? = null
 
-    private var currentMatchPreferences: MatchPreferences = MatchPreferences.default()
+    private var currentPreferences: Preferences = Preferences.default()
 
-    private var initialMatchPreferences: MatchPreferences = MatchPreferences.default()
+    private var initialPreferences: Preferences = Preferences.default()
 
     override fun attachView(view: MatchPreferencesContract.View) {
         this.view = view
@@ -43,22 +43,22 @@ class MatchPreferencesPresenter(
     }
 
     override fun load() {
-        view?.showState(currentMatchPreferences)
+        view?.showState(currentPreferences)
 
         presenterScope.launch {
             when (val result = repository.get(userId)) {
                 is Result.Ok -> {
                     val profile = result.value
 
-                    val loadedMatchPreferences =
+                    val loadedPreferences =
                         profile?.preferences
-                            ?: MatchPreferences.default()
+                            ?: Preferences.default()
 
-                    initialMatchPreferences = loadedMatchPreferences
-                    currentMatchPreferences = loadedMatchPreferences
+                    initialPreferences = loadedPreferences
+                    currentPreferences = loadedPreferences
 
                     withContext(Dispatchers.Main) {
-                        view?.showState(currentMatchPreferences)
+                        view?.showState(currentPreferences)
                     }
                 }
                 is Result.Error -> {
@@ -70,37 +70,37 @@ class MatchPreferencesPresenter(
         }
     }
 
-    private fun updateAndShow(newMatchPreferences: MatchPreferences) {
-        currentMatchPreferences = newMatchPreferences
-        view?.showState(currentMatchPreferences)
+    private fun updateAndShow(newPreferences: Preferences) {
+        currentPreferences = newPreferences
+        view?.showState(currentPreferences)
     }
 
     override fun toggleRole(role: LolRole) {
-        val newSet = currentMatchPreferences.roles.toMutableSet()
+        val newSet = currentPreferences.roles.toMutableSet()
         if (!newSet.add(role)) newSet.remove(role)
-        updateAndShow(currentMatchPreferences.copy(roles = newSet))
+        updateAndShow(currentPreferences.copy(roles = newSet))
     }
 
     override fun toggleLanguage(language: Language) {
-        val newSet = currentMatchPreferences.languages.toMutableSet()
+        val newSet = currentPreferences.languages.toMutableSet()
         if (!newSet.add(language)) newSet.remove(language)
-        updateAndShow(currentMatchPreferences.copy(languages = newSet))
+        updateAndShow(currentPreferences.copy(languages = newSet))
     }
 
     override fun toggleSchedule(schedule: PlaySchedule) {
-        val newSet = currentMatchPreferences.schedules.toMutableSet()
+        val newSet = currentPreferences.schedules.toMutableSet()
         if (!newSet.add(schedule)) newSet.remove(schedule)
-        updateAndShow(currentMatchPreferences.copy(schedules = newSet))
+        updateAndShow(currentPreferences.copy(schedules = newSet))
     }
 
     override fun togglePlaystyle(style: Playstyle) {
-        val newSet = currentMatchPreferences.playstyles.toMutableSet()
+        val newSet = currentPreferences.playstyles.toMutableSet()
         if (!newSet.add(style)) newSet.remove(style)
-        updateAndShow(currentMatchPreferences.copy(playstyles = newSet))
+        updateAndShow(currentPreferences.copy(playstyles = newSet))
     }
 
     override fun save() {
-        if (currentMatchPreferences == initialMatchPreferences) {
+        if (currentPreferences == initialPreferences) {
             onSaveSuccess()
             return
         }
@@ -108,10 +108,10 @@ class MatchPreferencesPresenter(
         val command =
             UpsertMatchPreferencesCommand(
                 userId = userId,
-                roles = currentMatchPreferences.roles,
-                languages = currentMatchPreferences.languages,
-                schedules = currentMatchPreferences.schedules,
-                playstyles = currentMatchPreferences.playstyles,
+                roles = currentPreferences.roles,
+                languages = currentPreferences.languages,
+                schedules = currentPreferences.schedules,
+                playstyles = currentPreferences.playstyles,
             )
 
         presenterScope.launch {
@@ -120,7 +120,7 @@ class MatchPreferencesPresenter(
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Result.Ok -> {
-                        initialMatchPreferences = currentMatchPreferences.copy()
+                        initialPreferences = currentPreferences.copy()
                         onSaveSuccess()
                     }
                     is Result.Error -> {

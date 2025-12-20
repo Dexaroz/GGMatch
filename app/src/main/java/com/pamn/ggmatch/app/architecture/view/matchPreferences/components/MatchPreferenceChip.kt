@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.view.preferences.components
+package com.pamn.ggmatch.app.architecture.view.matchPreferences.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +21,7 @@ import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.view.shared.SharedColors
 
 @Composable
-fun preferenceChip(
+fun matchPreferenceChip(
     label: String,
     selected: Boolean,
     enabled: Boolean = true,

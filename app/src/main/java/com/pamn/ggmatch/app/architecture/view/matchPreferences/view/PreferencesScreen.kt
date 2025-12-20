@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.view.preferences.view
+package com.pamn.ggmatch.app.architecture.view.matchPreferences.view
 
 import MatchPreferencesPresenter
 import androidx.compose.runtime.Composable
@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.pamn.ggmatch.app.AppContainer
-import com.pamn.ggmatch.app.architecture.control.preferences.MatchPreferencesContract
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.control.matchPreferences.MatchPreferencesContract
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -37,12 +37,12 @@ fun preferencesScreen(
             )
         }
 
-    var uiState by remember { mutableStateOf(MatchPreferences.default()) }
+    var uiState by remember { mutableStateOf(Preferences.default()) }
 
     val view =
         remember {
             object : MatchPreferencesContract.View {
-                override fun showState(preferences: MatchPreferences) {
+                override fun showState(preferences: Preferences) {
                     uiState = preferences
                 }
 

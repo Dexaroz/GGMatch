@@ -2,8 +2,8 @@ package com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers
 
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commands.UpsertMatchPreferencesCommand
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
-import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
@@ -18,8 +18,8 @@ class UpsertMatchPreferencesCommandHandler(
         return when (existingResult) {
             is Result.Error -> existingResult
             is Result.Ok -> {
-                val newMatchPreferences =
-                    MatchPreferences(
+                val newPreferences =
+                    Preferences(
                         roles = command.roles,
                         languages = command.languages,
                         schedules = command.schedules,
@@ -30,11 +30,11 @@ class UpsertMatchPreferencesCommandHandler(
 
                 val profileToPersist =
                     existingProfile?.also { currentProfile ->
-                        currentProfile.update(newMatchPreferences, timeProvider)
+                        currentProfile.update(newPreferences, timeProvider)
                     }
-                        ?: MatchPreferencesProfile.createNew(
+                        ?: MatchPreferences.createNew(
                             userId = command.userId,
-                            preferences = newMatchPreferences,
+                            preferences = newPreferences,
                             timeProvider = timeProvider,
                         )
 

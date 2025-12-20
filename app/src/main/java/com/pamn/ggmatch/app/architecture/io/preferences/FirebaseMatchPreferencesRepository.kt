@@ -3,8 +3,8 @@ package com.pamn.ggmatch.app.architecture.io.preferences
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.io.FirebaseRepository
-import com.pamn.ggmatch.app.architecture.model.preferences.MatchPreferencesProfile
-import com.pamn.ggmatch.app.architecture.model.preferences.preferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
+import com.pamn.ggmatch.app.architecture.model.matchPreferences.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -16,18 +16,18 @@ import kotlinx.datetime.Instant
 
 class FirebaseMatchPreferencesRepository(
     firestore: FirebaseFirestore,
-) : FirebaseRepository<UserId, MatchPreferencesProfile>(
+) : FirebaseRepository<UserId, MatchPreferences>(
         firestore = firestore,
         collectionName = "match-preferences",
     ),
     MatchPreferencesRepository {
-    override fun getId(entity: MatchPreferencesProfile): UserId = entity.id
+    override fun getId(entity: MatchPreferences): UserId = entity.id
 
     override fun idToString(id: UserId): String = id.value
 
     override fun stringToId(id: String): UserId = UserId(id)
 
-    override fun toDocument(entity: MatchPreferencesProfile): Map<String, Any?> {
+    override fun toDocument(entity: MatchPreferences): Map<String, Any?> {
         val prefs = entity.preferences
 
         return mapOf(
@@ -43,7 +43,7 @@ class FirebaseMatchPreferencesRepository(
     override fun fromDocument(
         id: UserId,
         doc: DocumentSnapshot,
-    ): MatchPreferencesProfile {
+    ): MatchPreferences {
         fun rolesFromDoc(field: String): Set<LolRole> {
             val raw = doc.get(field) as? List<*> ?: emptyList<Any?>()
             return raw.mapNotNull { value ->
@@ -81,7 +81,7 @@ class FirebaseMatchPreferencesRepository(
         }
 
         val preferences =
-            MatchPreferences(
+            Preferences(
                 roles = rolesFromDoc("roles"),
                 languages = languagesFromDoc("languages"),
                 schedules = scheduleFromDoc("schedules"),
@@ -95,7 +95,7 @@ class FirebaseMatchPreferencesRepository(
             doc.getLong("updatedAtEpochMs")
                 ?: createdAtMs
 
-        return MatchPreferencesProfile.fromPersistence(
+        return MatchPreferences.fromPersistence(
             userId = id,
             preferences = preferences,
             createdAt = Instant.fromEpochMilliseconds(createdAtMs),
@@ -103,7 +103,7 @@ class FirebaseMatchPreferencesRepository(
         )
     }
 
-    override suspend fun addOrUpdate(profile: MatchPreferencesProfile): Result<Unit, AppError> =
+    override suspend fun addOrUpdate(profile: MatchPreferences): Result<Unit, AppError> =
         when (val existing = get(profile.id)) {
             is Result.Error -> existing
             is Result.Ok ->
