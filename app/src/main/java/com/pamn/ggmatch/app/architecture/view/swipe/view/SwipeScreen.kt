@@ -26,7 +26,7 @@ import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProf
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
-import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
 class ComposeProfileViewImplementation(
