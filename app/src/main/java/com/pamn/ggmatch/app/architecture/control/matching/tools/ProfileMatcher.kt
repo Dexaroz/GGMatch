@@ -8,9 +8,11 @@ class ProfileMatcher {
         currentUserId: String,
         currentUserPreferences: MatchPreferences,
         candidate: UserProfile,
+        excludedIds: Set<String>,
     ): Boolean {
-        if (candidate.id.toString() == currentUserId) return false
-
+        if (candidate.id.value == currentUserId || excludedIds.contains(candidate.id.value)) {
+            return false
+        }
         /*
         val riotAccount =
             candidate.riotAccount
@@ -19,7 +21,7 @@ class ProfileMatcher {
         if (riotAccount.verificationStatus != RiotAccountStatus.VERIFIED) {
             return false
         }
-         */
+        */
 
         val preferences = candidate.preferences
         val currentPrefs = currentUserPreferences.preferences

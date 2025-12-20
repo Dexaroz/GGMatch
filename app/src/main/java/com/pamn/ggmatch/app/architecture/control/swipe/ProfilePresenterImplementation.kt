@@ -9,34 +9,24 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
 class ProfilePresenterImplementation(
     private val view: ProfileView,
-    private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Unit>,
+    private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Boolean>,
     private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, UserProfile?>,
     private val scope: CoroutineScope,
     currentProfile: UserProfile?,
     private val currentUserId: UserId,
 ) : ProfilePresenter {
     private var profile: UserProfile? = currentProfile
+    var onMatchFound: ((UserProfile) -> Unit)? = null
 
     override fun init() {
-        profile?.let { view.showProfile(it) } ?: run {
-            scope.launch {
-                when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
-                    is Result.Ok -> view.showProfile(result.value)
-                    is Result.Error -> view.showError(result.error.message)
-                }
-            }
-        }
+        profile?.let { view.showProfile(it) } ?: onNextClicked()
     }
 
     override fun onNextClicked() {
         scope.launch {
-            when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
-                is Result.Ok -> view.showProfile(result.value)
-                is Result.Error -> view.showError(result.error.message)
-            }
+            loadNextProfile()
         }
     }
 
@@ -52,23 +42,34 @@ class ProfilePresenterImplementation(
         targetProfile: UserProfile,
         decision: SwipeType,
     ) {
-        val swipeCommand =
-            SwipeProfileCommand(
-                fromUserId = currentUserId,
-                toUserId = targetProfile.id,
-                decision = decision,
-            )
+        val swipeCommand = SwipeProfileCommand(
+            fromUserId = currentUserId,
+            toUserId = targetProfile.id,
+            decision = decision,
+        )
 
         scope.launch {
-            when (swipeProfileCommandHandler.invoke(swipeCommand)) {
+            when (val swipeResult = swipeProfileCommandHandler.invoke(swipeCommand)) {
                 is Result.Ok -> {
-                    when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
-                        is Result.Ok -> view.showProfile(result.value)
-                        is Result.Error -> view.showError("Interacción guardada, pero no se pudo cargar el siguiente perfil.")
+                    // Si el comando devuelve true, disparamos el evento de Match
+                    val isMatch = swipeResult.value
+                    if (isMatch && decision == SwipeType.LIKE) {
+                        onMatchFound?.invoke(targetProfile)
                     }
+                    loadNextProfile()
                 }
                 is Result.Error -> view.showError("Error al guardar la interacción.")
             }
+        }
+    }
+
+    private suspend fun loadNextProfile() {
+        when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+            is Result.Ok -> {
+                profile = result.value
+                view.showProfile(profile)
+            }
+            is Result.Error -> view.showError("No se pudo cargar el siguiente perfil.")
         }
     }
 }

@@ -114,6 +114,7 @@ fun ggMatchNavHost(navController: NavHostController) {
                             repository = AppContainer.profileRepository,
                             profileFilter = ProfileFilter(),
                             preferences = prefs,
+                            swipeRepository = AppContainer.swipeInteractionsRepository
                         )
                     }
                 swipeScreen(navigator = navigator)

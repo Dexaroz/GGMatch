@@ -10,8 +10,9 @@ class ProfileFilter(
         profiles: List<UserProfile>,
         preferences: MatchPreferences,
         currentUserId: String,
-    ): List<UserProfile> =
+        excludedIds: Set<String>,
+        ): List<UserProfile> =
         profiles.filter {
-            profileMatcher.matches(currentUserId, preferences, it)
+            profileMatcher.matches(currentUserId, preferences, it, excludedIds)
         }
 }
