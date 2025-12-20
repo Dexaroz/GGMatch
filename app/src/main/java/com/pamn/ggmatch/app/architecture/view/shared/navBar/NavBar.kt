@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pamn.ggmatch.app.architecture.control.navBar.NavPresenter
-import com.pamn.ggmatch.app.architecture.model.navigation.topNavItems
+import com.pamn.ggmatch.app.architecture.view.shared.navBar.components.topNavItems
 
 @Composable
 fun navBarHost(navController: NavHostController) {

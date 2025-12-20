@@ -33,6 +33,7 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
+import com.pamn.ggmatch.app.architecture.view.matchPreferences.MatchPreferencesTextVariables
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -55,6 +56,7 @@ fun preferencesView(
     ) {
         Spacer(Modifier.height(32.dp))
 
+        // Top bar
         Row(
             modifier =
                 Modifier
@@ -64,7 +66,8 @@ fun preferencesView(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.undo),
-                contentDescription = "Back",
+                // Cambio: BACK_DESCRIPTION
+                contentDescription = MatchPreferencesTextVariables.BACK_DESCRIPTION,
                 tint = Color.White,
                 modifier =
                     Modifier
@@ -75,7 +78,8 @@ fun preferencesView(
             Spacer(Modifier.width(12.dp))
 
             Text(
-                text = "Filter teammates",
+                // Cambio: FILTER_TEAMMATES_TITLE
+                text = MatchPreferencesTextVariables.FILTER_TEAMMATES_TITLE,
                 color = Color.White,
                 style = MaterialTheme.typography.headlineSmall,
             )
@@ -92,7 +96,8 @@ fun preferencesView(
         ) {
             // Languages
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Language", color = Color.White, fontSize = 18.sp)
+                // Cambio: LANGUAGE_TITLE
+                Text(MatchPreferencesTextVariables.LANGUAGE_TITLE, color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -111,7 +116,8 @@ fun preferencesView(
 
             // Roles
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Roles", color = Color.White, fontSize = 18.sp)
+                // Cambio: ROLES_TITLE
+                Text(MatchPreferencesTextVariables.ROLES_TITLE, color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -131,7 +137,8 @@ fun preferencesView(
 
             // Schedule
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Schedule", color = Color.White, fontSize = 18.sp)
+                // Cambio: SCHEDULE_TITLE
+                Text(MatchPreferencesTextVariables.SCHEDULE_TITLE, color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -150,7 +157,8 @@ fun preferencesView(
 
             // Playstyle
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Playstyle", color = Color.White, fontSize = 18.sp)
+                // Cambio: PLAYSTYLE_TITLE
+                Text(MatchPreferencesTextVariables.PLAYSTYLE_TITLE, color = Color.White, fontSize = 18.sp)
                 Spacer(Modifier.height(16.dp))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),

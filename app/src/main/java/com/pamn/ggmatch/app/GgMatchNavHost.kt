@@ -4,6 +4,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
@@ -11,10 +12,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.firestore.FirebaseFirestore
+import com.pamn.ggmatch.app.architecture.control.matching.DummyProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
-import com.pamn.ggmatch.app.architecture.model.profile.DummyProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.profile.DummyUserProfiles
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -24,6 +26,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
+import com.pamn.ggmatch.app.architecture.view.matches.view.profileListView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
 import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
@@ -65,34 +68,56 @@ fun ggMatchNavHost(navController: NavHostController) {
             )
         }
 
-        // HOME con preferencias reales
         composable(Router.HOME) {
-            // Estado para las preferencias del usuario
-            val currentUserPreferences = remember { androidx.compose.runtime.mutableStateOf<MatchPreferences?>(null) }
+            val currentUserPreferences = remember { mutableStateOf<MatchPreferences?>(null) }
 
-            // Cargar preferencias desde Firebase
             LaunchedEffect(Unit) {
-                when (val result = AppContainer.matchPreferencesRepository.get(AppContainer.currentUserId)) {
-                    is Result.Ok -> currentUserPreferences.value = result.value
+                val userId = AppContainer.currentUserId
+                val result = AppContainer.matchPreferencesRepository.get(userId)
+
+                when (result) {
+                    is Result.Ok -> {
+                        if (result.value != null) {
+                            // Caso A: El usuario ya tenía preferencias
+                            currentUserPreferences.value = result.value
+                        } else {
+                            // Caso B: El usuario es nuevo (result es Ok, pero el valor es null)
+                            val defaultPrefs =
+                                MatchPreferences.createNew(
+                                    userId = userId,
+                                    timeProvider = AppContainer.timeProvider,
+                                )
+                            currentUserPreferences.value = defaultPrefs
+                            AppContainer.matchPreferencesRepository.addOrUpdate(defaultPrefs)
+                        }
+                    }
                     is Result.Error -> {
-                        // manejar error según tu lógica, aquí solo logueamos
-                        println("Error cargando preferencias: ${result.error}")
+                        println("Error de red: ${result.error}")
                     }
                 }
             }
 
-            // Si las preferencias están cargadas, crear el navigator
-            currentUserPreferences.value?.let { prefs ->
-                val navigator = remember { DummyProfileNavigator(currentUserPreferences = prefs) }
+            val prefs = currentUserPreferences.value
+
+            if (prefs != null) {
+                val navigator =
+                    remember(prefs.id) {
+                        DummyProfileNavigator(currentUserPreferences = prefs)
+                    }
                 swipeScreen(navigator = navigator)
-            } ?: run {
-                // Mientras cargan, mostrar un placeholder/loading
+            } else {
                 loadingScreen()
             }
         }
 
-        // CHAT y PROFILE mockups
-        composable(Router.CHAT) { testView(Color.Black) }
+        // MATCHES y PROFILE mockups
+        composable(Router.MATCHES) {
+            profileListView(
+                profiles = DummyUserProfiles.all,
+                onBack = { navController.popBackStack() },
+            )
+        }
+
         composable(Router.PROFILE) { testView(Color.White) }
 
         // PREFERENCES
