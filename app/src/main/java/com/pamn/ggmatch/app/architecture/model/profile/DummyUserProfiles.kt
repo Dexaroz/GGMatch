@@ -16,6 +16,7 @@ object DummyUserProfiles {
             UserProfile.fromPersistence(
                 id = UserId("dummy_1"),
                 username = Username("dumy_1"),
+                "https://www.facebook.com/viadeli25/",
                 riotAccount =
                     RiotAccount(
                         gameName = "GGMate",
@@ -36,6 +37,7 @@ object DummyUserProfiles {
             UserProfile.fromPersistence(
                 id = UserId("dummy_2"),
                 username = Username("dumy_2"),
+                "https://www.facebook.com/viadeli25/",
                 riotAccount =
                     RiotAccount(
                         gameName = "TopKing",
@@ -56,6 +58,7 @@ object DummyUserProfiles {
             UserProfile.fromPersistence(
                 id = UserId("dummy_3"),
                 username = Username("dummy_3"),
+                "https://www.facebook.com/viadeli25/",
                 riotAccount =
                     RiotAccount(
                         gameName = "BotCarry",

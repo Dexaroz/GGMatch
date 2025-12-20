@@ -36,7 +36,9 @@ import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
 import com.pamn.ggmatch.app.architecture.view.matches.view.matchesScreen
+import com.pamn.ggmatch.app.architecture.view.profile.view.profileEditView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
+import com.pamn.ggmatch.app.architecture.view.testScreen.RiotVerifyTestView
 import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
 @Composable
@@ -138,6 +140,12 @@ fun ggMatchNavHost(navController: NavHostController) {
                 allLanguages = Language.entries.toList(),
                 allSchedules = PlaySchedule.entries.toList(),
                 allPlaystyles = Playstyle.entries.toList(),
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Router.PROFILE) {
+            profileEditView(
                 onBack = { navController.popBackStack() },
             )
         }

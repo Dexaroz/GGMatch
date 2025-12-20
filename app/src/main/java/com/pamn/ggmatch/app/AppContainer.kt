@@ -10,6 +10,7 @@ import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterU
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.EnsureUserProfileExistsCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
+import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.VerifyRiotAccountCommandHandler
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
@@ -26,6 +27,8 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
 import com.pamn.ggmatch.app.controllers.MatchPreferencesController
 import com.pamn.ggmatch.app.controllers.ProfileController
+import com.pamn.ggmatch.app.riotApi.OkHttpRiotApiClient
+import okhttp3.OkHttpClient
 
 object AppContainer {
     private var initialized = false
@@ -83,6 +86,19 @@ object AppContainer {
         userRepository = FirebaseUserRepository(firestore)
         profileRepository = FirebaseProfileRepository(firestore)
 
+        val riotApiClient =
+            OkHttpRiotApiClient(
+                http = OkHttpClient(),
+                apiKey = "RGAPI-4c96b4f9-e170-4363-aa27-c913f7e8bd49",
+            )
+
+        val verifyRiotAccountHandler =
+            VerifyRiotAccountCommandHandler(
+                riotApi = riotApiClient,
+                profileRepository = profileRepository,
+                timeProvider = timeProvider,
+            )
+
         authRepository =
             FirebaseAuthRepository(
                 auth = firebaseAuth,
@@ -121,6 +137,7 @@ object AppContainer {
             ProfileController(
                 ensureProfileExists = ensureUserProfileExistsHandler,
                 upsertUserProfile = upsertUserProfileHandler,
+                verifyRiotAccount = verifyRiotAccountHandler,
             )
 
         authController =

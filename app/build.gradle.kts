@@ -43,8 +43,11 @@ android {
         jvmTarget = "17"
     }
 
-    buildFeatures {
-        compose = true
+    android {
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
     }
 }
 
@@ -80,6 +83,10 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended")
 
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
     implementation(libs.kotlinx.coroutines.play.services)
 }
 
@@ -93,5 +100,18 @@ ktlint {
     }
     filter {
         exclude("**/generated/**")
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.buildConfigFields?.put(
+            "RIOT_API_KEY",
+            com.android.build.api.variant.BuildConfigField(
+                "String",
+                "\"RGAPI-4c96b4f9-e170-4363-aa27-c913f7e8bd49\"",
+                "Riot API Key"
+            )
+        )
     }
 }

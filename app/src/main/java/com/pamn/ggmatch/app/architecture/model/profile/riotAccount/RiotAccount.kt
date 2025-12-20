@@ -6,6 +6,8 @@ import kotlinx.datetime.Instant
 data class RiotAccount(
     val gameName: String,
     val tagLine: String,
+    val puuid: String? = null,
+    val soloq: SoloqStats? = null,
     val verificationStatus: RiotAccountStatus = RiotAccountStatus.UNVERIFIED,
     val lastVerifiedAt: Instant? = null,
 ) : ValueObject {
@@ -20,8 +22,10 @@ data class RiotAccount(
         require(trimmedTag.length <= 10) { "Riot tag must be at most 10 characters" }
     }
 
-    fun markVerified(at: Instant): RiotAccount =
+    fun markVerified(at: Instant, puuid: String, soloq: SoloqStats?): RiotAccount =
         copy(
+            puuid = puuid,
+            soloq = soloq,
             verificationStatus = RiotAccountStatus.VERIFIED,
             lastVerifiedAt = at,
         )

@@ -4,10 +4,12 @@ import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 
 class MatchesPresenter(
     private val repository: ProfileRepository,
 ) : MatchesContract.Presenter {
+
     private var view: MatchesContract.View? = null
 
     override fun attachView(view: MatchesContract.View) {
@@ -21,14 +23,13 @@ class MatchesPresenter(
     override fun loadProfiles() {
         CoroutineScope(Dispatchers.IO).launch {
             when (val result = repository.getAll()) {
-                is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok -> {
+                is Result.Ok -> {
                     val profiles = result.value
                     CoroutineScope(Dispatchers.Main).launch {
                         view?.showProfiles(profiles)
                     }
                 }
-
-                is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Error -> {
+                is Result.Error -> {
                     CoroutineScope(Dispatchers.Main).launch {
                         view?.showError(result.error.message ?: "Failed to load profiles")
                     }
