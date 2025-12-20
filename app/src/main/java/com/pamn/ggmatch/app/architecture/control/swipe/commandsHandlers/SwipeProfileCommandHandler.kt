@@ -15,14 +15,14 @@ class SwipeProfileCommandHandler(
     private val repository: SwipeHistoryRepository,
     private val clock: Clock = Clock.System,
 ) : CommandHandler<SwipeProfileCommand, Boolean> {
-
     override suspend fun invoke(command: SwipeProfileCommand): Result<Boolean, AppError> {
         val now: Instant = clock.now()
 
-        val myHistory = when (val getResult = repository.get(command.fromUserId)) {
-            is Result.Ok -> getResult.value ?: SwipeHistory.create(command.fromUserId, now)
-            is Result.Error -> return Result.Error(getResult.error)
-        }
+        val myHistory =
+            when (val getResult = repository.get(command.fromUserId)) {
+                is Result.Ok -> getResult.value ?: SwipeHistory.create(command.fromUserId, now)
+                is Result.Error -> return Result.Error(getResult.error)
+            }
 
         var isMatch = false
         if (command.decision == SwipeType.LIKE) {
@@ -35,13 +35,14 @@ class SwipeProfileCommandHandler(
             }
         }
 
-        val newSwipe = Swipe(
-            fromUserId = command.fromUserId,
-            toUserId = command.toUserId,
-            type = command.decision,
-            createdAt = now,
-            updatedAt = now,
-        )
+        val newSwipe =
+            Swipe(
+                fromUserId = command.fromUserId,
+                toUserId = command.toUserId,
+                type = command.decision,
+                createdAt = now,
+                updatedAt = now,
+            )
 
         val updatedProfile = myHistory.add(newSwipe)
 

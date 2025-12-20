@@ -21,7 +21,7 @@ class ProfileMatcher {
         if (riotAccount.verificationStatus != RiotAccountStatus.VERIFIED) {
             return false
         }
-        */
+         */
 
         val preferences = candidate.preferences
         val currentPrefs = currentUserPreferences.preferences

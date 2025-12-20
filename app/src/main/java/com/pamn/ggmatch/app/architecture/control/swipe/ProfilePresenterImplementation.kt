@@ -9,6 +9,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
 class ProfilePresenterImplementation(
     private val view: ProfileView,
     private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Boolean>,
@@ -42,11 +43,12 @@ class ProfilePresenterImplementation(
         targetProfile: UserProfile,
         decision: SwipeType,
     ) {
-        val swipeCommand = SwipeProfileCommand(
-            fromUserId = currentUserId,
-            toUserId = targetProfile.id,
-            decision = decision,
-        )
+        val swipeCommand =
+            SwipeProfileCommand(
+                fromUserId = currentUserId,
+                toUserId = targetProfile.id,
+                decision = decision,
+            )
 
         scope.launch {
             when (val swipeResult = swipeProfileCommandHandler.invoke(swipeCommand)) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
@@ -32,7 +33,6 @@ import com.pamn.ggmatch.app.architecture.view.matchFound.view.matchFoundView
 import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_MESSAGE
 import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_SUGGESTION
 import com.pamn.ggmatch.app.architecture.view.swipe.view.swipeView
-import com.pamn.ggmatch.R
 
 class ComposeProfileViewImplementation(
     initialProfile: UserProfile?,
@@ -59,6 +59,7 @@ class ComposeProfileViewImplementation(
         errorState.value = message
     }
 }
+
 @Composable
 fun swipeScreen(
     navigator: ProfileNavigator,
@@ -93,19 +94,20 @@ fun swipeScreen(
     val nextProfileCommandHandler = remember { NextProfileCommandHandler(navigator) }
     val swipeProfileCommandHandler = remember { SwipeProfileCommandHandler(repository = swipeInteractionsRepository) }
 
-    val presenter = remember {
-        ProfilePresenterImplementation(
-            view = view,
-            nextProfileCommandHandler = nextProfileCommandHandler,
-            swipeProfileCommandHandler = swipeProfileCommandHandler,
-            scope = scope,
-            currentProfile = initialProfile,
-            currentUserId = AppContainer.currentUserId,
-        ).apply {
-            init()
-            onMatchFound = { profile -> matchedProfile = profile }
+    val presenter =
+        remember {
+            ProfilePresenterImplementation(
+                view = view,
+                nextProfileCommandHandler = nextProfileCommandHandler,
+                swipeProfileCommandHandler = swipeProfileCommandHandler,
+                scope = scope,
+                currentProfile = initialProfile,
+                currentUserId = AppContainer.currentUserId,
+            ).apply {
+                init()
+                onMatchFound = { profile -> matchedProfile = profile }
+            }
         }
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when {
@@ -133,7 +135,7 @@ fun swipeScreen(
                 characterImageId = R.drawable.thresh,
                 onGoToMatches = {
                     matchedProfile = null
-                }
+                },
             )
         }
     }

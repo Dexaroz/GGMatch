@@ -11,7 +11,7 @@ class ProfileFilter(
         preferences: MatchPreferences,
         currentUserId: String,
         excludedIds: Set<String>,
-        ): List<UserProfile> =
+    ): List<UserProfile> =
         profiles.filter {
             profileMatcher.matches(currentUserId, preferences, it, excludedIds)
         }

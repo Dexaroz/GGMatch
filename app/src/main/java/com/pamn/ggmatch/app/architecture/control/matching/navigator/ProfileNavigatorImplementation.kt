@@ -27,23 +27,25 @@ class ProfileNavigatorImplementation(
 
         val myHistoryResult = swipeRepository.get(preferences.id)
 
-        val excludedIds = when (myHistoryResult) {
-            is Result.Ok -> {
-                myHistoryResult.value?.items
-                    ?.filter { it.value.type == SwipeType.LIKE }
-                    ?.keys
-                    ?.map { it.value }
-                    ?.toSet() ?: emptySet()
+        val excludedIds =
+            when (myHistoryResult) {
+                is Result.Ok -> {
+                    myHistoryResult.value?.items
+                        ?.filter { it.value.type == SwipeType.LIKE }
+                        ?.keys
+                        ?.map { it.value }
+                        ?.toSet() ?: emptySet()
+                }
+                is Result.Error -> emptySet()
             }
-            is Result.Error -> emptySet()
-        }
 
-        profiles = profileFilter.filter(
-            profiles = allProfiles,
-            preferences = preferences,
-            currentUserId = preferences.id.value,
-            excludedIds = excludedIds
-        )
+        profiles =
+            profileFilter.filter(
+                profiles = allProfiles,
+                preferences = preferences,
+                currentUserId = preferences.id.value,
+                excludedIds = excludedIds,
+            )
 
         currentIndex = 0
         return Result.Ok(Unit)
