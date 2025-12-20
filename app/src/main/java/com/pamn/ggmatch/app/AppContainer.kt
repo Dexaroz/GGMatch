@@ -8,6 +8,8 @@ import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUser
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginWithGoogleCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
+import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.EnsureUserProfileExistsCommandHandler
+import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
@@ -23,6 +25,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
 import com.pamn.ggmatch.app.controllers.MatchPreferencesController
+import com.pamn.ggmatch.app.controllers.ProfileController
 
 object AppContainer {
     private var initialized = false
@@ -60,6 +63,9 @@ object AppContainer {
     lateinit var swipeInteractionsRepository: SwipeHistoryRepository
         private set
 
+    lateinit var profileController: ProfileController
+        private set
+
     val currentUserId: UserId
         get() =
             firebaseAuth.currentUser?.uid?.let(::UserId)
@@ -74,10 +80,8 @@ object AppContainer {
         firestore = FirebaseFirestore.getInstance()
         firebaseAuth = FirebaseAuth.getInstance()
 
-        userRepository =
-            FirebaseUserRepository(
-                firestore = firestore,
-            )
+        userRepository = FirebaseUserRepository(firestore)
+        profileRepository = FirebaseProfileRepository(firestore)
 
         authRepository =
             FirebaseAuthRepository(
@@ -86,20 +90,9 @@ object AppContainer {
                 timeProvider = timeProvider,
             )
 
-        profileRepository =
-            FirebaseProfileRepository(
-                firestore = firestore,
-            )
+        swipeInteractionsRepository = FirebaseSwipeHistoryRepository(firestore)
 
-        swipeInteractionsRepository =
-            FirebaseSwipeHistoryRepository(
-                firestore = firestore,
-            )
-
-        matchPreferencesRepository =
-            FirebaseMatchPreferencesRepository(
-                firestore = firestore,
-            )
+        matchPreferencesRepository = FirebaseMatchPreferencesRepository(firestore)
 
         upsertMatchPreferencesHandler =
             UpsertMatchPreferencesCommandHandler(
@@ -112,13 +105,32 @@ object AppContainer {
                 upsertMatchPreferences = upsertMatchPreferencesHandler,
             )
 
+        val ensureUserProfileExistsHandler =
+            EnsureUserProfileExistsCommandHandler(
+                profileRepository = profileRepository,
+                timeProvider = timeProvider,
+            )
+
+        val upsertUserProfileHandler =
+            UpsertUserProfileCommandHandler(
+                profileRepository = profileRepository,
+                timeProvider = timeProvider,
+            )
+
+        profileController =
+            ProfileController(
+                ensureProfileExists = ensureUserProfileExistsHandler,
+                upsertUserProfile = upsertUserProfileHandler,
+            )
+
         authController =
             AuthController(
-                registerUser = RegisterUserCommandHandler(authRepository),
+                registerUser = RegisterUserCommandHandler(authRepository, ensureUserProfileExistsHandler),
                 loginUser = LoginUserCommandHandler(authRepository),
                 loginWithGoogle = LoginWithGoogleCommandHandler(authRepository),
             )
 
         initialized = true
     }
+
 }
