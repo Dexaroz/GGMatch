@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.matching.DummyProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigatorImplementation
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
@@ -109,7 +110,11 @@ fun ggMatchNavHost(navController: NavHostController) {
             if (prefs != null) {
                 val navigator =
                     remember(prefs.id) {
-                        DummyProfileNavigator(currentUserPreferences = prefs)
+                        ProfileNavigatorImplementation(
+                            repository = AppContainer.profileRepository, // Asegúrate de tener esto en tu AppContainer
+                            profileFilter = com.pamn.ggmatch.app.architecture.control.matching.ProfileFilter(),
+                            preferences = prefs
+                        )
                     }
                 swipeScreen(navigator = navigator)
             } else {

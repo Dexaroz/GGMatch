@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,42 +61,70 @@ class ComposeProfileViewImplementation(
 
 @Composable
 fun swipeScreen(
-    navigator: ProfileNavigator,
+    navigator: ProfileNavigator, // Ahora pasamos la implementación real
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
 ) {
     val scope = rememberCoroutineScope()
+
+    // Estado para controlar si el repositorio ya terminó de cargar
+    var isLoading by remember { mutableStateOf(true) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+
+    // 1. Efecto para cargar los perfiles al iniciar la pantalla
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val result = navigator.load()
+        when (result) {
+            is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok -> {
+                isLoading = false
+            }
+            is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Error -> {
+                loadError = "No se pudieron cargar los perfiles"
+                isLoading = false
+            }
+        }
+    }
+
+    if (isLoading) {
+        // Puedes crear un componente de Loading más elaborado
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            androidx.compose.material3.CircularProgressIndicator(color = Color.White)
+        }
+        return
+    }
+
+    // Una vez cargado, obtenemos el primer perfil real
     val initialProfile = navigator.current()
 
-    val view =
-        remember {
-            ComposeProfileViewImplementation(initialProfile)
-        }
+    val view = remember {
+        ComposeProfileViewImplementation(initialProfile)
+    }
 
-    val nextProfileCommandHandler =
-        remember {
-            NextProfileCommandHandler(navigator)
-        }
+    val nextProfileCommandHandler = remember {
+        NextProfileCommandHandler(navigator)
+    }
 
-    val swipeProfileCommandHandler =
-        remember {
-            SwipeProfileCommandHandler(
-                repository = swipeInteractionsRepository,
-            )
-        }
+    val swipeProfileCommandHandler = remember {
+        SwipeProfileCommandHandler(repository = swipeInteractionsRepository)
+    }
 
-    val presenter =
-        remember {
-            ProfilePresenterImplementation(
-                view = view,
-                nextProfileCommandHandler = nextProfileCommandHandler,
-                swipeProfileCommandHandler = swipeProfileCommandHandler,
-                scope = scope,
-                currentProfile = initialProfile,
-                currentUserId = currentUserId,
-            ).also { it.init() }
-        }
+    val presenter = remember {
+        ProfilePresenterImplementation(
+            view = view,
+            nextProfileCommandHandler = nextProfileCommandHandler,
+            swipeProfileCommandHandler = swipeProfileCommandHandler,
+            scope = scope,
+            currentProfile = initialProfile,
+            currentUserId = AppContainer.currentUserId,
+        ).also { it.init() }
+    }
 
+    // 2. Lógica de renderizado (se mantiene similar)
     when {
+        loadError != null -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(loadError!!, color = Color.Red)
+            }
+        }
         view.isDeckEmptyState.value -> {
             emptyProfilesView()
         }
@@ -107,12 +137,6 @@ fun swipeScreen(
                 errorMessage = view.errorState.value,
             )
         }
-        view.errorState.value != null -> {
-            Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
-                Text("ERROR: ${view.errorState.value}", color = Color.Red, textAlign = TextAlign.Center)
-            }
-        }
-        else -> {}
     }
 }
 

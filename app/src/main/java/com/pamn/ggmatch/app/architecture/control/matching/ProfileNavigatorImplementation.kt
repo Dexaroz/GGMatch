@@ -14,7 +14,7 @@ class ProfileNavigatorImplementation(
     private var profiles: List<UserProfile> = emptyList()
     private var currentIndex = 0
 
-    suspend fun load(): Result<Unit, AppError> =
+    override suspend fun load(): Result<Unit, AppError> =
         when (val result = repository.getAll()) {
             is Result.Error -> result
             is Result.Ok -> {

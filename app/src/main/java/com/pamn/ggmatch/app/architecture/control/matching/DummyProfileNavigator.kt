@@ -12,7 +12,7 @@ class DummyProfileNavigator(
     private val profiles: List<UserProfile> =
         DummyUserProfiles.all
 
-    private val filteredProfiles: List<UserProfile> =
+    private var filteredProfiles: List<UserProfile> =
         profileFilter.filter(profiles, currentUserPreferences)
 
     private var currentIndex = 0
@@ -25,4 +25,15 @@ class DummyProfileNavigator(
         return filteredProfiles.getOrNull(nextIndex)
             ?.also { currentIndex = nextIndex }
     }
+    override suspend fun load(): com.pamn.ggmatch.app.architecture.sharedKernel.result.Result<Unit, com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError> {
+        filteredProfiles = profileFilter.filter(
+            profiles = DummyUserProfiles.all,
+            preferences = currentUserPreferences
+        )
+        currentIndex = 0
+
+        // Devolvemos éxito manual
+        return com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok(Unit)
+    }
+
 }
