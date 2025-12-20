@@ -1,32 +1,25 @@
 package com.pamn.ggmatch.app.architecture.view.auth.view
 
+import android.app.Activity
 import android.util.Patterns
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
-import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
-import com.pamn.ggmatch.app.architecture.model.user.Email
-import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
+import com.pamn.ggmatch.app.architecture.control.auth.commands.LoginUserCommand
+import com.pamn.ggmatch.app.architecture.control.auth.commands.LoginWithGoogleCommand
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
 import com.pamn.ggmatch.app.architecture.view.auth.LoginTextVariables
@@ -45,7 +38,7 @@ fun loginView(
     uiTexts: LoginTextVariables = LoginTextVariables(),
     headerImageRes: Int = R.drawable.login_header,
     logoText: String = "GGMATCH",
-    authRepository: AuthRepository = AppContainer.authRepository,
+    authController: com.pamn.ggmatch.app.controllers.AuthController = AppContainer.authController,
     onLoginSuccess: () -> Unit,
     onGoToRegister: () -> Unit,
 ) {
@@ -55,16 +48,60 @@ fun loginView(
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val webClientId = context.getString(R.string.default_web_client_id)
+
+    val gso =
+        remember(webClientId) {
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(webClientId)
+                .build()
+        }
+
+    val googleClient = remember(gso) { GoogleSignIn.getClient(context, gso) }
+
+    val googleLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
+
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken
+
+                if (idToken.isNullOrBlank()) {
+                    errorMessage = uiTexts.genericErrorText
+                    return@rememberLauncherForActivityResult
+                }
+
+                scope.launch {
+                    isLoading = true
+                    errorMessage = null
+
+                    when (val res = authController.loginWithGoogle(LoginWithGoogleCommand(idToken))) {
+                        is Result.Ok -> {
+                            isLoading = false
+                            onLoginSuccess()
+                        }
+                        is Result.Error -> {
+                            isLoading = false
+                            errorMessage = uiTexts.genericErrorText
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = uiTexts.genericErrorText
+            }
+        }
 
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding(),
+            modifier = Modifier.fillMaxSize().statusBarsPadding(),
         ) {
             ggAuthHeader(
                 imageRes = headerImageRes,
@@ -74,10 +111,7 @@ fun loginView(
             Spacer(modifier = Modifier.height(AuthDimens.titleTopMargin))
 
             Column(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = SharedDimens.screenHorizontalPadding),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = SharedDimens.screenHorizontalPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 ggAuthTitle(text = uiTexts.title)
@@ -122,15 +156,12 @@ fun loginView(
                 ggPrimaryGradientButton(
                     text = if (isLoading) uiTexts.loadingText else uiTexts.buttonText,
                     enabled = !isLoading,
-                    modifier =
-                        Modifier
-                            .width(SharedDimens.buttonWidth),
+                    modifier = Modifier.width(SharedDimens.buttonWidth),
                     onClick = {
                         if (emailText.isBlank() || password.isBlank()) {
                             errorMessage = uiTexts.emptyFieldsErrorText
                             return@ggPrimaryGradientButton
                         }
-
                         if (!Patterns.EMAIL_ADDRESS.matcher(emailText.trim()).matches()) {
                             errorMessage = uiTexts.invalidEmailErrorText
                             return@ggPrimaryGradientButton
@@ -140,30 +171,34 @@ fun loginView(
                             isLoading = true
                             errorMessage = null
 
-                            try {
-                                val emailValue = Email(emailText.trim())
+                            val cmd = LoginUserCommand(email = emailText.trim(), password = password)
 
-                                when (val result = authRepository.login(emailValue, password)) {
-                                    is Result.Ok -> {
-                                        isLoading = false
-                                        onLoginSuccess()
-                                    }
-
-                                    is Result.Error -> {
-                                        isLoading = false
-                                        errorMessage = result.toUserMessage(uiTexts)
-                                    }
+                            when (val result = authController.loginUser(cmd)) {
+                                is Result.Ok -> {
+                                    isLoading = false
+                                    onLoginSuccess()
                                 }
-                            } catch (e: IllegalArgumentException) {
-                                isLoading = false
-                                errorMessage = uiTexts.invalidEmailErrorText
-                            } catch (e: Exception) {
-                                isLoading = false
-                                errorMessage = uiTexts.genericErrorText
+                                is Result.Error -> {
+                                    isLoading = false
+                                    errorMessage = uiTexts.genericErrorText
+                                }
                             }
                         }
                     },
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = {
+                        errorMessage = null
+                        googleLauncher.launch(googleClient.signInIntent)
+                    },
+                    enabled = !isLoading,
+                    modifier = Modifier.width(SharedDimens.buttonWidth),
+                ) {
+                    Text(text = uiTexts.googleButtonText)
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -176,5 +211,3 @@ fun loginView(
         }
     }
 }
-
-private fun Result.Error<AppError>.toUserMessage(uiTexts: LoginTextVariables): String = uiTexts.genericErrorText

@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.GoogleAuthProvider
 import com.pamn.ggmatch.app.architecture.model.user.Email
 import com.pamn.ggmatch.app.architecture.model.user.User
 import com.pamn.ggmatch.app.architecture.model.user.UserId
@@ -90,6 +91,47 @@ class FirebaseAuthRepository(
             Result.Error(AppError.Unexpected("Invalid credentials", e))
         } catch (e: Exception) {
             Result.Error(AppError.Unexpected("Failed to login", e))
+        }
+
+    override suspend fun loginWithGoogle(idToken: String): Result<User, AppError> =
+        try {
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            val authResult = auth.signInWithCredential(credential).await()
+
+            val firebaseUser =
+                authResult.user
+                    ?: return Result.Error(AppError.Unexpected("Google sign-in succeeded but Firebase user is null"))
+
+            val emailValue =
+                firebaseUser.email
+                    ?: return Result.Error(AppError.Unexpected("Google user has no email (unexpected)"))
+
+            val userId = UserId(firebaseUser.uid)
+            val email = Email(emailValue)
+
+            when (val userResult = userRepository.get(userId)) {
+                is Result.Error -> userResult
+                is Result.Ok -> {
+                    val existing = userResult.value
+                    if (existing != null) {
+                        Result.Ok(existing)
+                    } else {
+                        val user =
+                            User.registerWithGoogle(
+                                id = userId,
+                                email = email,
+                                timeProvider = timeProvider,
+                            )
+
+                        when (val save = userRepository.add(user)) {
+                            is Result.Ok -> Result.Ok(user)
+                            is Result.Error -> save
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Result.Error(AppError.Unexpected("Failed to login with Google", e))
         }
 
     override suspend fun logout(): Result<Unit, AppError> =

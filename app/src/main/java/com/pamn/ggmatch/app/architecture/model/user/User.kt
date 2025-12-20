@@ -46,6 +46,25 @@ class User private constructor(
                 createdAt = createdAt,
                 updatedAt = updatedAt,
             )
+
+        fun registerWithGoogle(
+            id: UserId,
+            email: Email,
+            timeProvider: TimeProvider,
+        ): User {
+            val now = timeProvider.now()
+
+            val user = User(
+                id = id,
+                email = email,
+                status = UserStatus.ACTIVE,
+                createdAt = now,
+                updatedAt = now,
+            )
+
+            user.registerUserRegisteredEvent()
+            return user
+        }
     }
 
     fun confirmEmail(timeProvider: TimeProvider) {
