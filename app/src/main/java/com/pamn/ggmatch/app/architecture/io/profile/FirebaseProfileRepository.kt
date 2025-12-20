@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.io.FirebaseRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.profile.Username
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -20,7 +21,7 @@ class FirebaseProfileRepository(
     firestore: FirebaseFirestore,
 ) : FirebaseRepository<UserId, UserProfile>(
         firestore = firestore,
-        collectionName = "users-profiles",
+        collectionName = "profiles",
     ),
     ProfileRepository {
     override fun getId(entity: UserProfile): UserId = entity.id
@@ -33,6 +34,7 @@ class FirebaseProfileRepository(
         val riot = entity.riotAccount
 
         return mapOf(
+            "username" to entity.username?.value,
             "riotGameName" to riot?.gameName,
             "riotTagLine" to riot?.tagLine,
             "riotVerificationStatus" to riot?.verificationStatus?.name,
@@ -65,6 +67,9 @@ class FirebaseProfileRepository(
         val lastVerifiedAtMs = doc.getLong("riotLastVerifiedAtEpochMs")
         val lastVerifiedAt =
             lastVerifiedAtMs?.let { ms -> Instant.fromEpochMilliseconds(ms) }
+
+        val usernameRaw = doc.getString("username")
+        val username = usernameRaw?.takeIf { it.isNotBlank() }?.let { Username(it) }
 
         val riotAccount =
             if (!riotGameName.isNullOrBlank() && !riotTagLine.isNullOrBlank()) {
@@ -131,11 +136,9 @@ class FirebaseProfileRepository(
 
         return UserProfile.fromPersistence(
             id = id,
+            username = username,
             riotAccount = riotAccount,
-            favoriteRoles = preferences.favoriteRoles,
-            languages = preferences.languages,
-            playSchedule = preferences.playSchedule,
-            playstyle = preferences.playstyle,
+            preferences = preferences,
             createdAt = Instant.fromEpochMilliseconds(createdAtMs),
             updatedAt = Instant.fromEpochMilliseconds(updatedAtMs),
         )
