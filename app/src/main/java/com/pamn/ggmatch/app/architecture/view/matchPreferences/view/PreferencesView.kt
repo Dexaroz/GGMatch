@@ -35,6 +35,16 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.MatchPreferencesTextVariables
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -47,63 +57,68 @@ fun preferencesView(
     presenter: MatchPreferencesContract.Presenter,
     onBack: () -> Unit,
 ) {
-    Column(
-        modifier =
-            Modifier
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF212121))
-                .padding(horizontal = 24.dp),
-    ) {
-        Spacer(Modifier.height(32.dp))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color(0xFF1A1A1A), Color(0xFF322E3D), Color(0xFF1A1A1A))
+                    )
+                )
+        )
+        // Imagen decorativa con desenfoque (opcional para el look de la imagen)
+        Image(
+            painter = painterResource(id = R.drawable.twisted), // Cambia por uno real
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize().blur(40.dp).alpha(0.4f)
+        )
 
-        // Top bar
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.undo),
-                // Cambio: BACK_DESCRIPTION
-                contentDescription = MatchPreferencesTextVariables.BACK_DESCRIPTION,
-                tint = Color.White,
-                modifier =
-                    Modifier
-                        .size(28.dp)
-                        .clickable { onBack() },
-            )
-
-            Spacer(Modifier.width(12.dp))
-
-            Text(
-                // Cambio: FILTER_TEAMMATES_TITLE
-                text = MatchPreferencesTextVariables.FILTER_TEAMMATES_TITLE,
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        }
-
+        // --- 2. CONTENIDO PRINCIPAL ---
         Column(
-            modifier =
-                Modifier
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp),
+        ) {
+            Spacer(Modifier.height(48.dp))
+
+            // Cabecera
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.undo),
+                    contentDescription = MatchPreferencesTextVariables.BACK_DESCRIPTION,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp).clickable { onBack() },
+                )
+                Spacer(Modifier.width(16.dp))
+                Column {
+                    Text(
+                        text = MatchPreferencesTextVariables.FILTER_TEAMMATES_TITLE,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = MatchPreferencesTextVariables.FILTER_TEAMMATES_DESCRIPTION,
+                        color = Color.White.copy(alpha = 0.7f),
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(top = 20.dp, bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Languages
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Cambio: LANGUAGE_TITLE
-                Text(MatchPreferencesTextVariables.LANGUAGE_TITLE, color = Color.White, fontSize = 18.sp)
-                Spacer(Modifier.height(16.dp))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
+                    .padding(vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                // Secciones con diseño de "Tarjeta"
+                PreferenceSection(MatchPreferencesTextVariables.LANGUAGE_TITLE) {
                     allLanguages.forEach { lang ->
                         matchPreferenceChip(
                             label = lang.name,
@@ -112,39 +127,18 @@ fun preferencesView(
                         )
                     }
                 }
-            }
 
-            // Roles
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Cambio: ROLES_TITLE
-                Text(MatchPreferencesTextVariables.ROLES_TITLE, color = Color.White, fontSize = 18.sp)
-                Spacer(Modifier.height(16.dp))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
+                PreferenceSection(MatchPreferencesTextVariables.ROLES_TITLE) {
                     allRoles.forEach { role ->
-                        val isSelected = role in uiState.roles
                         matchPreferenceChip(
                             label = role.name,
-                            selected = isSelected,
+                            selected = role in uiState.roles,
                             onClick = { presenter.toggleRole(role) },
                         )
                     }
                 }
-            }
 
-            // Schedule
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Cambio: SCHEDULE_TITLE
-                Text(MatchPreferencesTextVariables.SCHEDULE_TITLE, color = Color.White, fontSize = 18.sp)
-                Spacer(Modifier.height(16.dp))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
+                PreferenceSection(MatchPreferencesTextVariables.SCHEDULE_TITLE) {
                     allSchedules.forEach { schedule ->
                         matchPreferenceChip(
                             label = schedule.name,
@@ -153,18 +147,8 @@ fun preferencesView(
                         )
                     }
                 }
-            }
 
-            // Playstyle
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Cambio: PLAYSTYLE_TITLE
-                Text(MatchPreferencesTextVariables.PLAYSTYLE_TITLE, color = Color.White, fontSize = 18.sp)
-                Spacer(Modifier.height(16.dp))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
+                PreferenceSection(MatchPreferencesTextVariables.PLAYSTYLE_TITLE) {
                     allPlaystyles.forEach { style ->
                         matchPreferenceChip(
                             label = style.name,
@@ -173,7 +157,45 @@ fun preferencesView(
                         )
                     }
                 }
+
+                Spacer(Modifier.height(40.dp))
             }
+        }
+    }
+}
+
+// --- 3. COMPONENTE DE SECCIÓN (La "Cajita" translúcida) ---
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun PreferenceSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color.White.copy(alpha = 0.08f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) {
+        Text(
+            text = title,
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(bottom = 16.dp) // Un poco más de espacio inferior
+        )
+
+        // El cambio clave está en horizontalArrangement
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            content()
         }
     }
 }

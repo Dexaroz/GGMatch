@@ -29,56 +29,87 @@ import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.BACK_DESCRIPTION
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.MATCHES_TITLE
 import com.pamn.ggmatch.app.architecture.view.matches.components.profileCardCompact
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun profileListView(
     profiles: List<UserProfile>,
     onBack: () -> Unit,
 ) {
-    Column(
-        modifier =
-            Modifier
+    Box(modifier = Modifier.fillMaxSize()) {
+        // --- 1. FONDO COHERENTE ---
+        Box(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF121212))
-                .padding(horizontal = 24.dp),
-    ) {
-        Spacer(modifier = Modifier.height(32.dp))
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color(0xFF1A1A1A), Color(0xFF322E3D), Color(0xFF1A1A1A))
+                    )
+                )
+        )
 
-        Row(
-            modifier =
-                Modifier
+        Image(
+            painter = painterResource(id = R.drawable.twisted), // Imagen decorativa
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(40.dp)
+                .alpha(0.4f)
+        )
+
+        // --- 2. CONTENIDO PRINCIPAL ---
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+        ) {
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Cabecera
+            Row(
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.undo),
-                // Cambio: BACK_DESCRIPTION
-                contentDescription = BACK_DESCRIPTION,
-                tint = Color.White,
-                modifier =
-                    Modifier
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.undo),
+                    contentDescription = BACK_DESCRIPTION,
+                    tint = Color.White,
+                    modifier = Modifier
                         .size(28.dp)
                         .clickable { onBack() },
-            )
+                )
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
-            Text(
-                // Cambio: MATCHES_TITLE
-                text = MATCHES_TITLE,
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-            )
-        }
+                Text(
+                    text = MATCHES_TITLE,
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+            }
 
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            items(profiles) { profile ->
-                profileCardCompact(profile = profile)
+            // Lista de perfiles
+            LazyColumn(
+                contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp), // Un poco más de espacio entre tarjetas
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(profiles) { profile ->
+                    // Sugerencia: Envuelve el card en un Box con transparencia si quieres el look Glassmorphism
+                    profileCardCompact(profile = profile)
+                }
             }
         }
     }
