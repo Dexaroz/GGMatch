@@ -21,8 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.app.AppContainer
-import com.pamn.ggmatch.app.AppContainer.currentUserId
-import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler

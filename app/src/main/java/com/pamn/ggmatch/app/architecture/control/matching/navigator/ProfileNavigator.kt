@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.control.matching
+package com.pamn.ggmatch.app.architecture.control.matching.navigator
 
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError

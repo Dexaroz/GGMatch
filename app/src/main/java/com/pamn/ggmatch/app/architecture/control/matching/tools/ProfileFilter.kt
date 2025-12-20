@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.control.matching
+package com.pamn.ggmatch.app.architecture.control.matching.tools
 
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile

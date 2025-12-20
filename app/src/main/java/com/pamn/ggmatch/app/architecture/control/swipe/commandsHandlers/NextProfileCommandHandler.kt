@@ -1,6 +1,6 @@
 package com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers
 
-import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler

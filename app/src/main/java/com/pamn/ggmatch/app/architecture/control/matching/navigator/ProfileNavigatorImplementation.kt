@@ -1,5 +1,6 @@
-package com.pamn.ggmatch.app.architecture.control.matching
+package com.pamn.ggmatch.app.architecture.control.matching.navigator
 
+import com.pamn.ggmatch.app.architecture.control.matching.tools.ProfileFilter
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
