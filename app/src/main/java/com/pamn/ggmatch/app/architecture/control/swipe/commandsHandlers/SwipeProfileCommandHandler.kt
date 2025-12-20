@@ -1,9 +1,9 @@
 package com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers
 
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.SwipeProfileCommand
-import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository
-import com.pamn.ggmatch.app.architecture.model.swipe.SwipeInteraction
-import com.pamn.ggmatch.app.architecture.model.swipe.SwipeInteractionsProfile
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
+import com.pamn.ggmatch.app.architecture.model.swipe.Swipe
+import com.pamn.ggmatch.app.architecture.model.swipe.SwipeHistory
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
@@ -11,7 +11,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class SwipeProfileCommandHandler(
-    private val repository: SwipeInteractionsRepository,
+    private val repository: SwipeHistoryRepository,
     private val clock: Clock = Clock.System,
 ) : CommandHandler<SwipeProfileCommand, Unit> {
     override suspend fun invoke(command: SwipeProfileCommand): Result<Unit, AppError> {
@@ -20,7 +20,7 @@ class SwipeProfileCommandHandler(
         val interactionsProfile =
             when (val getResult = repository.get(command.fromUserId)) {
                 is Result.Ok ->
-                    getResult.value ?: SwipeInteractionsProfile.create(
+                    getResult.value ?: SwipeHistory.create(
                         userId = command.fromUserId,
                         createdAt = now,
                     )
@@ -28,15 +28,15 @@ class SwipeProfileCommandHandler(
             }
 
         val newInteraction =
-            SwipeInteraction(
+            Swipe(
                 fromUserId = command.fromUserId,
                 toUserId = command.toUserId,
-                decision = command.decision,
+                type = command.decision,
                 createdAt = now,
                 updatedAt = now,
             )
 
-        val updatedProfile = interactionsProfile.addInteraction(newInteraction)
+        val updatedProfile = interactionsProfile.add(newInteraction)
 
         return when (val saveResult = repository.addOrUpdate(updatedProfile)) {
             is Result.Ok -> Result.Ok(Unit)

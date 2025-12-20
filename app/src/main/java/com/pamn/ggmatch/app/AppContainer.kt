@@ -11,8 +11,8 @@ import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferences
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
-import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeInteractionsRepository
-import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeHistoryRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
@@ -56,7 +56,7 @@ object AppContainer {
     lateinit var matchPreferencesController: MatchPreferencesController
         private set
 
-    lateinit var swipeInteractionsRepository: SwipeInteractionsRepository
+    lateinit var swipeInteractionsRepository: SwipeHistoryRepository
         private set
 
     val currentUserId: UserId
@@ -91,7 +91,7 @@ object AppContainer {
             )
 
         swipeInteractionsRepository =
-            FirebaseSwipeInteractionsRepository(
+            FirebaseSwipeHistoryRepository(
                 firestore = firestore,
             )
 

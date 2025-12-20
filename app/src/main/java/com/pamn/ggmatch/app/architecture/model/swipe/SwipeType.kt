@@ -1,6 +1,6 @@
 package com.pamn.ggmatch.app.architecture.model.swipe
 
-enum class SwipeDecision {
+enum class SwipeType {
     LIKE,
     DISLIKE,
 }

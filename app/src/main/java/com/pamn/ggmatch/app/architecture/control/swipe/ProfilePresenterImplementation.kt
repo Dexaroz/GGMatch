@@ -3,7 +3,7 @@ package com.pamn.ggmatch.app.architecture.control.swipe
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.SwipeProfileCommand
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
-import com.pamn.ggmatch.app.architecture.model.swipe.SwipeDecision
+import com.pamn.ggmatch.app.architecture.model.swipe.SwipeType
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
@@ -41,16 +41,16 @@ class ProfilePresenterImplementation(
     }
 
     override fun onLikeClicked(targetProfile: UserProfile) {
-        handleSwipe(targetProfile, SwipeDecision.LIKE)
+        handleSwipe(targetProfile, SwipeType.LIKE)
     }
 
     override fun onDislikeClicked(targetProfile: UserProfile) {
-        handleSwipe(targetProfile, SwipeDecision.DISLIKE)
+        handleSwipe(targetProfile, SwipeType.DISLIKE)
     }
 
     private fun handleSwipe(
         targetProfile: UserProfile,
-        decision: SwipeDecision,
+        decision: SwipeType,
     ) {
         val swipeCommand =
             SwipeProfileCommand(

@@ -25,7 +25,7 @@ import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
-import com.pamn.ggmatch.app.architecture.io.swipe.SwipeInteractionsRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
@@ -62,7 +62,7 @@ class ComposeProfileViewImplementation(
 @Composable
 fun swipeScreen(
     navigator: ProfileNavigator,
-    swipeInteractionsRepository: SwipeInteractionsRepository = AppContainer.swipeInteractionsRepository,
+    swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
 ) {
     val scope = rememberCoroutineScope()
     val initialProfile = navigator.current()
