@@ -5,9 +5,11 @@ import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
 class ProfileMatcher {
     fun matches(
+        currentUserId: String,
         currentUserPreferences: MatchPreferences,
         candidate: UserProfile,
     ): Boolean {
+        if (candidate.id.toString() == currentUserId) return false
 
         /*
         val riotAccount =
@@ -33,6 +35,7 @@ class ProfileMatcher {
 
         val scheduleMatch =
             currentPrefs.schedules.intersect(preferences.playSchedule).isNotEmpty()
+
         return roleMatch &&
             languageMatch &&
             playstyleMatch &&

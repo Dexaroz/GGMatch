@@ -13,7 +13,6 @@ class UpsertUserProfileCommandHandler(
     private val profileRepository: ProfileRepository,
     private val timeProvider: TimeProvider,
 ) : CommandHandler<UpsertUserProfileCommand, Unit> {
-
     override suspend operator fun invoke(command: UpsertUserProfileCommand): Result<Unit, AppError> {
         val preferences =
             Preferences(

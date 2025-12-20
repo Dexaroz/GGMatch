@@ -60,16 +60,14 @@ class ComposeProfileViewImplementation(
 
 @Composable
 fun swipeScreen(
-    navigator: ProfileNavigator, // Ahora pasamos la implementación real
+    navigator: ProfileNavigator,
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
 ) {
     val scope = rememberCoroutineScope()
 
-    // Estado para controlar si el repositorio ya terminó de cargar
     var isLoading by remember { mutableStateOf(true) }
     var loadError by remember { mutableStateOf<String?>(null) }
 
-    // 1. Efecto para cargar los perfiles al iniciar la pantalla
     androidx.compose.runtime.LaunchedEffect(Unit) {
         val result = navigator.load()
         when (result) {
@@ -84,40 +82,41 @@ fun swipeScreen(
     }
 
     if (isLoading) {
-        // Puedes crear un componente de Loading más elaborado
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             androidx.compose.material3.CircularProgressIndicator(color = Color.White)
         }
         return
     }
 
-    // Una vez cargado, obtenemos el primer perfil real
     val initialProfile = navigator.current()
 
-    val view = remember {
-        ComposeProfileViewImplementation(initialProfile)
-    }
+    val view =
+        remember {
+            ComposeProfileViewImplementation(initialProfile)
+        }
 
-    val nextProfileCommandHandler = remember {
-        NextProfileCommandHandler(navigator)
-    }
+    val nextProfileCommandHandler =
+        remember {
+            NextProfileCommandHandler(navigator)
+        }
 
-    val swipeProfileCommandHandler = remember {
-        SwipeProfileCommandHandler(repository = swipeInteractionsRepository)
-    }
+    val swipeProfileCommandHandler =
+        remember {
+            SwipeProfileCommandHandler(repository = swipeInteractionsRepository)
+        }
 
-    val presenter = remember {
-        ProfilePresenterImplementation(
-            view = view,
-            nextProfileCommandHandler = nextProfileCommandHandler,
-            swipeProfileCommandHandler = swipeProfileCommandHandler,
-            scope = scope,
-            currentProfile = initialProfile,
-            currentUserId = AppContainer.currentUserId,
-        ).also { it.init() }
-    }
+    val presenter =
+        remember {
+            ProfilePresenterImplementation(
+                view = view,
+                nextProfileCommandHandler = nextProfileCommandHandler,
+                swipeProfileCommandHandler = swipeProfileCommandHandler,
+                scope = scope,
+                currentProfile = initialProfile,
+                currentUserId = AppContainer.currentUserId,
+            ).also { it.init() }
+        }
 
-    // 2. Lógica de renderizado (se mantiene similar)
     when {
         loadError != null -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

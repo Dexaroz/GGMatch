@@ -15,7 +15,6 @@ class UserProfile private constructor(
     val createdAt: Instant,
     var updatedAt: Instant,
 ) : AggregateRoot<UserId>(id) {
-
     companion object {
         fun createNew(
             id: UserId,
@@ -53,19 +52,28 @@ class UserProfile private constructor(
             )
     }
 
-    fun changeUsername(newUsername: Username?, timeProvider: TimeProvider) {
+    fun changeUsername(
+        newUsername: Username?,
+        timeProvider: TimeProvider,
+    ) {
         if (username == newUsername) return
         username = newUsername
         updatedAt = timeProvider.now()
     }
 
-    fun changeRiotAccount(newAccount: RiotAccount?, timeProvider: TimeProvider) {
+    fun changeRiotAccount(
+        newAccount: RiotAccount?,
+        timeProvider: TimeProvider,
+    ) {
         if (riotAccount == newAccount) return
         riotAccount = newAccount
         updatedAt = timeProvider.now()
     }
 
-    fun updatePreferences(newPreferences: Preferences, timeProvider: TimeProvider) {
+    fun updatePreferences(
+        newPreferences: Preferences,
+        timeProvider: TimeProvider,
+    ) {
         if (preferences == newPreferences) return
         preferences = newPreferences
         updatedAt = timeProvider.now()

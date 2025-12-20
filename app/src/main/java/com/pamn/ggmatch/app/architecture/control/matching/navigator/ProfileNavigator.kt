@@ -6,6 +6,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 
 interface ProfileNavigator {
     suspend fun load(): Result<Unit, AppError>
+
     fun current(): UserProfile?
 
     fun next(): UserProfile?

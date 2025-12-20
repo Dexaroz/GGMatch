@@ -54,13 +54,14 @@ class User private constructor(
         ): User {
             val now = timeProvider.now()
 
-            val user = User(
-                id = id,
-                email = email,
-                status = UserStatus.ACTIVE,
-                createdAt = now,
-                updatedAt = now,
-            )
+            val user =
+                User(
+                    id = id,
+                    email = email,
+                    status = UserStatus.ACTIVE,
+                    createdAt = now,
+                    updatedAt = now,
+                )
 
             user.registerUserRegisteredEvent()
             return user

@@ -16,7 +16,7 @@ class DummyProfileNavigator(
         DummyUserProfiles.all
 
     private var filteredProfiles: List<UserProfile> =
-        profileFilter.filter(profiles, currentUserPreferences)
+        profileFilter.filter(profiles, currentUserPreferences, currentUserPreferences.id.toString())
 
     private var currentIndex = 0
 
@@ -28,15 +28,17 @@ class DummyProfileNavigator(
         return filteredProfiles.getOrNull(nextIndex)
             ?.also { currentIndex = nextIndex }
     }
+
     override suspend fun load(): Result<Unit, AppError> {
-        filteredProfiles = profileFilter.filter(
-            profiles = DummyUserProfiles.all,
-            preferences = currentUserPreferences
-        )
+        filteredProfiles =
+            profileFilter.filter(
+                profiles = DummyUserProfiles.all,
+                preferences = currentUserPreferences,
+                currentUserId = currentUserPreferences.id.toString(),
+            )
         currentIndex = 0
 
         // Devolvemos éxito manual
         return Result.Ok(Unit)
     }
-
 }

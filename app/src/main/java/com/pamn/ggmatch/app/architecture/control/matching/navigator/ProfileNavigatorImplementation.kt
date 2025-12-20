@@ -23,6 +23,7 @@ class ProfileNavigatorImplementation(
                     profileFilter.filter(
                         profiles = result.value,
                         preferences = preferences,
+                        currentUserId = preferences.id.toString(),
                     )
                 currentIndex = 0
                 Result.Ok(Unit)

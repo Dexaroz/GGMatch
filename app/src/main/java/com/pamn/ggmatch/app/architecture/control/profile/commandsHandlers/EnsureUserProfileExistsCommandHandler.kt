@@ -12,10 +12,7 @@ class EnsureUserProfileExistsCommandHandler(
     private val profileRepository: ProfileRepository,
     private val timeProvider: TimeProvider,
 ) : CommandHandler<EnsureUserProfileExistsCommand, Unit> {
-
-    override suspend operator fun invoke(
-        command: EnsureUserProfileExistsCommand,
-    ): Result<Unit, AppError> {
+    override suspend operator fun invoke(command: EnsureUserProfileExistsCommand): Result<Unit, AppError> {
         println("🔥 EnsureUserProfileExists CALLED for userId=${command.userId.value}")
 
         return when (val existing = profileRepository.get(command.userId)) {

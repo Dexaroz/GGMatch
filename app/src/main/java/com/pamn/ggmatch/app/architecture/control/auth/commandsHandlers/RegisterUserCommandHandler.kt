@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers
 
-import android.util.Log
 import com.pamn.ggmatch.app.architecture.control.auth.commands.RegisterUserCommand
 import com.pamn.ggmatch.app.architecture.control.profile.commands.EnsureUserProfileExistsCommand
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.EnsureUserProfileExistsCommandHandler
@@ -15,7 +14,6 @@ class RegisterUserCommandHandler(
     private val authRepository: AuthRepository,
     private val ensureUserProfileExists: EnsureUserProfileExistsCommandHandler,
 ) : CommandHandler<RegisterUserCommand, User> {
-
     override suspend operator fun invoke(command: RegisterUserCommand): Result<User, AppError> {
         val email = Email(command.email)
 

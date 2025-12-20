@@ -132,5 +132,4 @@ object AppContainer {
 
         initialized = true
     }
-
 }

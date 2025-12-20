@@ -185,8 +185,6 @@ fun registerView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: RegisterTextVariables): String =
-    uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(uiTexts: RegisterTextVariables): String = uiTexts.genericErrorText
 
-private fun isValidEmail(raw: String): Boolean =
-    Patterns.EMAIL_ADDRESS.matcher(raw).matches()
+private fun isValidEmail(raw: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(raw).matches()

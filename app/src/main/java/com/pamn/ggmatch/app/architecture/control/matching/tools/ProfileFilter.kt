@@ -9,5 +9,9 @@ class ProfileFilter(
     fun filter(
         profiles: List<UserProfile>,
         preferences: MatchPreferences,
-    ): List<UserProfile> = profiles.filter { profileMatcher.matches(preferences, it) }
+        currentUserId: String,
+    ): List<UserProfile> =
+        profiles.filter {
+            profileMatcher.matches(currentUserId, preferences, it)
+        }
 }

@@ -28,7 +28,7 @@ object DummyUserProfiles {
                         favoriteRoles = setOf(LolRole.MID, LolRole.JUNGLE),
                         languages = setOf(Language.ENGLISH, Language.SPANISH),
                         playSchedule = setOf(PlaySchedule.NIGHT),
-                        playstyle = setOf(Playstyle.RANKED)
+                        playstyle = setOf(Playstyle.RANKED),
                     ),
                 createdAt = Instant.DISTANT_PAST,
                 updatedAt = Instant.DISTANT_PAST,
@@ -48,7 +48,7 @@ object DummyUserProfiles {
                         favoriteRoles = setOf(LolRole.TOP),
                         languages = setOf(Language.ENGLISH),
                         playSchedule = setOf(PlaySchedule.AFTERNOON),
-                        playstyle = setOf(Playstyle.CASUAL)
+                        playstyle = setOf(Playstyle.CASUAL),
                     ),
                 createdAt = Instant.DISTANT_PAST,
                 updatedAt = Instant.DISTANT_PAST,
@@ -68,7 +68,7 @@ object DummyUserProfiles {
                         favoriteRoles = setOf(LolRole.ADC, LolRole.SUPPORT),
                         languages = setOf(Language.SPANISH),
                         playSchedule = setOf(PlaySchedule.NIGHT),
-                        playstyle = setOf(Playstyle.RANKED)
+                        playstyle = setOf(Playstyle.RANKED),
                     ),
                 createdAt = Instant.DISTANT_PAST,
                 updatedAt = Instant.DISTANT_PAST,
