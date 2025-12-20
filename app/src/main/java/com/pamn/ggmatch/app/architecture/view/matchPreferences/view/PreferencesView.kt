@@ -130,6 +130,7 @@ fun preferencesView(
                         matchPreferenceChip(
                             label = role.name,
                             selected = role in uiState.roles,
+                            iconRes = role.iconRes,
                             onClick = { presenter.toggleRole(role) },
                         )
                     }
