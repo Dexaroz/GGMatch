@@ -30,12 +30,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.DEFAULT_SERVER
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
 
 @Composable
 fun profileCardCompact(profile: UserProfile) {
     val defaultImageRes = R.drawable.profile_picture
-    val gameName = profile.riotAccount?.gameName ?: "Invocador Desconocido"
-    val tagLine = profile.riotAccount?.tagLine ?: "EUW"
+
+    // Uso de constantes actualizadas
+    val gameName = profile.riotAccount?.gameName ?: UNKNOWN_SUMMONER
+    val tagLine = profile.riotAccount?.tagLine ?: DEFAULT_SERVER
+
     val mainRoles = profile.preferences.favoriteRoles.joinToString(", ") { it.name }
     val languages = profile.preferences.languages.joinToString(", ") { it.name.take(2) }
 
@@ -56,7 +63,6 @@ fun profileCardCompact(profile: UserProfile) {
                     .background(Color(0xFF1E1E1E))
                     .padding(8.dp),
         ) {
-            // Profile image
             Image(
                 painter = painterResource(id = defaultImageRes),
                 contentDescription = "$gameName profile picture",
@@ -70,13 +76,12 @@ fun profileCardCompact(profile: UserProfile) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Profile info
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 Text(
-                    text = "$gameName#$tagLine",
+                    text = gameName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -85,7 +90,8 @@ fun profileCardCompact(profile: UserProfile) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Roles: $mainRoles",
+                    // Uso de constante actualizada
+                    text = "$ROLES_PREFIX$mainRoles",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF44EAC5),
                 )
@@ -93,7 +99,8 @@ fun profileCardCompact(profile: UserProfile) {
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
-                    text = "Idiomas: $languages",
+                    // Uso de constante actualizada
+                    text = "$LANGUAGES_PREFIX$languages",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.LightGray,
                 )

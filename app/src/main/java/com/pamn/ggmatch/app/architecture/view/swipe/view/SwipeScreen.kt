@@ -28,6 +28,8 @@ import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipePro
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_MESSAGE
+import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_SUGGESTION
 
 class ComposeProfileViewImplementation(
     initialProfile: UserProfile?,
@@ -35,14 +37,12 @@ class ComposeProfileViewImplementation(
     val currentProfileState: MutableState<UserProfile?> = mutableStateOf(initialProfile)
     val errorState: MutableState<String?> = mutableStateOf(null)
 
-    // Estado clave para la pantalla de agotamiento
     val isDeckEmptyState: MutableState<Boolean> = mutableStateOf(initialProfile == null)
 
-    // showProfile ahora acepta nulo
     override fun showProfile(profile: UserProfile?) {
         if (profile == null) {
             currentProfileState.value = null
-            isDeckEmptyState.value = true // Activar la pantalla de agotamiento
+            isDeckEmptyState.value = true
         } else {
             currentProfileState.value = profile
             isDeckEmptyState.value = false
@@ -51,14 +51,12 @@ class ComposeProfileViewImplementation(
     }
 
     override fun showError(message: String) {
-        // Limpiar el perfil y desactivar el estado de agotamiento al mostrar un error
         currentProfileState.value = null
         isDeckEmptyState.value = false
         errorState.value = message
     }
 }
 
-// COMPOSABLE PRINCIPAL
 @Composable
 fun swipeScreen(
     navigator: ProfileNavigator,
@@ -96,19 +94,14 @@ fun swipeScreen(
             ).also { it.init() }
         }
 
-    // LÓGICA DE VISUALIZACIÓN CONDICIONAL
     when {
         view.isDeckEmptyState.value -> {
-            emptyProfilesView(
-                message = "Agotamiento de Perfiles. No hay perfiles con sus preferencias actualmente disponibles.",
-                suggestion = "Por favor, espere nuevos usuarios o amplíe sus preferencias de emparejamiento.",
-            )
+            emptyProfilesView()
         }
         view.currentProfileState.value != null -> {
             val currentProfile = view.currentProfileState.value!!
             swipeView(
                 currentCard = currentProfile,
-                // ✅ onNext ha sido eliminado, ya que la navegación es gestionada por onLike/onDislike
                 onLike = { presenter.onLikeClicked(currentProfile) },
                 onDislike = { presenter.onDislikeClicked(currentProfile) },
                 errorMessage = view.errorState.value,
@@ -125,18 +118,13 @@ fun swipeScreen(
     }
 }
 
-// COMPONENTE PARA PERFILES AGOTADOS
 @Composable
-fun emptyProfilesView(
-    message: String,
-    suggestion: String,
-) {
+fun emptyProfilesView() {
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
                 .background(Color(0xFF212121)),
-        // Fondo oscuro
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -144,7 +132,8 @@ fun emptyProfilesView(
             modifier = Modifier.padding(24.dp),
         ) {
             Text(
-                text = "⚠️ $message",
+                // Uso de constante corregida
+                text = "⚠️ $EMPTY_DECK_MESSAGE",
                 color = Color.White,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
@@ -152,7 +141,8 @@ fun emptyProfilesView(
                 modifier = Modifier.padding(bottom = 8.dp),
             )
             Text(
-                text = suggestion,
+                // Uso de constante corregida
+                text = EMPTY_DECK_SUGGESTION,
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,

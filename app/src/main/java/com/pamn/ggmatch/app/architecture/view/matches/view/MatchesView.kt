@@ -26,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.BACK_DESCRIPTION
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.MATCHES_TITLE
 import com.pamn.ggmatch.app.architecture.view.matches.components.profileCardCompact
 
 @Composable
@@ -42,7 +44,6 @@ fun profileListView(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Top bar
         Row(
             modifier =
                 Modifier
@@ -52,7 +53,8 @@ fun profileListView(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.undo),
-                contentDescription = "Back",
+                // Cambio: BACK_DESCRIPTION
+                contentDescription = BACK_DESCRIPTION,
                 tint = Color.White,
                 modifier =
                     Modifier
@@ -63,13 +65,13 @@ fun profileListView(
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
-                text = "Matches",
+                // Cambio: MATCHES_TITLE
+                text = MATCHES_TITLE,
                 color = Color.White,
                 style = MaterialTheme.typography.headlineSmall,
             )
         }
 
-        // List of compact profile cards
         LazyColumn(
             contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),

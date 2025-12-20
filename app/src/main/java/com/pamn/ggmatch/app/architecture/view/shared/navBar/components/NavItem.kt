@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.model.navigation
+package com.pamn.ggmatch.app.architecture.view.shared.navBar.components
 
 import androidx.annotation.DrawableRes
 import com.pamn.ggmatch.R

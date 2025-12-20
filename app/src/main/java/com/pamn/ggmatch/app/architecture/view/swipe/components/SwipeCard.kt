@@ -32,6 +32,10 @@ import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.DEFAULT_SERVER
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
 
 private fun userIdToConsistentInt(userId: UserId): Int {
     return (userId.hashCode() and 0x7FFFFFFF)
@@ -57,8 +61,11 @@ fun swipeCard(
     val backgroundRes = backgroundImages[imageIndex]
 
     val defaultImageRes = R.drawable.profile_picture
-    val gameName = card.riotAccount?.gameName ?: "Invocador Desconocido"
-    val tagLine = card.riotAccount?.tagLine ?: "EUW"
+
+    // Uso de constantes corregidas
+    val gameName = card.riotAccount?.gameName ?: UNKNOWN_SUMMONER
+    val tagLine = card.riotAccount?.tagLine ?: DEFAULT_SERVER
+
     val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
     val languages = card.preferences.languages.joinToString(separator = ", ") { it.name.take(2) }
 
@@ -77,12 +84,7 @@ fun swipeCard(
                 },
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
-        ) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
             Image(
                 painter = painterResource(id = backgroundRes),
                 contentDescription = "Background image for $gameName",
@@ -98,11 +100,7 @@ fun swipeCard(
                         .align(Alignment.BottomCenter)
                         .background(
                             Brush.verticalGradient(
-                                colors =
-                                    listOf(
-                                        Color.Transparent,
-                                        Color(0xDD000000),
-                                    ),
+                                colors = listOf(Color.Transparent, Color(0xDD000000)),
                                 startY = 0f,
                                 endY = Float.POSITIVE_INFINITY,
                             ),
@@ -142,7 +140,8 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Roles: $mainRoles",
+                    // Uso de constante corregida
+                    text = "$ROLES_PREFIX$mainRoles",
                     style = MaterialTheme.typography.titleMedium,
                     color = Color(0xFF44EAC5),
                     textAlign = TextAlign.Center,
@@ -151,7 +150,8 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Idiomas: $languages",
+                    // Uso de constante corregida
+                    text = "$LANGUAGES_PREFIX$languages",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,

@@ -5,7 +5,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.domain.AggregateRoot
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import kotlinx.datetime.Instant
 
-class MatchPreferences private constructor(
+class MatchPreferences(
     id: UserId,
     var preferences: Preferences,
     val createdAt: Instant,
@@ -14,7 +14,7 @@ class MatchPreferences private constructor(
     companion object {
         fun createNew(
             userId: UserId,
-            preferences: Preferences,
+            preferences: Preferences = Preferences.default(),
             timeProvider: TimeProvider,
         ): MatchPreferences {
             val now = timeProvider.now()

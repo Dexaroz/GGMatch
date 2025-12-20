@@ -4,6 +4,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
@@ -67,27 +68,44 @@ fun ggMatchNavHost(navController: NavHostController) {
             )
         }
 
-        // HOME con preferencias reales
         composable(Router.HOME) {
-            // Estado para las preferencias del usuario
-            val currentUserPreferences = remember { androidx.compose.runtime.mutableStateOf<MatchPreferences?>(null) }
+            val currentUserPreferences = remember { mutableStateOf<MatchPreferences?>(null) }
 
-            // Cargar preferencias desde Firebase
             LaunchedEffect(Unit) {
-                when (val result = AppContainer.matchPreferencesRepository.get(AppContainer.currentUserId)) {
-                    is Result.Ok -> currentUserPreferences.value = result.value
+                val userId = AppContainer.currentUserId
+                val result = AppContainer.matchPreferencesRepository.get(userId)
+
+                when (result) {
+                    is Result.Ok -> {
+                        if (result.value != null) {
+                            // Caso A: El usuario ya tenía preferencias
+                            currentUserPreferences.value = result.value
+                        } else {
+                            // Caso B: El usuario es nuevo (result es Ok, pero el valor es null)
+                            val defaultPrefs =
+                                MatchPreferences.createNew(
+                                    userId = userId,
+                                    timeProvider = AppContainer.timeProvider,
+                                )
+                            currentUserPreferences.value = defaultPrefs
+                            AppContainer.matchPreferencesRepository.addOrUpdate(defaultPrefs)
+                        }
+                    }
                     is Result.Error -> {
-                        // manejar error según tu lógica, aquí solo logueamos
-                        println("Error cargando preferencias: ${result.error}")
+                        println("Error de red: ${result.error}")
                     }
                 }
             }
 
-            // Si las preferencias están cargadas, crear el navigator
-            currentUserPreferences.value?.let { prefs ->
-                val navigator = remember { DummyProfileNavigator(currentUserPreferences = prefs) }
+            val prefs = currentUserPreferences.value
+
+            if (prefs != null) {
+                val navigator =
+                    remember(prefs.id) {
+                        DummyProfileNavigator(currentUserPreferences = prefs)
+                    }
                 swipeScreen(navigator = navigator)
-            } ?: run {
+            } else {
                 loadingScreen()
             }
         }
