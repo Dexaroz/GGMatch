@@ -7,7 +7,7 @@ object Router {
 
     const val PREFERENCES = "preferences"
 
-    const val CHAT = "chat"
+    const val MATCHES = "matches"
 
     const val PROFILE = "profile"
 }

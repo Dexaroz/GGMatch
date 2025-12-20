@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.AppContainer.currentUserId
+import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.view.swipeView
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
-import com.pamn.ggmatch.app.architecture.control.matching.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 
 class ComposeProfileViewImplementation(

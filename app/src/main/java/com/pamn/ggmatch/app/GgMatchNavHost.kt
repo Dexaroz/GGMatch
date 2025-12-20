@@ -11,10 +11,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.firestore.FirebaseFirestore
+import com.pamn.ggmatch.app.architecture.control.matching.DummyProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
-import com.pamn.ggmatch.app.architecture.control.matching.DummyProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.profile.DummyUserProfiles
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
@@ -24,6 +25,7 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
+import com.pamn.ggmatch.app.architecture.view.matches.view.profileListView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
 import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
@@ -86,13 +88,18 @@ fun ggMatchNavHost(navController: NavHostController) {
                 val navigator = remember { DummyProfileNavigator(currentUserPreferences = prefs) }
                 swipeScreen(navigator = navigator)
             } ?: run {
-                // Mientras cargan, mostrar un placeholder/loading
                 loadingScreen()
             }
         }
 
-        // CHAT y PROFILE mockups
-        composable(Router.CHAT) { testView(Color.Black) }
+        // MATCHES y PROFILE mockups
+        composable(Router.MATCHES) {
+            profileListView(
+                profiles = DummyUserProfiles.all,
+                onBack = { navController.popBackStack() },
+            )
+        }
+
         composable(Router.PROFILE) { testView(Color.White) }
 
         // PREFERENCES

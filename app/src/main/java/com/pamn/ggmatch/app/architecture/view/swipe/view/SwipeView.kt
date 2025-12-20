@@ -30,7 +30,6 @@ import kotlin.math.abs
 fun swipeView(
     modifier: Modifier = Modifier,
     currentCard: UserProfile,
-    // ⭐️ ELIMINAMOS onNext:
     onLike: () -> Unit,
     onDislike: () -> Unit,
     errorMessage: String?,

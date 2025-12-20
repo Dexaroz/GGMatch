@@ -13,7 +13,7 @@ sealed class TopNavItem(
 
     object Preferences : TopNavItem(Router.PREFERENCES, "Preferences", R.drawable.preferences)
 
-    object Chats : TopNavItem(Router.CHAT, "Chat", R.drawable.chat)
+    object Chats : TopNavItem(Router.MATCHES, "Matches", R.drawable.chat)
 
     object Profile : TopNavItem(Router.PROFILE, "Profile", R.drawable.profile)
 }
