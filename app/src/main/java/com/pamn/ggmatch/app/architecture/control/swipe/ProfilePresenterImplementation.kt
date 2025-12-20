@@ -1,35 +1,74 @@
 package com.pamn.ggmatch.app.architecture.control.swipe
 
 import com.pamn.ggmatch.app.architecture.control.swipe.commands.NextProfileCommand
-import com.pamn.ggmatch.app.architecture.control.swipe.commands.PreviousProfileCommand
-import com.pamn.ggmatch.app.architecture.model.profile.Profile
-import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.control.swipe.commands.SwipeProfileCommand
+import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.swipe.SwipeType
+import com.pamn.ggmatch.app.architecture.model.user.UserId
+import com.pamn.ggmatch.app.architecture.sharedKernel.control.CommandHandler
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class ProfilePresenterImplementation(
-    private val view: ProfileView?,
-    private val navigator: ProfileNavigator,
+    private val view: ProfileView,
+    private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Unit>,
+    private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, UserProfile?>,
+    private val scope: CoroutineScope,
+    currentProfile: UserProfile?,
+    private val currentUserId: UserId,
 ) : ProfilePresenter {
-    private val nextCommand = NextProfileCommand(this)
-    private val previousCommand = PreviousProfileCommand(this)
-
-    private var currentProfile: Profile = navigator.current()
+    private var profile: UserProfile? = currentProfile
 
     override fun init() {
-        view?.showProfile(currentProfile)
+        profile?.let { view.showProfile(it) } ?: run {
+            scope.launch {
+                when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                    is Result.Ok -> view.showProfile(result.value) // puede ser null
+                    is Result.Error -> view.showError(result.error.message)
+                }
+            }
+        }
     }
 
     override fun onNextClicked() {
-        nextCommand.execute()
+        scope.launch {
+            when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                is Result.Ok -> view.showProfile(result.value)
+                is Result.Error -> view.showError(result.error.message)
+            }
+        }
     }
 
-    override fun onPreviousClicked() {
-        previousCommand.execute()
+    override fun onLikeClicked(targetProfile: UserProfile) {
+        handleSwipe(targetProfile, SwipeType.LIKE)
     }
 
-    fun navigator(): ProfileNavigator = navigator
+    override fun onDislikeClicked(targetProfile: UserProfile) {
+        handleSwipe(targetProfile, SwipeType.DISLIKE)
+    }
 
-    fun show(profile: Profile) {
-        currentProfile = profile // 👈 Actualiza el estado del Presenter
-        view?.showProfile(currentProfile) // 👈 Notifica a la View (el único punto de salida)
+    private fun handleSwipe(
+        targetProfile: UserProfile,
+        decision: SwipeType,
+    ) {
+        val swipeCommand =
+            SwipeProfileCommand(
+                fromUserId = currentUserId,
+                toUserId = targetProfile.id,
+                decision = decision,
+            )
+
+        scope.launch {
+            when (swipeProfileCommandHandler.invoke(swipeCommand)) {
+                is Result.Ok -> {
+                    when (val result = nextProfileCommandHandler.invoke(NextProfileCommand(currentUserId))) {
+                        is Result.Ok -> view.showProfile(result.value) // puede ser null
+                        is Result.Error -> view.showError("Interacción guardada, pero no se pudo cargar el siguiente perfil.")
+                    }
+                }
+                is Result.Error -> view.showError("Error al guardar la interacción.")
+            }
+        }
     }
 }

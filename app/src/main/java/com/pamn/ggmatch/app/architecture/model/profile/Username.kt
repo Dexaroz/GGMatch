@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.model.user
+package com.pamn.ggmatch.app.architecture.model.profile
 
 import com.pamn.ggmatch.app.architecture.sharedKernel.domain.ValueObject
 

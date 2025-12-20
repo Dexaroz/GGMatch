@@ -1,4 +1,4 @@
-package com.pamn.ggmatch.app.architecture.view.navBar
+package com.pamn.ggmatch.app.architecture.view.shared.navBar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

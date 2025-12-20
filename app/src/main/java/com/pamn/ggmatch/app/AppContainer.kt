@@ -4,26 +4,28 @@ import android.content.Context
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
-import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
+import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
+import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
+import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
+import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
+import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.FirebaseSwipeHistoryRepository
+import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.io.user.AuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseAuthRepository
 import com.pamn.ggmatch.app.architecture.io.user.FirebaseUserRepository
 import com.pamn.ggmatch.app.architecture.io.user.UserRepository
-import com.pamn.ggmatch.app.architecture.model.profile.Profile
-import com.pamn.ggmatch.app.architecture.model.profile.ProfileNavigator
+import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
+import com.pamn.ggmatch.app.controllers.MatchPreferencesController
 
 object AppContainer {
     private var initialized = false
 
-    // -------------------------
-    // 🔥 AUTH / FIREBASE
-    // -------------------------
     lateinit var timeProvider: TimeProvider
         private set
 
@@ -36,17 +38,31 @@ object AppContainer {
     lateinit var userRepository: UserRepository
         private set
 
+    lateinit var profileRepository: ProfileRepository
+        private set
+
     lateinit var authRepository: AuthRepository
         private set
 
     lateinit var authController: AuthController
         private set
 
-    lateinit var profiles: List<Profile>
+    lateinit var matchPreferencesRepository: MatchPreferencesRepository
         private set
 
-    lateinit var presenter: ProfilePresenterImplementation
+    lateinit var upsertMatchPreferencesHandler: UpsertMatchPreferencesCommandHandler
         private set
+
+    lateinit var matchPreferencesController: MatchPreferencesController
+        private set
+
+    lateinit var swipeInteractionsRepository: SwipeHistoryRepository
+        private set
+
+    val currentUserId: UserId
+        get() =
+            firebaseAuth.currentUser?.uid?.let(::UserId)
+                ?: throw IllegalStateException("Current user not authenticated.")
 
     fun init(context: Context) {
         if (initialized) return
@@ -69,52 +85,37 @@ object AppContainer {
                 timeProvider = timeProvider,
             )
 
+        profileRepository =
+            FirebaseProfileRepository(
+                firestore = firestore,
+            )
+
+        swipeInteractionsRepository =
+            FirebaseSwipeHistoryRepository(
+                firestore = firestore,
+            )
+
+        matchPreferencesRepository =
+            FirebaseMatchPreferencesRepository(
+                firestore = firestore,
+            )
+
+        upsertMatchPreferencesHandler =
+            UpsertMatchPreferencesCommandHandler(
+                matchPreferencesRepository = matchPreferencesRepository,
+                timeProvider = timeProvider,
+            )
+
+        matchPreferencesController =
+            MatchPreferencesController(
+                upsertMatchPreferences = upsertMatchPreferencesHandler,
+            )
+
         authController =
             AuthController(
                 registerUser = RegisterUserCommandHandler(authRepository),
                 loginUser = LoginUserCommandHandler(authRepository),
             )
-
-        profiles =
-            listOf(
-                Profile(
-                    id = 1,
-                    name = "Laura Martínez",
-                    nickname = "lau21",
-                    age = 21,
-                    description = "Amo los perros y la fotografía",
-                    imageRes = R.drawable.profile_picture,
-                    backgroundImageRes = R.drawable.twisted,
-                ),
-                Profile(
-                    id = 2,
-                    name = "Carlos Rivera",
-                    nickname = "carlitos",
-                    age = 22,
-                    description = "Me encanta viajar y probar comida nueva",
-                    imageRes = R.drawable.profile_picture,
-                    backgroundImageRes = R.drawable.jinx,
-                ),
-                Profile(
-                    id = 3,
-                    name = "Marta Gómez",
-                    nickname = "marti",
-                    age = 19,
-                    description = "Fan del cine y atardeceres",
-                    imageRes = R.drawable.profile_picture,
-                    backgroundImageRes = R.drawable.thresh,
-                ),
-            )
-
-        val navigator = ProfileNavigator(profiles)
-
-        presenter =
-            ProfilePresenterImplementation(
-                view = null,
-                navigator = navigator,
-            )
-
-        presenter.init()
 
         initialized = true
     }
