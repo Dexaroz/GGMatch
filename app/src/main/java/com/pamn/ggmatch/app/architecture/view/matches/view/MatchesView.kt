@@ -39,7 +39,7 @@ import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.MATCH
 import com.pamn.ggmatch.app.architecture.view.matches.components.profileCardCompact
 
 @Composable
-fun profileListView(
+fun matchesView(
     profiles: List<UserProfile>,
     onBack: () -> Unit,
 ) {
@@ -74,7 +74,6 @@ fun profileListView(
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Cabecera
             Row(
                 modifier =
                     Modifier

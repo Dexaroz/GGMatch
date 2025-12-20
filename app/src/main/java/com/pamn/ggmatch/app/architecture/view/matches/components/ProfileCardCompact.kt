@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.DEFAULT_SERVER
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
@@ -39,7 +40,7 @@ fun profileCardCompact(profile: UserProfile) {
     val defaultImageRes = R.drawable.profile_picture
 
     val gameName = profile.riotAccount?.gameName ?: UNKNOWN_SUMMONER
-
+    val gameTag = profile.riotAccount?.tagLine ?: DEFAULT_SERVER
     val mainRoles = profile.preferences.favoriteRoles.joinToString(", ") { it.name }
     val languages = profile.preferences.languages.joinToString(", ") { it.name.take(2) }
 
@@ -78,7 +79,7 @@ fun profileCardCompact(profile: UserProfile) {
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 Text(
-                    text = gameName,
+                    text = "$gameName#$gameTag",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
