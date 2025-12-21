@@ -25,10 +25,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
@@ -114,16 +117,29 @@ fun swipeCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
             ) {
-                Image(
-                    painter = painterResource(id = defaultImageRes),
-                    contentDescription = "$gameName profile picture",
+                val context = LocalContext.current
+                val photoUrl = card.photoUrl?.value   // o la fuente que corresponda aquí
+
+                Box(
                     modifier =
                         Modifier
                             .size(width = 250.dp, height = 350.dp)
                             .clip(RoundedCornerShape(200.dp))
-                            .border(6.dp, Color.White, RoundedCornerShape(200.dp)),
-                    contentScale = ContentScale.Crop,
-                )
+                            .border(6.dp, Color.White, RoundedCornerShape(200.dp))
+                            .background(Color.Black)
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.profile_picture),
+                        error = painterResource(R.drawable.profile_picture),
+                        contentDescription = "${gameName} profile picture",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
