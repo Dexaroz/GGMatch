@@ -445,6 +445,7 @@ fun profileEditView(
                                 matchPreferenceChip(
                                     label = role.name,
                                     selected = selectedRoles.contains(role),
+                                    iconRes = role.iconRes,
                                     enabled = selectedRoles.contains(role) || selectedRoles.size < Preferences.MAX_FAVORITE_ROLES,
                                 ) {
                                     selectedRoles =
@@ -459,6 +460,7 @@ fun profileEditView(
                                 matchPreferenceChip(
                                     label = s.name,
                                     selected = selectedSchedules.contains(s),
+                                    iconRes = s.iconRes,
                                 ) {
                                     selectedSchedules = toggleSet(selectedSchedules, s)
                                 }
@@ -471,6 +473,7 @@ fun profileEditView(
                                 matchPreferenceChip(
                                     label = l.name,
                                     selected = selectedLanguages.contains(l),
+                                    iconRes = l.iconRes,
                                 ) {
                                     selectedLanguages = toggleSet(selectedLanguages, l)
                                 }
@@ -483,6 +486,7 @@ fun profileEditView(
                                 matchPreferenceChip(
                                     label = p.name,
                                     selected = selectedPlaystyles.contains(p),
+                                    iconRes = p.iconRes,
                                 ) {
                                     selectedPlaystyles = toggleSet(selectedPlaystyles, p)
                                 }

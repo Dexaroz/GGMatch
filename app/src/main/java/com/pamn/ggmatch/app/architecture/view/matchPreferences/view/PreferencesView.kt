@@ -120,6 +120,7 @@ fun preferencesView(
                         matchPreferenceChip(
                             label = lang.name,
                             selected = lang in uiState.languages,
+                            iconRes = lang.iconRes,
                             onClick = { presenter.toggleLanguage(lang) },
                         )
                     }
@@ -141,6 +142,7 @@ fun preferencesView(
                         matchPreferenceChip(
                             label = schedule.name,
                             selected = schedule in uiState.schedules,
+                            iconRes = schedule.iconRes,
                             onClick = { presenter.toggleSchedule(schedule) },
                         )
                     }
@@ -151,6 +153,7 @@ fun preferencesView(
                         matchPreferenceChip(
                             label = style.name,
                             selected = style in uiState.playstyles,
+                            iconRes = style.iconRes,
                             onClick = { presenter.togglePlaystyle(style) },
                         )
                     }
