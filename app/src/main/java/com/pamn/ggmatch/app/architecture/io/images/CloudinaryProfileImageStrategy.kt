@@ -19,25 +19,30 @@ class CloudinaryProfileImageStrategy(
     private val cloudName: String,
     private val uploadPreset: String,
 ) : ProfileImageStrategy {
-
-    override suspend fun save(context: Context, userId: UserId, source: Uri): UserPhotoUrl =
+    override suspend fun save(
+        context: Context,
+        userId: UserId,
+        source: Uri,
+    ): UserPhotoUrl =
         withContext(Dispatchers.IO) {
             val tempFile = uriToTempFile(context, source)
 
-            val body = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("upload_preset", uploadPreset)
-                .addFormDataPart(
-                    "file",
-                    tempFile.name,
-                    tempFile.asRequestBody("image/*".toMediaTypeOrNull()),
-                )
-                .build()
+            val body =
+                MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("upload_preset", uploadPreset)
+                    .addFormDataPart(
+                        "file",
+                        tempFile.name,
+                        tempFile.asRequestBody("image/*".toMediaTypeOrNull()),
+                    )
+                    .build()
 
-            val req = Request.Builder()
-                .url("https://api.cloudinary.com/v1_1/$cloudName/image/upload")
-                .post(body)
-                .build()
+            val req =
+                Request.Builder()
+                    .url("https://api.cloudinary.com/v1_1/$cloudName/image/upload")
+                    .post(body)
+                    .build()
 
             http.newCall(req).execute().use { res ->
                 val str = res.body?.string().orEmpty()
@@ -49,7 +54,10 @@ class CloudinaryProfileImageStrategy(
             }
         }
 
-    private fun uriToTempFile(context: Context, uri: Uri): File {
+    private fun uriToTempFile(
+        context: Context,
+        uri: Uri,
+    ): File {
         val input =
             context.contentResolver.openInputStream(uri)
                 ?: throw IllegalArgumentException("Can't open input stream for uri: $uri")

@@ -167,7 +167,7 @@ fun ggMatchNavHost(navController: NavHostController) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
     }

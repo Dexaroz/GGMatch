@@ -6,9 +6,7 @@ class ProfileImageStrategySelector(
     private val cloudinary: ProfileImageStrategy,
     private val firestore: ProfileImageStrategy,
 ) {
-    fun forSaving(useFirestoreInline: Boolean): ProfileImageStrategy =
-        if (useFirestoreInline) firestore else cloudinary
+    fun forSaving(useFirestoreInline: Boolean): ProfileImageStrategy = if (useFirestoreInline) firestore else cloudinary
 
-    fun isFirestoreInline(photoUrl: UserPhotoUrl?): Boolean =
-        photoUrl?.value?.startsWith("firestore://") == true
+    fun isFirestoreInline(photoUrl: UserPhotoUrl?): Boolean = photoUrl?.value?.startsWith("firestore://") == true
 }

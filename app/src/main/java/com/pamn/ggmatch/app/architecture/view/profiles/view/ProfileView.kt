@@ -156,8 +156,9 @@ fun profileEditView(
                             isBusy = false
                             return@launch
                         }
-                        is Result.Ok -> get.value
-                            ?: UserProfile.createNew(id = userId, timeProvider = AppContainer.timeProvider)
+                        is Result.Ok ->
+                            get.value
+                                ?: UserProfile.createNew(id = userId, timeProvider = AppContainer.timeProvider)
                     }
 
                 profile.changePhotoUrl(photoUrlVo, AppContainer.timeProvider)
@@ -263,15 +264,17 @@ fun profileEditView(
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .verticalScroll(rememberScrollState()),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(240.dp),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.login_header),

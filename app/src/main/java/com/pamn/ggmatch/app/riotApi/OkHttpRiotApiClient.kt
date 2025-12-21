@@ -16,7 +16,6 @@ class OkHttpRiotApiClient(
     private val http: OkHttpClient,
     private val apiKey: String,
 ) : RiotApiClient {
-
     private val accountHost = "https://europe.api.riotgames.com"
     private val lolHost = "https://euw1.api.riotgames.com"
 

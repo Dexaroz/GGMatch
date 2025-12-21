@@ -141,14 +141,18 @@ class FirebaseProfileRepository(
         }
     }
 
-    override suspend fun updatePhotoBase64(userId: UserId, photoBase64: String?, photoUrl: String?) {
+    override suspend fun updatePhotoBase64(
+        userId: UserId,
+        photoBase64: String?,
+        photoUrl: String?,
+    ) {
         firestore.collection("profiles")
             .document(userId.value)
             .update(
                 mapOf(
                     "photoBase64" to photoBase64,
-                    "photoUrl" to photoUrl
-                )
+                    "photoUrl" to photoUrl,
+                ),
             )
             .await()
     }

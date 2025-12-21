@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -39,10 +40,7 @@ import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.MATCH
 import com.pamn.ggmatch.app.architecture.view.matches.components.profileCardCompact
 
 @Composable
-fun matchesView(
-    profiles: List<UserProfile>,
-    onBack: () -> Unit,
-) {
+fun matchesBackground(content: @Composable BoxScope.() -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier =
@@ -66,33 +64,80 @@ fun matchesView(
                     .alpha(0.4f),
         )
 
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp),
-        ) {
-            Spacer(modifier = Modifier.height(48.dp))
+        content()
+    }
+}
 
+@Composable
+fun loadingMatchesView() {
+    matchesBackground {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                text = "Loading matches...",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+@Composable
+fun emptyMatchesView(onBack: () -> Unit) {
+    matchesBackground {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "No matches yet 💔",
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Start swiping to find your perfect match!",
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                androidx.compose.material3.Text(
+                    text = "Go Back",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier =
+                        Modifier
+                            .clickable { onBack() }
+                            .padding(12.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun matchesListView(
+    profiles: List<UserProfile>,
+    onBack: () -> Unit,
+) {
+    matchesBackground {
+        Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
+            Spacer(modifier = Modifier.height(48.dp))
             Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
                     contentDescription = BACK_DESCRIPTION,
                     tint = Color.White,
-                    modifier =
-                        Modifier
-                            .size(28.dp)
-                            .clickable { onBack() },
+                    modifier = Modifier.size(28.dp).clickable { onBack() },
                 )
-
                 Spacer(modifier = Modifier.width(16.dp))
-
                 Text(
                     text = MATCHES_TITLE,
                     color = Color.White,
@@ -102,17 +147,13 @@ fun matchesView(
                 )
             }
 
-            if (profiles.isEmpty()) {
-                emptyMatchesView()
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    items(profiles) { profile ->
-                        profileCardCompact(profile = profile)
-                    }
+            LazyColumn(
+                contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(profiles) { profile ->
+                    profileCardCompact(profile = profile)
                 }
             }
         }
@@ -120,32 +161,41 @@ fun matchesView(
 }
 
 @Composable
-fun emptyMatchesView() {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = 64.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+fun errorMatchesView(
+    message: String,
+    onBack: () -> Unit,
+) {
+    matchesBackground {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = "No matches yet 💔",
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "Start swiping to find your perfect match!",
-                color = Color.LightGray,
-                fontSize = 16.sp,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Something went wrong ❌",
+                    color = Color.Red,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = message,
+                    color = Color.LightGray,
+                    fontSize = 16.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Go Back",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier =
+                        Modifier
+                            .clickable { onBack() }
+                            .padding(12.dp),
+                )
+            }
         }
     }
 }
