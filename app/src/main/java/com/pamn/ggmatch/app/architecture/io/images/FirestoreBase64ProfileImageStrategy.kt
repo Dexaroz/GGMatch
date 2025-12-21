@@ -13,13 +13,18 @@ import java.io.ByteArrayOutputStream
 class FirestoreBase64ProfileImageStrategy(
     private val profileRepository: ProfileRepository,
 ) : ProfileImageStrategy {
+    override suspend fun save(
+        context: Context,
+        userId: UserId,
+        source: Uri,
+    ): UserPhotoUrl {
+        val bytes =
+            context.contentResolver.openInputStream(source)?.use { it.readBytes() }
+                ?: throw IllegalArgumentException("Can't read bytes from uri: $source")
 
-    override suspend fun save(context: Context, userId: UserId, source: Uri): UserPhotoUrl {
-        val bytes = context.contentResolver.openInputStream(source)?.use { it.readBytes() }
-            ?: throw IllegalArgumentException("Can't read bytes from uri: $source")
-
-        val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            ?: throw IllegalArgumentException("Invalid image")
+        val bmp =
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                ?: throw IllegalArgumentException("Invalid image")
 
         val resized = resizeKeepingAspect(bmp, maxSize = 512)
 
@@ -39,7 +44,10 @@ class FirestoreBase64ProfileImageStrategy(
             ?: throw IllegalStateException("Couldn't build firestore:// url")
     }
 
-    private fun resizeKeepingAspect(src: Bitmap, maxSize: Int): Bitmap {
+    private fun resizeKeepingAspect(
+        src: Bitmap,
+        maxSize: Int,
+    ): Bitmap {
         val w = src.width
         val h = src.height
         if (w <= maxSize && h <= maxSize) return src

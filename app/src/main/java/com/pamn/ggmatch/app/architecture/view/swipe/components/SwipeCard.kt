@@ -37,7 +37,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
 import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.UNKNOWN_NAME
 
 private fun userIdToConsistentInt(userId: UserId): Int {
@@ -118,7 +117,7 @@ fun swipeCard(
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 val context = LocalContext.current
-                val photoUrl = card.photoUrl?.value   // o la fuente que corresponda aquí
+                val photoUrl = card.photoUrl?.value // o la fuente que corresponda aquí
 
                 Box(
                     modifier =
@@ -126,16 +125,17 @@ fun swipeCard(
                             .size(width = 250.dp, height = 350.dp)
                             .clip(RoundedCornerShape(200.dp))
                             .border(6.dp, Color.White, RoundedCornerShape(200.dp))
-                            .background(Color.Black)
+                            .background(Color.Black),
                 ) {
                     AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(photoUrl)
-                            .crossfade(true)
-                            .build(),
+                        model =
+                            ImageRequest.Builder(context)
+                                .data(photoUrl)
+                                .crossfade(true)
+                                .build(),
                         placeholder = painterResource(R.drawable.profile_picture),
                         error = painterResource(R.drawable.profile_picture),
-                        contentDescription = "${gameName} profile picture",
+                        contentDescription = "$gameName profile picture",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )

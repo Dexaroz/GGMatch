@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.view.matches.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -75,10 +74,11 @@ fun profileCardCompact(profile: UserProfile) {
                         .background(Color.Black),
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(photoUrl)
-                        .crossfade(true)
-                        .build(),
+                    model =
+                        ImageRequest.Builder(context)
+                            .data(photoUrl)
+                            .crossfade(true)
+                            .build(),
                     placeholder = painterResource(R.drawable.profile_picture),
                     error = painterResource(R.drawable.profile_picture),
                     contentDescription = "$username profile picture",

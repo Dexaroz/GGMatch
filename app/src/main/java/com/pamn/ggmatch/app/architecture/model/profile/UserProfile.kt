@@ -16,7 +16,6 @@ class UserProfile private constructor(
     val createdAt: Instant,
     var updatedAt: Instant,
 ) : AggregateRoot<UserId>(id) {
-
     companion object {
         fun createNew(
             id: UserId,

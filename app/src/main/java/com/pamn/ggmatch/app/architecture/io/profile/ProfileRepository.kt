@@ -16,5 +16,9 @@ interface ProfileRepository {
 
     suspend fun getAll(): Result<List<UserProfile>, AppError>
 
-    suspend fun updatePhotoBase64(userId: UserId, photoBase64: String?, photoUrl: String?)
+    suspend fun updatePhotoBase64(
+        userId: UserId,
+        photoBase64: String?,
+        photoUrl: String?,
+    )
 }
