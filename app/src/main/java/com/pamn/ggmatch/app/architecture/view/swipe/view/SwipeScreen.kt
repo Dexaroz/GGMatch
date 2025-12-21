@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
@@ -63,6 +64,7 @@ class ComposeProfileViewImplementation(
 @Composable
 fun swipeScreen(
     navigator: ProfileNavigator,
+    navController: NavController,
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
 ) {
     val scope = rememberCoroutineScope()
@@ -130,11 +132,12 @@ fun swipeScreen(
             }
         }
 
-        matchedProfile?.let { profile ->
+        matchedProfile?.let {
             matchFoundView(
                 characterImageId = R.drawable.thresh,
                 onGoToMatches = {
                     matchedProfile = null
+                    navController.navigate("matches") { }
                 },
             )
         }

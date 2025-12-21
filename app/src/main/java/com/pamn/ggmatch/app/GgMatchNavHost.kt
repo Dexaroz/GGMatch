@@ -118,7 +118,7 @@ fun ggMatchNavHost(navController: NavHostController) {
                             swipeRepository = AppContainer.swipeInteractionsRepository,
                         )
                     }
-                swipeScreen(navigator = navigator)
+                swipeScreen(navigator = navigator, navController = navController)
             } else {
                 loadingScreen()
             }
@@ -127,12 +127,10 @@ fun ggMatchNavHost(navController: NavHostController) {
         composable(Router.MATCHES) {
             matchesScreen(
                 onBack = {
-                    navController.popBackStack()
+                    navController.navigate(Router.HOME)
                 }
             )
         }
-
-        composable(Router.PROFILE) { testView(Color.White) }
 
         composable(Router.PREFERENCES) {
             preferencesScreen(

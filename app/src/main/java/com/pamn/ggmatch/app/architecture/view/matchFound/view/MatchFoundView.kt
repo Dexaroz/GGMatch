@@ -2,6 +2,7 @@ package com.pamn.ggmatch.app.architecture.view.matchFound.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -121,7 +122,10 @@ fun matchFoundView(
                         Modifier
                             .size(120.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White.copy(alpha = 0.15f)),
+                            .background(Color.White.copy(alpha = 0.15f))
+                            .clickable {
+                                onGoToMatches()
+                            }
                 ) {
                     Image(
                         painter = painterResource(R.drawable.go),
