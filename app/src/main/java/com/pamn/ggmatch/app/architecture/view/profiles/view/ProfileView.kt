@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.view.profile.view
 
-import ProfileTextVariables
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -8,12 +7,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +29,6 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FloatingActionButton
@@ -80,6 +75,9 @@ import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountSt
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
+import com.pamn.ggmatch.app.architecture.view.profiles.ProfileTextVariables
+import com.pamn.ggmatch.app.architecture.view.profiles.components.GradientVerifyButton
+import com.pamn.ggmatch.app.architecture.view.profiles.components.PreferenceChipsFlowRow
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.roundToInt
@@ -113,17 +111,14 @@ fun profileEditView(
     var usernameText by rememberSaveable { mutableStateOf("") }
     var showEditUsername by rememberSaveable { mutableStateOf(false) }
 
-    // Imagen: soporta galería + cámara
-    var pickedImageUri by rememberSaveable { mutableStateOf<String?>(null) } // lo que se ve
-    var cameraOutputUri by rememberSaveable { mutableStateOf<String?>(null) } // uri temporal cámara
+    var pickedImageUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var cameraOutputUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    // Riot
     var riotGameName by rememberSaveable { mutableStateOf("") }
     var riotTagLine by rememberSaveable { mutableStateOf("") }
     var riotSummary by rememberSaveable { mutableStateOf<String?>(null) }
     var riotStatus by rememberSaveable { mutableStateOf(RiotAccountStatus.UNVERIFIED) }
 
-    // Preferences
     var selectedRoles by remember { mutableStateOf(setOf<LolRole>()) }
     var selectedLanguages by remember { mutableStateOf(setOf<Language>()) }
     var selectedSchedules by remember { mutableStateOf(setOf<PlaySchedule>()) }
@@ -214,7 +209,6 @@ fun profileEditView(
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         ) {
-            // HEADER (imagen estática + degradado + top bar)
             Box(
                 modifier = Modifier.fillMaxWidth().height(240.dp),
             ) {
@@ -245,15 +239,16 @@ fun profileEditView(
                     }
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = texts.title,
+                        text = usernameText.trim().ifBlank { texts.usernameLabel },
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.ExtraBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
 
-            // CONTENIDO (tarjeta redondeada “encima” del header)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -269,7 +264,6 @@ fun profileEditView(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
-                        // Avatar + botón cámara + username con lápiz
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -289,7 +283,7 @@ fun profileEditView(
                                 )
 
                                 FloatingActionButton(
-                                    onClick = { /* opcional: aquí podrías abrir bottom sheet */ },
+                                    onClick = { /* UI sólo, el selector real está abajo */ },
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .size(34.dp),
@@ -298,13 +292,6 @@ fun profileEditView(
                                 ) {
                                     Icon(Icons.Default.CameraAlt, contentDescription = texts.changeImageText)
                                 }
-
-                                // Si quieres que tocar el avatar abra algo, ponlo aquí.
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .clickable(enabled = false) { },
-                                )
                             }
 
                             Spacer(Modifier.width(14.dp))
@@ -312,7 +299,7 @@ fun profileEditView(
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = usernameText.ifBlank { texts.title },
+                                        text = usernameText.trim().ifBlank { texts.usernameLabel },
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
@@ -323,6 +310,7 @@ fun profileEditView(
                                         Icon(Icons.Default.Edit, contentDescription = texts.usernameLabel)
                                     }
                                 }
+
                                 Text(
                                     text = texts.imageHint,
                                     style = MaterialTheme.typography.bodySmall,
@@ -331,7 +319,6 @@ fun profileEditView(
                             }
                         }
 
-                        // Selector imagen (cámara / galería)
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             OutlinedButton(
                                 enabled = !isBusy,
@@ -345,12 +332,11 @@ fun profileEditView(
                             OutlinedButton(
                                 enabled = !isBusy,
                                 onClick = { launchCamera() },
-                            ) { Text("Camera") }
+                            ) { Text(texts.changeImageText) }
                         }
                     }
                 }
 
-                // RIOT SECTION
                 ElevatedCard(
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -395,9 +381,12 @@ fun profileEditView(
                         }
 
                         val riotVerified = riotStatus == RiotAccountStatus.VERIFIED
+                        val canVerify = !isBusy && riotGameName.isNotBlank() && riotTagLine.isNotBlank()
 
-                        Button(
-                            enabled = !isBusy && riotGameName.isNotBlank() && riotTagLine.isNotBlank(),
+                        GradientVerifyButton(
+                            text = if (isBusy) texts.riotVerifyingText else texts.riotVerifyButtonText,
+                            verified = riotVerified,
+                            enabled = canVerify,
                             onClick = {
                                 scope.launch {
                                     isBusy = true
@@ -415,6 +404,7 @@ fun profileEditView(
                                         is Result.Error -> {
                                             isBusy = false
                                             errorText = res.error.toString()
+                                            riotStatus = RiotAccountStatus.UNVERIFIED
                                         }
 
                                         is Result.Ok -> {
@@ -422,6 +412,7 @@ fun profileEditView(
                                                 is Result.Error -> {
                                                     isBusy = false
                                                     errorText = texts.loadErrorText
+                                                    riotStatus = RiotAccountStatus.UNVERIFIED
                                                 }
 
                                                 is Result.Ok -> {
@@ -429,7 +420,9 @@ fun profileEditView(
                                                     infoText = texts.riotSavedText
 
                                                     val prof = p.value
-                                                    riotStatus = prof?.riotAccount?.verificationStatus ?: RiotAccountStatus.UNVERIFIED
+                                                    riotStatus =
+                                                        prof?.riotAccount?.verificationStatus
+                                                            ?: RiotAccountStatus.UNVERIFIED
                                                     riotSummary = riotSummaryText(prof)
                                                 }
                                             }
@@ -437,13 +430,7 @@ fun profileEditView(
                                     }
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (riotVerified) Color(0xFF2E7D32) else Color(0xFFC62828),
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(if (isBusy) texts.riotVerifyingText else texts.riotVerifyButtonText)
-                        }
+                        )
 
                         if (!riotSummary.isNullOrBlank()) {
                             Text(riotSummary.orEmpty(), style = MaterialTheme.typography.bodyMedium)
@@ -451,7 +438,6 @@ fun profileEditView(
                     }
                 }
 
-                // PREFERENCIAS
                 ElevatedCard(
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -460,14 +446,10 @@ fun profileEditView(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Text(
-                            texts.favoriteRoleTitle,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Text(texts.favoriteRoleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         Text(texts.favoriteRoleHint, style = MaterialTheme.typography.bodySmall)
 
-                        FlowRowChips {
+                        PreferenceChipsFlowRow {
                             LolRole.entries.forEach { role ->
                                 matchPreferenceChip(
                                     label = role.name,
@@ -481,27 +463,36 @@ fun profileEditView(
                         }
 
                         Text(texts.scheduleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        FlowRowChips {
+                        PreferenceChipsFlowRow {
                             PlaySchedule.entries.forEach { s ->
-                                matchPreferenceChip(label = s.name, selected = selectedSchedules.contains(s)) {
+                                matchPreferenceChip(
+                                    label = s.name,
+                                    selected = selectedSchedules.contains(s),
+                                ) {
                                     selectedSchedules = toggleSet(selectedSchedules, s)
                                 }
                             }
                         }
 
                         Text(texts.languageTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        FlowRowChips {
+                        PreferenceChipsFlowRow {
                             Language.entries.forEach { l ->
-                                matchPreferenceChip(label = l.name, selected = selectedLanguages.contains(l)) {
+                                matchPreferenceChip(
+                                    label = l.name,
+                                    selected = selectedLanguages.contains(l),
+                                ) {
                                     selectedLanguages = toggleSet(selectedLanguages, l)
                                 }
                             }
                         }
 
                         Text(texts.playstyleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        FlowRowChips {
+                        PreferenceChipsFlowRow {
                             Playstyle.entries.forEach { p ->
-                                matchPreferenceChip(label = p.name, selected = selectedPlaystyles.contains(p)) {
+                                matchPreferenceChip(
+                                    label = p.name,
+                                    selected = selectedPlaystyles.contains(p),
+                                ) {
                                     selectedPlaystyles = toggleSet(selectedPlaystyles, p)
                                 }
                             }
@@ -509,14 +500,9 @@ fun profileEditView(
                     }
                 }
 
-                if (errorText != null) {
-                    Text("❌ ${errorText.orEmpty()}")
-                }
-                if (infoText != null) {
-                    Text("✅ ${infoText.orEmpty()}")
-                }
+                if (errorText != null) Text("❌ ${errorText.orEmpty()}")
+                if (infoText != null) Text("✅ ${infoText.orEmpty()}")
 
-                // SAVE
                 Button(
                     enabled = !isBusy,
                     modifier = Modifier.fillMaxWidth(),
@@ -616,19 +602,6 @@ private fun EditUsernameDialog(
             TextButton(onClick = onDismiss) { Text("Cancel") }
         },
     )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun FlowRowChips(content: @Composable () -> Unit) {
-    // ✅ Wrap real + spacing vertical/horizontal
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        content()
-    }
 }
 
 private fun <T> toggleSet(set: Set<T>, item: T): Set<T> =

@@ -1,3 +1,5 @@
+package com.pamn.ggmatch.app.architecture.view.profiles
+
 data class ProfileTextVariables(
     val title: String = "Edit profile",
     val backText: String = "Back",

@@ -1,3 +1,5 @@
+package com.pamn.ggmatch.app.architecture.view.profiles.components
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
