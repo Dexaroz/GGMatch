@@ -102,15 +102,49 @@ fun matchesView(
                 )
             }
 
-            LazyColumn(
-                contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(profiles) { profile ->
-                    profileCardCompact(profile = profile)
+            if (profiles.isEmpty()) {
+                EmptyMatchesView()
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(profiles) { profile ->
+                        profileCardCompact(profile = profile)
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun EmptyMatchesView() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 64.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No matches yet 💔",
+                color = Color.White,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Start swiping to find your perfect match!",
+                color = Color.LightGray,
+                fontSize = 16.sp,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
         }
     }
 }
