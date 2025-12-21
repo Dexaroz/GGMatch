@@ -141,6 +141,18 @@ class FirebaseProfileRepository(
         }
     }
 
+    override suspend fun updatePhotoBase64(userId: UserId, photoBase64: String?, photoUrl: String?) {
+        firestore.collection("profiles")
+            .document(userId.value)
+            .update(
+                mapOf(
+                    "photoBase64" to photoBase64,
+                    "photoUrl" to photoUrl
+                )
+            )
+            .await()
+    }
+
     override suspend fun add(profile: UserProfile): Result<Unit, AppError> = upsertInternal(profile, merge = false)
 
     override suspend fun update(profile: UserProfile): Result<Unit, AppError> = upsertInternal(profile, merge = true)
@@ -161,7 +173,7 @@ class FirebaseProfileRepository(
             val coreData =
                 mapOf(
                     "username" to profile.username?.value,
-                    "photoUrl" to profile.photoUrl,
+                    "photoUrl" to profile.photoUrl?.value,
                     "createdAtEpochMs" to profile.createdAt.toEpochMilliseconds(),
                     "updatedAtEpochMs" to profile.updatedAt.toEpochMilliseconds(),
                 )

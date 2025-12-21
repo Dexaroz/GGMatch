@@ -10,12 +10,13 @@ import kotlinx.datetime.Instant
 class UserProfile private constructor(
     id: UserId,
     var username: Username?,
-    var photoUrl: String?,
+    var photoUrl: UserPhotoUrl?,
     var riotAccount: RiotAccount?,
     var preferences: Preferences,
     val createdAt: Instant,
     var updatedAt: Instant,
 ) : AggregateRoot<UserId>(id) {
+
     companion object {
         fun createNew(
             id: UserId,
@@ -29,7 +30,7 @@ class UserProfile private constructor(
             return UserProfile(
                 id = id,
                 username = username,
-                photoUrl = photoUrl,
+                photoUrl = UserPhotoUrl.from(photoUrl),
                 riotAccount = riotAccount,
                 preferences = preferences,
                 createdAt = now,
@@ -49,7 +50,7 @@ class UserProfile private constructor(
             UserProfile(
                 id = id,
                 username = username,
-                photoUrl = photoUrl,
+                photoUrl = UserPhotoUrl.from(photoUrl),
                 riotAccount = riotAccount,
                 preferences = preferences,
                 createdAt = createdAt,
@@ -67,13 +68,18 @@ class UserProfile private constructor(
     }
 
     fun changePhotoUrl(
-        newPhotoUrl: String?,
+        newPhotoUrl: UserPhotoUrl?,
         timeProvider: TimeProvider,
     ) {
         if (photoUrl == newPhotoUrl) return
         photoUrl = newPhotoUrl
         updatedAt = timeProvider.now()
     }
+
+    fun changePhotoUrl(
+        newPhotoUrl: String?,
+        timeProvider: TimeProvider,
+    ) = changePhotoUrl(UserPhotoUrl.from(newPhotoUrl), timeProvider)
 
     fun changeRiotAccount(
         newAccount: RiotAccount?,

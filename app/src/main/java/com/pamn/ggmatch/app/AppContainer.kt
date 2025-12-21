@@ -11,6 +11,8 @@ import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.Up
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.EnsureUserProfileExistsCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.VerifyRiotAccountCommandHandler
+import com.pamn.ggmatch.app.architecture.io.images.CloudinaryProfileImageStrategy
+import com.pamn.ggmatch.app.architecture.io.images.ProfileImageStrategy
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.preferences.MatchPreferencesRepository
 import com.pamn.ggmatch.app.architecture.io.profile.FirebaseProfileRepository
@@ -67,6 +69,9 @@ object AppContainer {
         private set
 
     lateinit var profileController: ProfileController
+        private set
+
+    lateinit var profileImageStrategy: ProfileImageStrategy
         private set
 
     val currentUserId: UserId
@@ -145,6 +150,13 @@ object AppContainer {
                 registerUser = RegisterUserCommandHandler(authRepository, ensureUserProfileExistsHandler),
                 loginUser = LoginUserCommandHandler(authRepository),
                 loginWithGoogle = LoginWithGoogleCommandHandler(authRepository),
+            )
+
+        profileImageStrategy =
+            CloudinaryProfileImageStrategy(
+                http = OkHttpClient(),
+                cloudName = "dykbo5mzo",
+                uploadPreset = "ggmatch_avatar_unsigned",
             )
 
         initialized = true

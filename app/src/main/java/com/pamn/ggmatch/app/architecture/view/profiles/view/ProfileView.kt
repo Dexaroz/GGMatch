@@ -26,7 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -69,6 +68,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.control.profile.commands.VerifyRiotAccountCommand
+import com.pamn.ggmatch.app.architecture.model.profile.UserPhotoUrl
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.profile.Username
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
@@ -79,7 +79,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
-import com.pamn.ggmatch.app.architecture.view.matchPreferences.MatchPreferencesTextVariables
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 import com.pamn.ggmatch.app.architecture.view.profiles.ProfileTextVariables
 import com.pamn.ggmatch.app.architecture.view.profiles.components.gradientVerifyButton
@@ -118,7 +117,10 @@ fun profileEditView(
     var usernameText by rememberSaveable { mutableStateOf("") }
     var showEditUsername by rememberSaveable { mutableStateOf(false) }
 
+    // OJO: aquí guardamos lo que se pinta: puede ser "https://..." o "content://..." o "file://..."
     var pickedImageUri by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // solo para TakePicture
     var cameraOutputUri by rememberSaveable { mutableStateOf<String?>(null) }
 
     var showImagePickerSheet by rememberSaveable { mutableStateOf(false) }
@@ -134,22 +136,73 @@ fun profileEditView(
     var selectedSchedules by remember { mutableStateOf(setOf<PlaySchedule>()) }
     var selectedPlaystyles by remember { mutableStateOf(setOf<Playstyle>()) }
 
+    // ===== SUBIDA + GUARDADO (Cloudinary -> Firestore) =====
+    fun uploadAndPersist(uri: Uri) {
+        scope.launch {
+            isBusy = true
+            errorText = null
+            infoText = null
+
+            try {
+                // 1) subir a cloudinary (strategy)
+                val photoUrlVo =
+                    AppContainer.profileImageStrategy.save(
+                        context = context,
+                        userId = userId,
+                        source = uri,
+                    )
+
+                // 2) traer perfil actual
+                val profile =
+                    when (val get = AppContainer.profileRepository.get(userId)) {
+                        is Result.Error -> {
+                            errorText = texts.loadErrorText
+                            isBusy = false
+                            return@launch
+                        }
+                        is Result.Ok -> get.value
+                            ?: UserProfile.createNew(id = userId, timeProvider = AppContainer.timeProvider)
+                    }
+
+                // 3) actualizar dominio
+                profile.changePhotoUrl(photoUrlVo, AppContainer.timeProvider)
+
+                // 4) persistir
+                when (val saved = AppContainer.profileRepository.addOrUpdate(profile)) {
+                    is Result.Error -> errorText = texts.saveErrorText
+                    is Result.Ok -> {
+                        // pintamos ya con la URL real, así verificas que los demás también lo ven
+                        pickedImageUri = photoUrlVo.value
+                        infoText = texts.profileSavedText
+                    }
+                }
+            } catch (e: Exception) {
+                errorText = e.message ?: "Upload failed"
+            } finally {
+                isBusy = false
+            }
+        }
+    }
+
     val imagePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri: Uri? ->
             if (uri != null) {
+                // preview inmediato
                 pickedImageUri = uri.toString()
-                errorText = null
-                infoText = null
+                showImagePickerSheet = false
+                uploadAndPersist(uri)
             }
         }
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { ok ->
-            if (ok) {
-                pickedImageUri = cameraOutputUri
-                errorText = null
-                infoText = null
-            }
+            showImagePickerSheet = false
+            if (!ok) return@rememberLauncherForActivityResult
+
+            val uri = cameraOutputUri?.let(Uri::parse) ?: return@rememberLauncherForActivityResult
+            // preview inmediato
+            pickedImageUri = uri.toString()
+            uploadAndPersist(uri)
         }
 
     fun launchCamera() {
@@ -158,6 +211,7 @@ fun profileEditView(
         takePictureLauncher.launch(uri)
     }
 
+    // ===== LOAD PROFILE =====
     LaunchedEffect(userId) {
         isLoading = true
         errorText = null
@@ -178,6 +232,9 @@ fun profileEditView(
                 }
 
                 usernameText = profile.username?.value.orEmpty()
+
+                // ✅ Carga inicial del avatar desde Firestore (URL cloudinary)
+                pickedImageUri = profile.photoUrl?.value
 
                 riotGameName = profile.riotAccount?.gameName.orEmpty()
                 riotTagLine = profile.riotAccount?.tagLine.orEmpty()
@@ -217,10 +274,15 @@ fun profileEditView(
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
-            modifier = Modifier.fillMaxSize().statusBarsPadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .verticalScroll(rememberScrollState()),
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().height(240.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.login_header),
@@ -230,15 +292,22 @@ fun profileEditView(
                 )
                 Box(
                     modifier =
-                        Modifier.fillMaxSize().background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color(0x00000000), Color(0xAA000000)),
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color(0x00000000), Color(0xAA000000)),
+                                ),
                             ),
-                        ),
                 )
 
+                // ✅ Importante: align solo funciona dentro de BoxScope, por eso va aquí.
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp).align(Alignment.TopStart),
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxWidth()
+                            .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onBack) {
@@ -246,7 +315,7 @@ fun profileEditView(
                             painter = painterResource(id = R.drawable.undo),
                             contentDescription = texts.backText,
                             tint = Color.White,
-                            modifier = Modifier.size(24.dp).clickable { onBack() },
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                     Spacer(Modifier.width(8.dp))
@@ -269,6 +338,7 @@ fun profileEditView(
                         .offset(y = (-28).dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
+                // ===== CARD AVATAR + USERNAME =====
                 ElevatedCard(
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -281,13 +351,16 @@ fun profileEditView(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            val localUri = pickedImageUri?.let(Uri::parse)
-
                             Box(modifier = Modifier.size(86.dp)) {
+                                val painter =
+                                    if (!pickedImageUri.isNullOrBlank()) {
+                                        rememberAsyncImagePainter(pickedImageUri)
+                                    } else {
+                                        painterResource(id = R.drawable.login_header)
+                                    }
+
                                 Image(
-                                    painter =
-                                        localUri?.let { rememberAsyncImagePainter(it) }
-                                            ?: painterResource(id = R.drawable.login_header),
+                                    painter = painter,
                                     contentDescription = null,
                                     modifier =
                                         Modifier
@@ -331,6 +404,7 @@ fun profileEditView(
                     }
                 }
 
+                // ===== RIOT CARD =====
                 ElevatedCard(
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -432,6 +506,7 @@ fun profileEditView(
                     }
                 }
 
+                // ===== PREFERENCES =====
                 ElevatedCard(
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -550,6 +625,14 @@ fun profileEditView(
                             profile.changeUsername(usernameVo, AppContainer.timeProvider)
                             profile.updatePreferences(prefs, AppContainer.timeProvider)
 
+                            // ✅ si pickedImageUri es https, lo persistimos como VO
+                            val url = pickedImageUri
+                            val urlVo = url?.takeIf { it.startsWith("http") }?.let { UserPhotoUrl.from(it) }
+
+                            if (urlVo != null) {
+                                profile.changePhotoUrl(urlVo, AppContainer.timeProvider)
+                            }
+
                             when (val saved = AppContainer.profileRepository.addOrUpdate(profile)) {
                                 is Result.Error -> {
                                     isBusy = false
@@ -572,6 +655,7 @@ fun profileEditView(
         }
     }
 
+    // ===== SHEET =====
     if (showImagePickerSheet) {
         ModalBottomSheet(
             onDismissRequest = { showImagePickerSheet = false },
@@ -586,7 +670,7 @@ fun profileEditView(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = texts.selectGalleryPictureText,
+                    text = texts.changeImageText,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -621,6 +705,8 @@ fun profileEditView(
                 ) {
                     Text(texts.backText)
                 }
+
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
