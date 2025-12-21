@@ -7,6 +7,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -77,6 +79,7 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Preferences
 import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
+import com.pamn.ggmatch.app.architecture.view.matchPreferences.MatchPreferencesTextVariables
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 import com.pamn.ggmatch.app.architecture.view.profiles.ProfileTextVariables
 import com.pamn.ggmatch.app.architecture.view.profiles.components.gradientVerifyButton
@@ -118,7 +121,6 @@ fun profileEditView(
     var pickedImageUri by rememberSaveable { mutableStateOf<String?>(null) }
     var cameraOutputUri by rememberSaveable { mutableStateOf<String?>(null) }
 
-    // ✅ modal selector de imagen
     var showImagePickerSheet by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -215,7 +217,7 @@ fun profileEditView(
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().statusBarsPadding(),
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth().height(240.dp),
@@ -241,9 +243,10 @@ fun profileEditView(
                 ) {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            painter = painterResource(id = R.drawable.undo),
                             contentDescription = texts.backText,
                             tint = Color.White,
+                            modifier = Modifier.size(24.dp).clickable { onBack() },
                         )
                     }
                     Spacer(Modifier.width(8.dp))
@@ -295,7 +298,6 @@ fun profileEditView(
                                 )
 
                                 FloatingActionButton(
-                                    // ✅ ahora abre el modal
                                     onClick = { showImagePickerSheet = true },
                                     modifier =
                                         Modifier
@@ -324,12 +326,8 @@ fun profileEditView(
                                         Icon(Icons.Default.Edit, contentDescription = texts.usernameLabel)
                                     }
                                 }
-
-                                // ✅ eliminado: texts.imageHint
                             }
                         }
-
-                        // ✅ eliminados: botones "Change image"
                     }
                 }
 
