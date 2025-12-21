@@ -4,7 +4,6 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.riotApi.dto.LeagueEntryDto
 import com.pamn.ggmatch.app.riotApi.dto.RiotAccountDto
-import com.pamn.ggmatch.app.riotApi.dto.SummonerDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -17,7 +16,6 @@ class OkHttpRiotApiClient(
     private val http: OkHttpClient,
     private val apiKey: String,
 ) : RiotApiClient {
-
     // ✅ EUW fixed
     private val accountHost = "https://europe.api.riotgames.com"
     private val lolHost = "https://euw1.api.riotgames.com"
@@ -57,9 +55,7 @@ class OkHttpRiotApiClient(
             }
         }
 
-    override suspend fun getLeagueEntriesByPuuid(
-        puuid: String,
-    ): Result<List<LeagueEntryDto>, AppError> =
+    override suspend fun getLeagueEntriesByPuuid(puuid: String): Result<List<LeagueEntryDto>, AppError> =
         withContext(Dispatchers.IO) {
             runCatching {
                 val url = "$lolHost/lol/league/v4/entries/by-puuid/$puuid"
@@ -78,16 +74,17 @@ class OkHttpRiotApiClient(
 
                     for (i in 0 until arr.length()) {
                         val o = arr.getJSONObject(i)
-                        out += LeagueEntryDto(
-                            queueType = o.optString("queueType"),
-                            tier = o.optString("tier"),
-                            rank = o.optString("rank").takeIf { it.isNotBlank() },
-                            leaguePoints = o.optInt("leaguePoints"),
-                            wins = o.optInt("wins"),
-                            losses = o.optInt("losses"),
-                            hotStreak = o.optBoolean("hotStreak"),
-                            inactive = o.optBoolean("inactive"),
-                        )
+                        out +=
+                            LeagueEntryDto(
+                                queueType = o.optString("queueType"),
+                                tier = o.optString("tier"),
+                                rank = o.optString("rank").takeIf { it.isNotBlank() },
+                                leaguePoints = o.optInt("leaguePoints"),
+                                wins = o.optInt("wins"),
+                                losses = o.optInt("losses"),
+                                hotStreak = o.optBoolean("hotStreak"),
+                                inactive = o.optBoolean("inactive"),
+                            )
                     }
 
                     Result.Ok(out)
@@ -96,5 +93,4 @@ class OkHttpRiotApiClient(
                 Result.Error(AppError.Unexpected("League entries by puuid failed", e))
             }
         }
-
 }

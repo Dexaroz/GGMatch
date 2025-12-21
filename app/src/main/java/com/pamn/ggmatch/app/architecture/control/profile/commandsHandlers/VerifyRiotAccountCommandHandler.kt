@@ -16,7 +16,6 @@ class VerifyRiotAccountCommandHandler(
     private val profileRepository: ProfileRepository,
     private val timeProvider: TimeProvider,
 ) : CommandHandler<VerifyRiotAccountCommand, Unit> {
-
     override suspend fun invoke(command: VerifyRiotAccountCommand): Result<Unit, AppError> {
         val puuid =
             when (val r = riotApi.getPuuidByRiotId(command.gameName, command.tagLine)) {

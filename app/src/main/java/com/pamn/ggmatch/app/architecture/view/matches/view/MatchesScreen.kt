@@ -20,28 +20,31 @@ fun matchesScreen(onBack: () -> Unit) {
 
     var profiles by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
 
-    val presenter = remember {
-        MatchesPresenter(
-            repository = profileRepository,
-        )
-    }
-
-    val view = remember {
-        object : MatchesContract.View {
-            override fun showProfiles(profilesList: List<UserProfile>) {
-                kotlinx.coroutines.MainScope().launch {
-                    val matchedProfiles = filterOnlyMatches(
-                        allProfiles = profilesList,
-                        swipeRepository = swipeRepository,
-                        currentUserId = currentUserId
-                    )
-                    profiles = matchedProfiles
-                }
-            }
-
-            override fun showError(message: String) { }
+    val presenter =
+        remember {
+            MatchesPresenter(
+                repository = profileRepository,
+            )
         }
-    }
+
+    val view =
+        remember {
+            object : MatchesContract.View {
+                override fun showProfiles(profilesList: List<UserProfile>) {
+                    kotlinx.coroutines.MainScope().launch {
+                        val matchedProfiles =
+                            filterOnlyMatches(
+                                allProfiles = profilesList,
+                                swipeRepository = swipeRepository,
+                                currentUserId = currentUserId,
+                            )
+                        profiles = matchedProfiles
+                    }
+                }
+
+                override fun showError(message: String) { }
+            }
+        }
 
     DisposableEffect(Unit) {
         presenter.attachView(view)
@@ -58,18 +61,22 @@ fun matchesScreen(onBack: () -> Unit) {
 private suspend fun filterOnlyMatches(
     allProfiles: List<UserProfile>,
     swipeRepository: com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository,
-    currentUserId: com.pamn.ggmatch.app.architecture.model.user.UserId
+    currentUserId: com.pamn.ggmatch.app.architecture.model.user.UserId,
 ): List<UserProfile> {
-    val myHistory = (swipeRepository.get(currentUserId) as? com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok)
-        ?.value ?: return emptyList()
+    val myHistory =
+        (swipeRepository.get(currentUserId) as? com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok)
+            ?.value ?: return emptyList()
 
     return allProfiles.filter { candidate ->
         val iLikedCandidate = myHistory.items[candidate.id]?.type == com.pamn.ggmatch.app.architecture.model.swipe.SwipeType.LIKE
 
         if (iLikedCandidate) {
-            val candidateHistory = (swipeRepository.get(candidate.id) as? com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok)
-                ?.value
-            val candidateLikedMe = candidateHistory?.items?.get(currentUserId)?.type == com.pamn.ggmatch.app.architecture.model.swipe.SwipeType.LIKE
+            val candidateHistory =
+                (swipeRepository.get(candidate.id) as? com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok)
+                    ?.value
+            val candidateLikedMe =
+                candidateHistory?.items?.get(currentUserId)?.type ==
+                    com.pamn.ggmatch.app.architecture.model.swipe.SwipeType.LIKE
 
             candidateLikedMe
         } else {

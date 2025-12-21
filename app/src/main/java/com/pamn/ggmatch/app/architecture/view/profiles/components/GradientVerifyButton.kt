@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.app.architecture.view.shared.SharedColors
 
 @Composable
-fun GradientVerifyButton(
+fun gradientVerifyButton(
     text: String,
     verified: Boolean,
     enabled: Boolean,
@@ -36,14 +36,15 @@ fun GradientVerifyButton(
     val dotColor = if (verified) Color(0xFF2E7D32) else Color(0xFFC62828)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 52.dp)
-            .clip(shape)
-            .background(SharedColors.primaryGradient)
-            .alpha(if (enabled) 1f else 0.45f)
-            .clickable(enabled = enabled) { onClick() }
-            .padding(horizontal = 18.dp, vertical = 14.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = 52.dp)
+                .clip(shape)
+                .background(SharedColors.primaryGradient)
+                .alpha(if (enabled) 1f else 0.45f)
+                .clickable(enabled = enabled) { onClick() }
+                .padding(horizontal = 18.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -51,10 +52,11 @@ fun GradientVerifyButton(
             horizontalArrangement = Arrangement.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .clip(RoundedCornerShape(100))
-                    .background(dotColor),
+                modifier =
+                    Modifier
+                        .size(10.dp)
+                        .clip(RoundedCornerShape(100))
+                        .background(dotColor),
             )
             Spacer(Modifier.width(10.dp))
 

@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.compose.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -110,8 +111,8 @@ androidComponents {
             com.android.build.api.variant.BuildConfigField(
                 "String",
                 "\"RGAPI-4c96b4f9-e170-4363-aa27-c913f7e8bd49\"",
-                "Riot API Key"
-            )
+                "Riot API Key",
+            ),
         )
     }
 }

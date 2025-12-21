@@ -38,8 +38,6 @@ import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesS
 import com.pamn.ggmatch.app.architecture.view.matches.view.matchesScreen
 import com.pamn.ggmatch.app.architecture.view.profile.view.profileEditView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
-import com.pamn.ggmatch.app.architecture.view.testScreen.RiotVerifyTestView
-import com.pamn.ggmatch.app.architecture.view.testScreen.testView
 
 @Composable
 fun ggMatchNavHost(navController: NavHostController) {
@@ -128,7 +126,7 @@ fun ggMatchNavHost(navController: NavHostController) {
             matchesScreen(
                 onBack = {
                     navController.navigate(Router.HOME)
-                }
+                },
             )
         }
 

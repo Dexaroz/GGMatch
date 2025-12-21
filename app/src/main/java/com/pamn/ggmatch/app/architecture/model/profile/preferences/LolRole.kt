@@ -7,5 +7,5 @@ enum class LolRole(val iconRes: Int) {
     JUNGLE(R.drawable.jungle),
     MID(R.drawable.mid),
     ADC(R.drawable.bot),
-    SUPPORT(R.drawable.sup)
+    SUPPORT(R.drawable.sup),
 }

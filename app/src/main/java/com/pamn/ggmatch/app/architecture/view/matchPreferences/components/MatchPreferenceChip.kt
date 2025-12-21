@@ -26,7 +26,7 @@ fun matchPreferenceChip(
     label: String,
     selected: Boolean,
     enabled: Boolean = true,
-    iconRes: Int = R.drawable.chat, // ícono por defecto
+    iconRes: Int = R.drawable.chat,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(20.dp)
@@ -36,24 +36,26 @@ fun matchPreferenceChip(
             SharedColors.primaryGradient
         } else {
             Brush.horizontalGradient(
-                colors = listOf(
-                    Color(0x66EC1562),
-                    Color(0x66770B93),
-                ),
+                colors =
+                    listOf(
+                        Color(0x66EC1562),
+                        Color(0x66770B93),
+                    ),
             )
         }
 
     Row(
-        modifier = Modifier
-            .shadow(
-                elevation = if (selected) 8.dp else 2.dp,
-                shape = shape,
-                ambientColor = if (selected) Color(0x55E20A94) else Color.Black.copy(alpha = 0.1f),
-                spotColor = if (selected) Color(0xAA7A1FFF) else Color.Black.copy(alpha = 0.1f),
-            )
-            .background(background, shape)
-            .clickable(enabled = enabled) { onClick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .shadow(
+                    elevation = if (selected) 8.dp else 2.dp,
+                    shape = shape,
+                    ambientColor = if (selected) Color(0x55E20A94) else Color.Black.copy(alpha = 0.1f),
+                    spotColor = if (selected) Color(0xAA7A1FFF) else Color.Black.copy(alpha = 0.1f),
+                )
+                .background(background, shape)
+                .clickable(enabled = enabled) { onClick() }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -61,7 +63,7 @@ fun matchPreferenceChip(
             painter = painterResource(id = iconRes),
             contentDescription = null,
             tint = Color.White,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(20.dp),
         )
 
         Text(

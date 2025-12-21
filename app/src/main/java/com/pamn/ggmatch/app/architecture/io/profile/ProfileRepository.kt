@@ -7,8 +7,12 @@ import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 
 interface ProfileRepository {
     suspend fun get(id: UserId): Result<UserProfile?, AppError>
+
     suspend fun add(profile: UserProfile): Result<Unit, AppError>
+
     suspend fun update(profile: UserProfile): Result<Unit, AppError>
+
     suspend fun addOrUpdate(profile: UserProfile): Result<Unit, AppError>
+
     suspend fun getAll(): Result<List<UserProfile>, AppError>
 }

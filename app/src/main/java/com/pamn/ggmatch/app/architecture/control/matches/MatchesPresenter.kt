@@ -1,15 +1,14 @@
 package com.pamn.ggmatch.app.architecture.control.matches
 
 import com.pamn.ggmatch.app.architecture.io.profile.ProfileRepository
+import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 
 class MatchesPresenter(
     private val repository: ProfileRepository,
 ) : MatchesContract.Presenter {
-
     private var view: MatchesContract.View? = null
 
     override fun attachView(view: MatchesContract.View) {

@@ -103,7 +103,7 @@ fun matchesView(
             }
 
             if (profiles.isEmpty()) {
-                EmptyMatchesView()
+                emptyMatchesView()
             } else {
                 LazyColumn(
                     contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
@@ -120,15 +120,16 @@ fun matchesView(
 }
 
 @Composable
-fun EmptyMatchesView() {
+fun emptyMatchesView() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 64.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 64.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = "No matches yet 💔",

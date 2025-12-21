@@ -79,8 +79,8 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 import com.pamn.ggmatch.app.architecture.view.profiles.ProfileTextVariables
-import com.pamn.ggmatch.app.architecture.view.profiles.components.GradientVerifyButton
-import com.pamn.ggmatch.app.architecture.view.profiles.components.PreferenceChipsFlowRow
+import com.pamn.ggmatch.app.architecture.view.profiles.components.gradientVerifyButton
+import com.pamn.ggmatch.app.architecture.view.profiles.components.preferenceChipsFlowRow
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.roundToInt
@@ -200,7 +200,7 @@ fun profileEditView(
     }
 
     if (showEditUsername) {
-        EditUsernameDialog(
+        editUsernameDialog(
             initial = usernameText,
             title = texts.usernameLabel,
             onDismiss = { showEditUsername = false },
@@ -227,11 +227,12 @@ fun profileEditView(
                     contentScale = ContentScale.Crop,
                 )
                 Box(
-                    modifier = Modifier.fillMaxSize().background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color(0x00000000), Color(0xAA000000)),
+                    modifier =
+                        Modifier.fillMaxSize().background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color(0x00000000), Color(0xAA000000)),
+                            ),
                         ),
-                    ),
                 )
 
                 Row(
@@ -258,10 +259,11 @@ fun profileEditView(
             }
 
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .offset(y = (-28).dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .offset(y = (-28).dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 ElevatedCard(
@@ -280,22 +282,25 @@ fun profileEditView(
 
                             Box(modifier = Modifier.size(86.dp)) {
                                 Image(
-                                    painter = localUri?.let { rememberAsyncImagePainter(it) }
-                                        ?: painterResource(id = R.drawable.login_header),
+                                    painter =
+                                        localUri?.let { rememberAsyncImagePainter(it) }
+                                            ?: painterResource(id = R.drawable.login_header),
                                     contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.surfaceVariant),
                                     contentScale = ContentScale.Crop,
                                 )
 
                                 FloatingActionButton(
                                     // ✅ ahora abre el modal
                                     onClick = { showImagePickerSheet = true },
-                                    modifier = Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .size(34.dp),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.BottomEnd)
+                                            .size(34.dp),
                                     shape = CircleShape,
                                     containerColor = MaterialTheme.colorScheme.primary,
                                 ) {
@@ -374,7 +379,7 @@ fun profileEditView(
                         val riotVerified = riotStatus == RiotAccountStatus.VERIFIED
                         val canVerify = !isBusy && riotGameName.isNotBlank() && riotTagLine.isNotBlank()
 
-                        GradientVerifyButton(
+                        gradientVerifyButton(
                             text = if (isBusy) texts.riotVerifyingText else texts.riotVerifyButtonText,
                             verified = riotVerified,
                             enabled = canVerify,
@@ -440,7 +445,7 @@ fun profileEditView(
                         Text(texts.favoriteRoleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         Text(texts.favoriteRoleHint, style = MaterialTheme.typography.bodySmall)
 
-                        PreferenceChipsFlowRow {
+                        preferenceChipsFlowRow {
                             LolRole.entries.forEach { role ->
                                 matchPreferenceChip(
                                     label = role.name,
@@ -455,7 +460,7 @@ fun profileEditView(
                         }
 
                         Text(texts.scheduleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        PreferenceChipsFlowRow {
+                        preferenceChipsFlowRow {
                             PlaySchedule.entries.forEach { s ->
                                 matchPreferenceChip(
                                     label = s.name,
@@ -468,7 +473,7 @@ fun profileEditView(
                         }
 
                         Text(texts.languageTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        PreferenceChipsFlowRow {
+                        preferenceChipsFlowRow {
                             Language.entries.forEach { l ->
                                 matchPreferenceChip(
                                     label = l.name,
@@ -481,7 +486,7 @@ fun profileEditView(
                         }
 
                         Text(texts.playstyleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        PreferenceChipsFlowRow {
+                        preferenceChipsFlowRow {
                             Playstyle.entries.forEach { p ->
                                 matchPreferenceChip(
                                     label = p.name,
@@ -575,10 +580,11 @@ fun profileEditView(
             sheetState = sheetState,
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
@@ -623,7 +629,7 @@ fun profileEditView(
 }
 
 @Composable
-private fun EditUsernameDialog(
+private fun editUsernameDialog(
     initial: String,
     title: String,
     onDismiss: () -> Unit,
@@ -651,8 +657,10 @@ private fun EditUsernameDialog(
     )
 }
 
-private fun <T> toggleSet(set: Set<T>, item: T): Set<T> =
-    if (set.contains(item)) set - item else set + item
+private fun <T> toggleSet(
+    set: Set<T>,
+    item: T,
+): Set<T> = if (set.contains(item)) set - item else set + item
 
 private fun riotSummaryText(profile: UserProfile?): String? {
     val riot = profile?.riotAccount ?: return null

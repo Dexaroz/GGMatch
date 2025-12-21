@@ -125,7 +125,7 @@ fun matchFoundView(
                             .background(Color.White.copy(alpha = 0.15f))
                             .clickable {
                                 onGoToMatches()
-                            }
+                            },
                 ) {
                     Image(
                         painter = painterResource(R.drawable.go),

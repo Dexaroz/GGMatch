@@ -21,11 +21,12 @@ import kotlinx.datetime.Instant
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
 ) : ProfileRepository {
-
     private val profilesCol = firestore.collection("profiles")
 
     private fun coreDoc(userId: UserId) = profilesCol.document(userId.value)
+
     private fun prefsDoc(userId: UserId) = coreDoc(userId).collection("preferences").document("main")
+
     private fun riotDoc(userId: UserId) = coreDoc(userId).collection("riot").document("main")
 
     override suspend fun get(id: UserId): Result<UserProfile?, AppError> {
@@ -140,11 +141,9 @@ class FirebaseProfileRepository(
         }
     }
 
-    override suspend fun add(profile: UserProfile): Result<Unit, AppError> =
-        upsertInternal(profile, merge = false)
+    override suspend fun add(profile: UserProfile): Result<Unit, AppError> = upsertInternal(profile, merge = false)
 
-    override suspend fun update(profile: UserProfile): Result<Unit, AppError> =
-        upsertInternal(profile, merge = true)
+    override suspend fun update(profile: UserProfile): Result<Unit, AppError> = upsertInternal(profile, merge = true)
 
     override suspend fun addOrUpdate(profile: UserProfile): Result<Unit, AppError> =
         when (val existing = get(profile.id)) {
@@ -152,7 +151,10 @@ class FirebaseProfileRepository(
             is Result.Ok -> if (existing.value == null) add(profile) else update(profile)
         }
 
-    private suspend fun upsertInternal(profile: UserProfile, merge: Boolean): Result<Unit, AppError> =
+    private suspend fun upsertInternal(
+        profile: UserProfile,
+        merge: Boolean,
+    ): Result<Unit, AppError> =
         try {
             val batch = firestore.batch()
 
@@ -182,7 +184,6 @@ class FirebaseProfileRepository(
                     "puuid" to riot?.puuid,
                     "verificationStatus" to riot?.verificationStatus?.name,
                     "lastVerifiedAtEpochMs" to riot?.lastVerifiedAt?.toEpochMilliseconds(),
-
                     "soloqTier" to soloq?.tier,
                     "soloqDivision" to soloq?.division,
                     "soloqLp" to soloq?.leaguePoints,

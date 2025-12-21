@@ -14,6 +14,7 @@ kotlinxDatetime = "0.6.0"
 navigationCompose = "2.8.5"
 navigationComposeVersion = "2.9.6"
 roomKtx = "2.8.4"
+runtime = "1.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

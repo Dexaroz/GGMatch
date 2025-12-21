@@ -24,9 +24,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun RiotVerifyTestView(
-    modifier: Modifier = Modifier,
-) {
+fun riotVerifyTestView(modifier: Modifier = Modifier) {
     var gameName by rememberSaveable { mutableStateOf("") }
     var tagLine by rememberSaveable { mutableStateOf("") }
 
@@ -109,8 +107,11 @@ fun RiotVerifyTestView(
                                                 val div = soloq.division?.let { " $it" }.orEmpty()
                                                 val total = soloq.wins + soloq.losses
                                                 val wr =
-                                                    if (total == 0) 0
-                                                    else ((soloq.wins.toDouble() / total.toDouble()) * 100.0).roundToInt()
+                                                    if (total == 0) {
+                                                        0
+                                                    } else {
+                                                        ((soloq.wins.toDouble() / total.toDouble()) * 100.0).roundToInt()
+                                                    }
 
                                                 val streakTxt = if (soloq.hotStreak) "🔥 racha" else ""
                                                 val inactiveTxt = if (soloq.inactive) "⏸ inactivo" else ""
@@ -121,8 +122,8 @@ fun RiotVerifyTestView(
                                                         .let { if (it.isBlank()) "" else "\n$it" }
 
                                                 "✅ ${riot.gameName}#${riot.tagLine}\n" +
-                                                        "SOLOQ: ${soloq.tier}$div · ${soloq.leaguePoints} LP\n" +
-                                                        "WR: $wr% (${soloq.wins}-${soloq.losses})$flags"
+                                                    "SOLOQ: ${soloq.tier}$div · ${soloq.leaguePoints} LP\n" +
+                                                    "WR: $wr% (${soloq.wins}-${soloq.losses})$flags"
                                             }
                                         }
                                 }

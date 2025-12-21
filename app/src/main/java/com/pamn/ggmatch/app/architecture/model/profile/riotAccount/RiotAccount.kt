@@ -22,7 +22,11 @@ data class RiotAccount(
         require(trimmedTag.length <= 10) { "Riot tag must be at most 10 characters" }
     }
 
-    fun markVerified(at: Instant, puuid: String, soloq: SoloqStats?): RiotAccount =
+    fun markVerified(
+        at: Instant,
+        puuid: String,
+        soloq: SoloqStats?,
+    ): RiotAccount =
         copy(
             puuid = puuid,
             soloq = soloq,
