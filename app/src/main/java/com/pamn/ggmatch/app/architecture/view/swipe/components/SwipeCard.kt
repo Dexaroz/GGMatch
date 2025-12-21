@@ -35,6 +35,7 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
 import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.UNKNOWN_SUMMONER
+import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.UNKNOWN_NAME
 
 private fun userIdToConsistentInt(userId: UserId): Int {
     return (userId.hashCode() and 0x7FFFFFFF)
@@ -61,7 +62,7 @@ fun swipeCard(
 
     val defaultImageRes = R.drawable.profile_picture
 
-    val gameName = card.riotAccount?.gameName ?: UNKNOWN_SUMMONER
+    val gameName = card.username ?: UNKNOWN_NAME
 
     val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
     val languages = card.preferences.languages.joinToString(separator = ", ") { it.name.take(2) }
@@ -127,7 +128,7 @@ fun swipeCard(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = gameName,
+                    text = gameName.toString(),
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,

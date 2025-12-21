@@ -1,6 +1,7 @@
 package com.pamn.ggmatch.app.architecture.view.swipe
 
 object SwipeTextVariables {
+    const val UNKNOWN_NAME = "Unknown"
     const val UNKNOWN_SUMMONER = "Unknown Summoner"
     const val DEFAULT_SERVER = "UNK"
     const val ROLES_PREFIX = "Roles: "
