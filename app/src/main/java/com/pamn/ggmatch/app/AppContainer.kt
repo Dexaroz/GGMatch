@@ -7,10 +7,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginUserCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.LoginWithGoogleCommandHandler
 import com.pamn.ggmatch.app.architecture.control.auth.commandsHandlers.RegisterUserCommandHandler
+import com.pamn.ggmatch.app.architecture.control.chats.commandHandlers.EnsureConversationForMatchCommandHandler
+import com.pamn.ggmatch.app.architecture.control.chats.commandHandlers.SendMessageCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matchmaking.commandsHandlers.UpsertMatchPreferencesCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.EnsureUserProfileExistsCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.UpsertUserProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.profile.commandsHandlers.VerifyRiotAccountCommandHandler
+import com.pamn.ggmatch.app.architecture.io.chats.ChatRepository
+import com.pamn.ggmatch.app.architecture.io.chats.FirebaseChatRepository
 import com.pamn.ggmatch.app.architecture.io.images.CloudinaryProfileImageStrategy
 import com.pamn.ggmatch.app.architecture.io.images.ProfileImageStrategy
 import com.pamn.ggmatch.app.architecture.io.preferences.FirebaseMatchPreferencesRepository
@@ -27,6 +31,7 @@ import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.TimeProvider
 import com.pamn.ggmatch.app.controllers.AuthController
+import com.pamn.ggmatch.app.controllers.ChatController
 import com.pamn.ggmatch.app.controllers.MatchPreferencesController
 import com.pamn.ggmatch.app.controllers.ProfileController
 import com.pamn.ggmatch.app.riotApi.OkHttpRiotApiClient
@@ -72,6 +77,18 @@ object AppContainer {
         private set
 
     lateinit var profileImageStrategy: ProfileImageStrategy
+        private set
+
+    lateinit var chatRepository: ChatRepository
+        private set
+
+    lateinit var chatController: ChatController
+        private set
+
+    lateinit var ensureConversationForMatchHandler: EnsureConversationForMatchCommandHandler
+        private set
+
+    lateinit var sendMessageHandler: SendMessageCommandHandler
         private set
 
     val currentUserId: UserId
@@ -126,6 +143,11 @@ object AppContainer {
                 upsertMatchPreferences = upsertMatchPreferencesHandler,
             )
 
+        chatRepository =
+            FirebaseChatRepository(
+                firestore = firestore,
+            )
+
         val ensureUserProfileExistsHandler =
             EnsureUserProfileExistsCommandHandler(
                 profileRepository = profileRepository,
@@ -157,6 +179,24 @@ object AppContainer {
                 http = OkHttpClient(),
                 cloudName = "dykbo5mzo",
                 uploadPreset = "ggmatch_avatar_unsigned",
+            )
+
+        ensureConversationForMatchHandler =
+            EnsureConversationForMatchCommandHandler(
+                chatRepository = chatRepository
+            )
+
+        sendMessageHandler =
+            SendMessageCommandHandler(
+                chatRepository = chatRepository,
+                timeProvider = timeProvider
+            )
+
+        chatController =
+            ChatController(
+                chatRepository = chatRepository,
+                ensureConversation = ensureConversationForMatchHandler,
+                sendMessage = sendMessageHandler
             )
 
         initialized = true

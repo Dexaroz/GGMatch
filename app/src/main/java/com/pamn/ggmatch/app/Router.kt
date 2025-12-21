@@ -5,11 +5,12 @@ object Router {
     const val AUTH_REGISTER = "auth/register"
     const val HOME = "home"
 
-    const val TEST = "test_riot"
-
     const val PREFERENCES = "preferences"
 
-    const val MATCHES = "matches"
+    const val CHATS = "chats"
+
+    const val CHAT = "chat/{otherUserId}"
+    fun chat(otherUserId: String) = "chat/$otherUserId"
 
     const val PROFILE = "profile"
 }

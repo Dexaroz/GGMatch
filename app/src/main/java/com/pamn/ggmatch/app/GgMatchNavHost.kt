@@ -18,8 +18,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigatorImplementation
 import com.pamn.ggmatch.app.architecture.control.matching.tools.ProfileFilter
@@ -30,11 +32,15 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
+import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.sharedKernel.time.SystemTimeProvider
 import com.pamn.ggmatch.app.architecture.view.auth.view.loginView
 import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
+import com.pamn.ggmatch.app.architecture.view.chats.view.chatScreen
+import com.pamn.ggmatch.app.architecture.view.chats.view.chatsScreen
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
+import com.pamn.ggmatch.app.architecture.view.matches.view.chatsView
 import com.pamn.ggmatch.app.architecture.view.matches.view.matchesScreen
 import com.pamn.ggmatch.app.architecture.view.profile.view.profileEditView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
@@ -116,17 +122,30 @@ fun ggMatchNavHost(navController: NavHostController) {
                             swipeRepository = AppContainer.swipeInteractionsRepository,
                         )
                     }
+
                 swipeScreen(navigator = navigator, navController = navController)
             } else {
                 loadingScreen()
             }
         }
 
-        composable(Router.MATCHES) {
-            matchesScreen(
-                onBack = {
-                    navController.navigate(Router.HOME)
+        composable(Router.CHATS) {
+            chatsScreen(
+                onBack = { navController.navigate(Router.HOME) },
+                onOpenChat = { otherUserId ->
+                    navController.navigate(Router.chat(otherUserId.value))
                 },
+            )
+        }
+
+        composable(
+            route = Router.CHAT,
+            arguments = listOf(navArgument("otherUserId") { type = NavType.StringType }),
+        ) { entry ->
+            val otherRaw = entry.arguments?.getString("otherUserId") ?: return@composable
+            chatScreen(
+                otherUserId = UserId(otherRaw),
+                onBack = { navController.popBackStack() },
             )
         }
 

@@ -23,11 +23,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
+import com.pamn.ggmatch.app.architecture.control.chats.commandHandlers.EnsureConversationForMatchCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
+import com.pamn.ggmatch.app.architecture.io.chats.ChatRepository
+import com.pamn.ggmatch.app.architecture.io.chats.FirebaseChatRepository
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.matchFound.view.matchFoundView
@@ -66,6 +69,7 @@ fun swipeScreen(
     navigator: ProfileNavigator,
     navController: NavController,
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
+    chatRepository: ChatRepository = AppContainer.chatRepository
 ) {
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(true) }
@@ -95,6 +99,7 @@ fun swipeScreen(
     val view = remember { ComposeProfileViewImplementation(initialProfile) }
     val nextProfileCommandHandler = remember { NextProfileCommandHandler(navigator) }
     val swipeProfileCommandHandler = remember { SwipeProfileCommandHandler(repository = swipeInteractionsRepository) }
+    val ensureConversationForMatchCommandHandler = remember { EnsureConversationForMatchCommandHandler(chatRepository) }
 
     val presenter =
         remember {
@@ -102,6 +107,7 @@ fun swipeScreen(
                 view = view,
                 nextProfileCommandHandler = nextProfileCommandHandler,
                 swipeProfileCommandHandler = swipeProfileCommandHandler,
+                ensureConversationForMatchCommandHandler = ensureConversationForMatchCommandHandler,
                 scope = scope,
                 currentProfile = initialProfile,
                 currentUserId = AppContainer.currentUserId,
