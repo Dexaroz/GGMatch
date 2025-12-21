@@ -111,7 +111,7 @@ object AppContainer {
         val riotApiClient =
             OkHttpRiotApiClient(
                 http = OkHttpClient(),
-                apiKey = "RGAPI-4c96b4f9-e170-4363-aa27-c913f7e8bd49",
+                apiKey = "RGAPI-b58bbba7-c4ef-4598-9f92-e22f98640501",
             )
 
         val verifyRiotAccountHandler =

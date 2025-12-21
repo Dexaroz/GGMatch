@@ -111,7 +111,7 @@ androidComponents {
             "RIOT_API_KEY",
             com.android.build.api.variant.BuildConfigField(
                 "String",
-                "\"RGAPI-4c96b4f9-e170-4363-aa27-c913f7e8bd49\"",
+                "\"RGAPI-b58bbba7-c4ef-4598-9f92-e22f98640501\"",
                 "Riot API Key",
             ),
         )
