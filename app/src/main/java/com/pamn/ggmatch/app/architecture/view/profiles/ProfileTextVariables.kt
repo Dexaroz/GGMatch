@@ -4,7 +4,8 @@ data class ProfileTextVariables(
     val title: String = "Edit profile",
     val backText: String = "Back",
 
-    val changeImageText: String = "Change image",
+    val selectGalleryPictureText: String = "Choose from gallery",
+    val takePictureText: String = "Take a picture",
     val imageHint: String = "Upload pending (Storage not connected)",
 
     val usernameLabel: String = "Username",

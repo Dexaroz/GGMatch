@@ -31,15 +31,18 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -82,6 +85,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun profileEditView(
     modifier: Modifier = Modifier,
@@ -113,6 +117,10 @@ fun profileEditView(
 
     var pickedImageUri by rememberSaveable { mutableStateOf<String?>(null) }
     var cameraOutputUri by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // ✅ modal selector de imagen
+    var showImagePickerSheet by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var riotGameName by rememberSaveable { mutableStateOf("") }
     var riotTagLine by rememberSaveable { mutableStateOf("") }
@@ -283,14 +291,15 @@ fun profileEditView(
                                 )
 
                                 FloatingActionButton(
-                                    onClick = { /* UI sólo, el selector real está abajo */ },
+                                    // ✅ ahora abre el modal
+                                    onClick = { showImagePickerSheet = true },
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .size(34.dp),
                                     shape = CircleShape,
                                     containerColor = MaterialTheme.colorScheme.primary,
                                 ) {
-                                    Icon(Icons.Default.CameraAlt, contentDescription = texts.changeImageText)
+                                    Icon(Icons.Default.CameraAlt, contentDescription = texts.takePictureText)
                                 }
                             }
 
@@ -311,29 +320,11 @@ fun profileEditView(
                                     }
                                 }
 
-                                Text(
-                                    text = texts.imageHint,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
+                                // ✅ eliminado: texts.imageHint
                             }
                         }
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            OutlinedButton(
-                                enabled = !isBusy,
-                                onClick = {
-                                    imagePicker.launch(
-                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                                    )
-                                },
-                            ) { Text(texts.changeImageText) }
-
-                            OutlinedButton(
-                                enabled = !isBusy,
-                                onClick = { launchCamera() },
-                            ) { Text(texts.changeImageText) }
-                        }
+                        // ✅ eliminados: botones "Change image"
                     }
                 }
 
@@ -570,6 +561,58 @@ fun profileEditView(
                 }
 
                 Spacer(Modifier.height(24.dp))
+            }
+        }
+    }
+
+    if (showImagePickerSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showImagePickerSheet = false },
+            sheetState = sheetState,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    text = texts.selectGalleryPictureText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isBusy,
+                    onClick = {
+                        showImagePickerSheet = false
+                        imagePicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                        )
+                    },
+                ) {
+                    Text(texts.selectGalleryPictureText)
+                }
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isBusy,
+                    onClick = {
+                        showImagePickerSheet = false
+                        launchCamera()
+                    },
+                ) {
+                    Text(texts.takePictureText)
+                }
+
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { showImagePickerSheet = false },
+                ) {
+                    Text(texts.backText)
+                }
             }
         }
     }

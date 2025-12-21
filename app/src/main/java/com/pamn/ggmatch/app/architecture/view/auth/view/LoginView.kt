@@ -10,7 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -195,9 +197,21 @@ fun loginView(
                         googleLauncher.launch(googleClient.signInIntent)
                     },
                     enabled = !isLoading,
-                    modifier = Modifier.width(SharedDimens.buttonWidth),
+                    modifier = Modifier.width(210.dp),
                 ) {
-                    Text(text = uiTexts.googleButtonText)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.google),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(25.dp),
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(uiTexts.googleButtonText)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
