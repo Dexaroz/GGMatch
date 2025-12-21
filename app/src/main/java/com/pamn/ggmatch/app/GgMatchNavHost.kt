@@ -143,6 +143,12 @@ fun ggMatchNavHost(navController: NavHostController) {
         composable(Router.PROFILE) {
             profileEditView(
                 onBack = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate(Router.AUTH_LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }
