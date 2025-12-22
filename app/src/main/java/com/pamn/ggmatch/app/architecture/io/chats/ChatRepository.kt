@@ -14,13 +14,9 @@ interface ChatRepository {
         other: UserId,
     ): Result<ConversationId, AppError>
 
-    fun observeConversations(
-        me: UserId,
-    ): Flow<Result<List<ConversationSummary>, AppError>>
+    fun observeConversations(me: UserId): Flow<Result<List<ConversationSummary>, AppError>>
 
-    fun observeMessages(
-        conversationId: ConversationId,
-    ): Flow<Result<List<ChatMessage>, AppError>>
+    fun observeMessages(conversationId: ConversationId): Flow<Result<List<ChatMessage>, AppError>>
 
     suspend fun sendMessage(
         conversationId: ConversationId,

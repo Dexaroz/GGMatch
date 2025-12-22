@@ -30,7 +30,6 @@ import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.chats.ChatRepository
-import com.pamn.ggmatch.app.architecture.io.chats.FirebaseChatRepository
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.matchFound.view.matchFoundView
@@ -69,7 +68,7 @@ fun swipeScreen(
     navigator: ProfileNavigator,
     navController: NavController,
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
-    chatRepository: ChatRepository = AppContainer.chatRepository
+    chatRepository: ChatRepository = AppContainer.chatRepository,
 ) {
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(true) }
@@ -143,7 +142,7 @@ fun swipeScreen(
                 characterImageId = R.drawable.thresh,
                 onGoToMatches = {
                     matchedProfile = null
-                    navController.navigate("matches") { }
+                    navController.navigate("chats") { }
                 },
             )
         }

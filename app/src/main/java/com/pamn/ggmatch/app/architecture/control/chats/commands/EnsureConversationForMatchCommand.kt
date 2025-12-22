@@ -7,4 +7,3 @@ data class EnsureConversationForMatchCommand(
     val me: UserId,
     val other: UserId,
 ) : Command
-

@@ -20,20 +20,19 @@ import kotlinx.datetime.Instant
 class FirebaseChatRepository(
     private val firestore: FirebaseFirestore,
 ) : ChatRepository {
-
-    private fun conversationIdFor(a: UserId, b: UserId): ConversationId {
+    private fun conversationIdFor(
+        a: UserId,
+        b: UserId,
+    ): ConversationId {
         val (x, y) = listOf(a.value, b.value).sorted()
         return ConversationId("${x}_$y")
     }
 
-    private fun convDoc(id: ConversationId) =
-        firestore.collection("conversations").document(id.value)
+    private fun convDoc(id: ConversationId) = firestore.collection("conversations").document(id.value)
 
-    private fun msgCol(id: ConversationId) =
-        convDoc(id).collection("messages")
+    private fun msgCol(id: ConversationId) = convDoc(id).collection("messages")
 
-    private fun userInboxCol(userId: UserId) =
-        firestore.collection("users").document(userId.value).collection("conversations")
+    private fun userInboxCol(userId: UserId) = firestore.collection("users").document(userId.value).collection("conversations")
 
     override suspend fun ensureConversationForMatch(
         me: UserId,
@@ -89,9 +88,7 @@ class FirebaseChatRepository(
         }
     }
 
-    override fun observeConversations(
-        me: UserId,
-    ): Flow<Result<List<ConversationSummary>, AppError>> =
+    override fun observeConversations(me: UserId): Flow<Result<List<ConversationSummary>, AppError>> =
         callbackFlow {
             val q =
                 userInboxCol(me)
@@ -140,9 +137,7 @@ class FirebaseChatRepository(
             awaitClose { reg.remove() }
         }
 
-    override fun observeMessages(
-        conversationId: ConversationId,
-    ): Flow<Result<List<ChatMessage>, AppError>> =
+    override fun observeMessages(conversationId: ConversationId): Flow<Result<List<ChatMessage>, AppError>> =
         callbackFlow {
             val q =
                 msgCol(conversationId)

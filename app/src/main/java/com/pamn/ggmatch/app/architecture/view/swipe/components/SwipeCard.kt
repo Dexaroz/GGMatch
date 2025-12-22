@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -236,8 +235,8 @@ fun swipeCard(
                         Modifier
                             .fillMaxSize()
                             .padding(18.dp),
-                    verticalArrangement = Arrangement.Center,          // ✅ centrado vertical
-                    horizontalAlignment = Alignment.CenterHorizontally // ✅ centrado horizontal
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val riot = card.riotAccount
 
@@ -273,10 +272,11 @@ fun swipeCard(
                         )
 
                         Text(
-                            text = buildString {
-                                append(soloq.tier)
-                                if (!soloq.division.isNullOrBlank()) append(" ${soloq.division}")
-                            },
+                            text =
+                                buildString {
+                                    append(soloq.tier)
+                                    if (!soloq.division.isNullOrBlank()) append(" ${soloq.division}")
+                                },
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge,

@@ -211,10 +211,8 @@ fun chatScreen(
                                 cursorColor = Color.White,
                                 focusedPlaceholderColor = Color(0xFFB0B0B0),
                                 unfocusedPlaceholderColor = Color(0xFFB0B0B0),
-
                                 focusedContainerColor = Color(0x22000000),
                                 unfocusedContainerColor = Color(0x22000000),
-
                                 focusedIndicatorColor = Color.White,
                                 unfocusedIndicatorColor = Color(0x66FFFFFF),
                             ),
@@ -260,7 +258,10 @@ fun chatScreen(
 }
 
 @Composable
-private fun chatBubble(text: String, isMine: Boolean) {
+private fun chatBubble(
+    text: String,
+    isMine: Boolean,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start,

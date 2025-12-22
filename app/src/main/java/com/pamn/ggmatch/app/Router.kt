@@ -10,6 +10,7 @@ object Router {
     const val CHATS = "chats"
 
     const val CHAT = "chat/{otherUserId}"
+
     fun chat(otherUserId: String) = "chat/$otherUserId"
 
     const val PROFILE = "profile"

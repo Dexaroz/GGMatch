@@ -16,7 +16,7 @@ class ProfilePresenterImplementation(
     private val view: ProfileView,
     private val swipeProfileCommandHandler: CommandHandler<SwipeProfileCommand, Boolean>,
     private val nextProfileCommandHandler: CommandHandler<NextProfileCommand, UserProfile?>,
-    private val ensureConversationForMatchCommandHandler : CommandHandler<EnsureConversationForMatchCommand, ConversationId>,
+    private val ensureConversationForMatchCommandHandler: CommandHandler<EnsureConversationForMatchCommand, ConversationId>,
     private val scope: CoroutineScope,
     currentProfile: UserProfile?,
     private val currentUserId: UserId,
@@ -61,7 +61,8 @@ class ProfilePresenterImplementation(
                         val ensureChatCmd =
                             EnsureConversationForMatchCommand(
                                 currentUserId,
-                                targetProfile.id)
+                                targetProfile.id,
+                            )
 
                         when (ensureConversationForMatchCommandHandler.invoke(ensureChatCmd)) {
                             is Result.Ok -> {

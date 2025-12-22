@@ -183,20 +183,20 @@ object AppContainer {
 
         ensureConversationForMatchHandler =
             EnsureConversationForMatchCommandHandler(
-                chatRepository = chatRepository
+                chatRepository = chatRepository,
             )
 
         sendMessageHandler =
             SendMessageCommandHandler(
                 chatRepository = chatRepository,
-                timeProvider = timeProvider
+                timeProvider = timeProvider,
             )
 
         chatController =
             ChatController(
                 chatRepository = chatRepository,
                 ensureConversation = ensureConversationForMatchHandler,
-                sendMessage = sendMessageHandler
+                sendMessage = sendMessageHandler,
             )
 
         initialized = true

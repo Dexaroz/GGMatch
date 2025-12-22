@@ -1,6 +1,5 @@
 package com.pamn.ggmatch.app.architecture.view.chats
 
-
 object ChatTextVariables {
     const val CHATS_TITLE = "Chats"
     const val BACK_DESCRIPTION = "Back"

@@ -8,8 +8,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.pamn.ggmatch.app.AppContainer
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.view.matches.view.chatsView
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
+import com.pamn.ggmatch.app.architecture.view.matches.view.chatsView
 import kotlinx.coroutines.launch
 
 @Composable
