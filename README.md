@@ -10,7 +10,7 @@
 Configuración detallada del perfil del jugador:
 - Nombre de invocador
 - Roles (Top, Jungla, Mid, ADC, Support)
-- Rango (Hierro a Challenger)
+- Idiomas hablados
 - Modos de juego
 - Horarios de conexión
 
