@@ -2,6 +2,7 @@ package com.pamn.ggmatch.app.architecture.control.matching.tools
 
 import com.pamn.ggmatch.app.architecture.model.matchPreferences.MatchPreferences
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
+import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountStatus
 
 class ProfileMatcher {
     fun matches(
@@ -13,7 +14,6 @@ class ProfileMatcher {
         if (candidate.id.value == currentUserId || excludedIds.contains(candidate.id.value)) {
             return false
         }
-        /*
         val riotAccount =
             candidate.riotAccount
                 ?: return false
@@ -21,7 +21,6 @@ class ProfileMatcher {
         if (riotAccount.verificationStatus != RiotAccountStatus.VERIFIED) {
             return false
         }
-         */
 
         val preferences = candidate.preferences
         val currentPrefs = currentUserPreferences.preferences
