@@ -40,8 +40,6 @@ import com.pamn.ggmatch.app.architecture.view.auth.view.registerView
 import com.pamn.ggmatch.app.architecture.view.chats.view.chatScreen
 import com.pamn.ggmatch.app.architecture.view.chats.view.chatsScreen
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.view.preferencesScreen
-import com.pamn.ggmatch.app.architecture.view.matches.view.chatsView
-import com.pamn.ggmatch.app.architecture.view.matches.view.matchesScreen
 import com.pamn.ggmatch.app.architecture.view.profile.view.profileEditView
 import com.pamn.ggmatch.app.architecture.view.swipe.swipeScreen
 
@@ -75,7 +73,7 @@ fun ggMatchNavHost(navController: NavHostController) {
         composable(Router.AUTH_REGISTER) {
             registerView(
                 onRegisterSuccess = {
-                    navController.navigate(Router.HOME) {
+                    navController.navigate(Router.PROFILE) {
                         popUpTo(Router.AUTH_REGISTER) { inclusive = true }
                     }
                 },

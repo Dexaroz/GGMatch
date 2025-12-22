@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.AppContainer
+import com.pamn.ggmatch.app.Router
 import com.pamn.ggmatch.app.architecture.control.chats.commandHandlers.EnsureConversationForMatchCommandHandler
 import com.pamn.ggmatch.app.architecture.control.matching.navigator.ProfileNavigator
 import com.pamn.ggmatch.app.architecture.control.swipe.ProfilePresenterImplementation
@@ -30,12 +33,9 @@ import com.pamn.ggmatch.app.architecture.control.swipe.ProfileView
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.NextProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.control.swipe.commandsHandlers.SwipeProfileCommandHandler
 import com.pamn.ggmatch.app.architecture.io.chats.ChatRepository
-import com.pamn.ggmatch.app.architecture.io.chats.FirebaseChatRepository
 import com.pamn.ggmatch.app.architecture.io.swipe.SwipeHistoryRepository
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.view.matchFound.view.matchFoundView
-import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_MESSAGE
-import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.EMPTY_DECK_SUGGESTION
 import com.pamn.ggmatch.app.architecture.view.swipe.view.swipeView
 
 class ComposeProfileViewImplementation(
@@ -69,7 +69,7 @@ fun swipeScreen(
     navigator: ProfileNavigator,
     navController: NavController,
     swipeInteractionsRepository: SwipeHistoryRepository = AppContainer.swipeInteractionsRepository,
-    chatRepository: ChatRepository = AppContainer.chatRepository
+    chatRepository: ChatRepository = AppContainer.chatRepository,
 ) {
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(true) }
@@ -82,7 +82,7 @@ fun swipeScreen(
         when (result) {
             is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Ok -> isLoading = false
             is com.pamn.ggmatch.app.architecture.sharedKernel.result.Result.Error -> {
-                loadError = "No se pudieron cargar los perfiles"
+                loadError = "error"
                 isLoading = false
             }
         }
@@ -90,7 +90,7 @@ fun swipeScreen(
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            androidx.compose.material3.CircularProgressIndicator(color = Color.White)
+            CircularProgressIndicator(color = Color.White)
         }
         return
     }
@@ -121,7 +121,11 @@ fun swipeScreen(
         when {
             loadError != null -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(loadError!!, color = Color.Red)
+                    Text(
+                        text = stringResource(R.string.swipe_load_profiles_error),
+                        color = Color.Red,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
             view.isDeckEmptyState.value -> {
@@ -143,7 +147,7 @@ fun swipeScreen(
                 characterImageId = R.drawable.thresh,
                 onGoToMatches = {
                     matchedProfile = null
-                    navController.navigate("matches") { }
+                    navController.navigate(Router.CHATS) { }
                 },
             )
         }
@@ -164,7 +168,7 @@ fun emptyProfilesView() {
             modifier = Modifier.padding(24.dp),
         ) {
             Text(
-                text = "⚠️ $EMPTY_DECK_MESSAGE",
+                text = "${stringResource(R.string.swipe_warning_prefix)} ${stringResource(R.string.swipe_empty_deck_message)}",
                 color = Color.White,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
@@ -172,7 +176,7 @@ fun emptyProfilesView() {
                 modifier = Modifier.padding(bottom = 8.dp),
             )
             Text(
-                text = EMPTY_DECK_SUGGESTION,
+                text = stringResource(R.string.swipe_empty_deck_suggestion),
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,

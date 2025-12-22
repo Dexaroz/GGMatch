@@ -30,13 +30,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.BACK_DESCRIPTION
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.MATCHES_TITLE
 import com.pamn.ggmatch.app.architecture.view.matches.components.profileCardCompact
 
 @Composable
@@ -73,7 +73,7 @@ fun loadingMatchesView() {
     matchesBackground {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                text = "Loading matches...",
+                text = stringResource(R.string.matches_loading),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -91,21 +91,21 @@ fun emptyMatchesView(onBack: () -> Unit) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "No matches yet 💔",
+                    text = stringResource(R.string.matches_empty_title),
                     color = Color.White,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Start swiping to find your perfect match!",
+                    text = stringResource(R.string.matches_empty_subtitle),
                     color = Color.LightGray,
                     fontSize = 16.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                androidx.compose.material3.Text(
-                    text = "Go Back",
+                Text(
+                    text = stringResource(R.string.matches_go_back),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -133,13 +133,13 @@ fun matchesListView(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
-                    contentDescription = BACK_DESCRIPTION,
+                    contentDescription = stringResource(R.string.matches_back_description),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp).clickable { onBack() },
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = MATCHES_TITLE,
+                    text = stringResource(R.string.matches_title),
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -172,7 +172,7 @@ fun errorMatchesView(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Something went wrong ❌",
+                    text = stringResource(R.string.matches_error_title),
                     color = Color.Red,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -182,11 +182,11 @@ fun errorMatchesView(
                     text = message,
                     color = Color.LightGray,
                     fontSize = 16.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "Go Back",
+                    text = stringResource(R.string.matches_go_back),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

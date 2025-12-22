@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,9 +47,6 @@ import coil.request.ImageRequest
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
-import com.pamn.ggmatch.app.architecture.view.swipe.SwipeTextVariables.UNKNOWN_NAME
 import kotlin.math.roundToInt
 
 private fun userIdToConsistentInt(userId: UserId): Int = (userId.hashCode() and 0x7FFFFFFF)
@@ -99,7 +97,7 @@ fun swipeCard(
     val profileIdInt = userIdToConsistentInt(card.id)
     val backgroundRes = backgroundImages[profileIdInt % backgroundImages.size]
 
-    val gameName = card.username ?: UNKNOWN_NAME
+    val gameName = card.username?.toString().orEmpty().ifBlank { stringResource(R.string.swipe_unknown_name) }
     val mainRoles = card.preferences.favoriteRoles.joinToString(separator = ", ") { it.name }
     val languages = card.preferences.languages.joinToString(separator = ", ") { it.name.take(2) }
 
@@ -115,7 +113,6 @@ fun swipeCard(
                     scaleY = scale
                     this.alpha = alpha
                     rotationZ = offsetX / 30
-
                     rotationY = flipRotation
                     cameraDistance = cameraDistancePx
                 }
@@ -126,7 +123,7 @@ fun swipeCard(
             Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
                 Image(
                     painter = painterResource(id = backgroundRes),
-                    contentDescription = "Background image for $gameName",
+                    contentDescription = stringResource(R.string.swipe_background_image_desc, gameName),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                 )
@@ -174,7 +171,7 @@ fun swipeCard(
                                     .build(),
                             placeholder = painterResource(R.drawable.profile_picture),
                             error = painterResource(R.drawable.profile_picture),
-                            contentDescription = "$gameName profile picture",
+                            contentDescription = stringResource(R.string.swipe_profile_picture_desc, gameName),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop,
                         )
@@ -183,7 +180,7 @@ fun swipeCard(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = gameName.toString(),
+                        text = gameName,
                         style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -193,7 +190,7 @@ fun swipeCard(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "$ROLES_PREFIX$mainRoles",
+                        text = stringResource(R.string.swipe_roles_prefix) + mainRoles,
                         style = MaterialTheme.typography.titleMedium,
                         color = Color(0xFF44EAC5),
                         textAlign = TextAlign.Center,
@@ -202,7 +199,7 @@ fun swipeCard(
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
-                        text = "$LANGUAGES_PREFIX$languages",
+                        text = stringResource(R.string.swipe_languages_prefix) + languages,
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.LightGray,
                         textAlign = TextAlign.Center,
@@ -236,13 +233,14 @@ fun swipeCard(
                         Modifier
                             .fillMaxSize()
                             .padding(18.dp),
-                    verticalArrangement = Arrangement.Center,          // ✅ centrado vertical
-                    horizontalAlignment = Alignment.CenterHorizontally // ✅ centrado horizontal
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val riot = card.riotAccount
 
                     Text(
-                        text = riot?.let { "${it.gameName}#${it.tagLine}" } ?: "No Riot account",
+                        text = riot?.let { "${it.gameName}#${it.tagLine}" }
+                            ?: stringResource(R.string.swipe_no_riot_account),
                         color = Color.White,
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
@@ -259,7 +257,7 @@ fun swipeCard(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Text(
-                                text = "Sin SoloQ stats todavía.",
+                                text = stringResource(R.string.swipe_no_soloq_stats),
                                 color = Color.LightGray,
                                 modifier = Modifier.padding(14.dp),
                                 textAlign = TextAlign.Center,
@@ -309,20 +307,20 @@ fun swipeCard(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text(
-                                    text = "W/L: ${soloq.wins}W • ${soloq.losses}L",
+                                    text = stringResource(R.string.swipe_wl_format, soloq.wins, soloq.losses),
                                     color = Color.White,
                                     style = MaterialTheme.typography.bodyLarge,
                                     textAlign = TextAlign.Center,
                                 )
                                 Text(
-                                    text = "Winrate: $wr%",
+                                    text = stringResource(R.string.swipe_winrate_format, wr),
                                     color = Color.LightGray,
                                     style = MaterialTheme.typography.bodyLarge,
                                     textAlign = TextAlign.Center,
                                 )
                                 if (soloq.hotStreak) {
                                     Text(
-                                        text = "🔥 Hot streak",
+                                        text = stringResource(R.string.swipe_hot_streak),
                                         color = Color(0xFFFFC107),
                                         fontWeight = FontWeight.SemiBold,
                                         textAlign = TextAlign.Center,
@@ -330,7 +328,7 @@ fun swipeCard(
                                 }
                                 if (soloq.inactive) {
                                     Text(
-                                        text = "⏸️ Inactive",
+                                        text = stringResource(R.string.swipe_inactive),
                                         color = Color(0xFFFE4C6A),
                                         fontWeight = FontWeight.SemiBold,
                                         textAlign = TextAlign.Center,
@@ -348,7 +346,7 @@ fun swipeCard(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = "Tap to return",
+                            text = stringResource(R.string.swipe_tap_to_return),
                             modifier = Modifier.padding(12.dp),
                             color = Color.White,
                             textAlign = TextAlign.Center,

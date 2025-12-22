@@ -40,7 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
@@ -51,7 +53,6 @@ import com.pamn.ggmatch.app.architecture.model.chats.ChatMessage
 import com.pamn.ggmatch.app.architecture.model.chats.ConversationId
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
-import com.pamn.ggmatch.app.architecture.view.chats.ChatTextVariables
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,6 +62,7 @@ fun chatScreen(
 ) {
     val me = AppContainer.currentUserId
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var conversationId by remember { mutableStateOf<ConversationId?>(null) }
     var messages by remember { mutableStateOf<List<ChatMessage>>(emptyList()) }
@@ -68,6 +70,11 @@ fun chatScreen(
     var error by remember { mutableStateOf<String?>(null) }
 
     val listState = rememberLazyListState()
+
+    val createErrorText = remember { context.getString(R.string.chat_create_error) }
+    val loadErrorText = remember { context.getString(R.string.chat_load_error) }
+    val sendErrorText = remember { context.getString(R.string.chat_send_error) }
+    val loadingText = remember { context.getString(R.string.chat_loading) }
 
     LaunchedEffect(me, otherUserId) {
         val cmd = EnsureConversationForMatchCommand(me = me, other = otherUserId)
@@ -78,7 +85,7 @@ fun chatScreen(
             }
             is Result.Error -> {
                 conversationId = null
-                error = ChatTextVariables.CHAT_CREATE_ERROR
+                error = createErrorText
             }
         }
     }
@@ -86,7 +93,7 @@ fun chatScreen(
     val conv = conversationId
     if (conv == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(error ?: "Loading...", color = Color.White)
+            Text(error ?: loadingText, color = Color.White)
         }
         return
     }
@@ -98,31 +105,25 @@ fun chatScreen(
                     messages = res.value
                     error = null
                 }
-                is Result.Error -> error = ChatTextVariables.CHAT_LOAD_ERROR
+                is Result.Error -> error = loadErrorText
             }
         }
     }
 
     LaunchedEffect(messages.size) {
         if (messages.isEmpty()) return@LaunchedEffect
-
         val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
         val lastIndex = messages.lastIndex
         val nearBottom = (lastIndex - lastVisible) <= 2
-
-        if (nearBottom) {
-            listState.animateScrollToItem(lastIndex)
-        }
+        if (nearBottom) listState.animateScrollToItem(lastIndex)
     }
 
     LaunchedEffect(Unit) {
-        snapshotFlow { input }
-            .collect { txt ->
-                if (txt.isNotBlank() && messages.isNotEmpty()) {
-                    val lastIndex = messages.lastIndex
-                    listState.animateScrollToItem(lastIndex)
-                }
+        snapshotFlow { input }.collect { txt ->
+            if (txt.isNotBlank() && messages.isNotEmpty()) {
+                listState.animateScrollToItem(messages.lastIndex)
             }
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -153,7 +154,7 @@ fun chatScreen(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
-                    contentDescription = ChatTextVariables.BACK_DESCRIPTION,
+                    contentDescription = stringResource(R.string.chats_back_description),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp).clickable { onBack() },
                 )
@@ -161,7 +162,7 @@ fun chatScreen(
                 Spacer(Modifier.width(16.dp))
 
                 Text(
-                    text = ChatTextVariables.CHAT_TITLE,
+                    text = stringResource(R.string.chat_title),
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                 )
@@ -169,7 +170,7 @@ fun chatScreen(
 
             if (error != null) {
                 Text(
-                    text = "❌ $error",
+                    text = stringResource(R.string.chat_error_prefix, error.orEmpty()),
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
@@ -202,7 +203,7 @@ fun chatScreen(
                         modifier = Modifier.weight(1f),
                         value = input,
                         onValueChange = { input = it },
-                        placeholder = { Text(ChatTextVariables.MESSAGE_PLACEHOLDER) },
+                        placeholder = { Text(stringResource(R.string.chat_message_placeholder)) },
                         singleLine = true,
                         colors =
                             TextFieldDefaults.colors(
@@ -211,10 +212,8 @@ fun chatScreen(
                                 cursorColor = Color.White,
                                 focusedPlaceholderColor = Color(0xFFB0B0B0),
                                 unfocusedPlaceholderColor = Color(0xFFB0B0B0),
-
                                 focusedContainerColor = Color(0x22000000),
                                 unfocusedContainerColor = Color(0x22000000),
-
                                 focusedIndicatorColor = Color.White,
                                 unfocusedIndicatorColor = Color(0x66FFFFFF),
                             ),
@@ -239,7 +238,7 @@ fun chatScreen(
 
                                 when (AppContainer.sendMessageHandler.invoke(cmd)) {
                                     is Result.Ok -> error = null
-                                    is Result.Error -> error = ChatTextVariables.CHAT_SEND_ERROR
+                                    is Result.Error -> error = sendErrorText
                                 }
                             }
                         },
@@ -251,7 +250,7 @@ fun chatScreen(
                                 disabledContentColor = Color.White,
                             ),
                     ) {
-                        Text(ChatTextVariables.SEND)
+                        Text(stringResource(R.string.chat_send))
                     }
                 }
             }

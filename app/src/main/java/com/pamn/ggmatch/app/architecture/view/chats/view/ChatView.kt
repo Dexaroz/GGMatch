@@ -29,16 +29,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
 import com.pamn.ggmatch.app.architecture.model.user.UserId
-import com.pamn.ggmatch.app.architecture.view.chats.ChatTextVariables.BACK_DESCRIPTION
-import com.pamn.ggmatch.app.architecture.view.chats.ChatTextVariables.CHATS_TITLE
-import com.pamn.ggmatch.app.architecture.view.chats.ChatTextVariables.NO_CHATS_SUBTITLE
-import com.pamn.ggmatch.app.architecture.view.chats.ChatTextVariables.NO_CHATS_TITLE
 import com.pamn.ggmatch.app.architecture.view.chats.components.chatCardCompact
 
 @Composable
@@ -88,7 +85,7 @@ fun chatsView(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
-                    contentDescription = BACK_DESCRIPTION,
+                    contentDescription = stringResource(R.string.chats_back_description),
                     tint = Color.White,
                     modifier =
                         Modifier
@@ -99,7 +96,7 @@ fun chatsView(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    text = CHATS_TITLE,
+                    text = stringResource(R.string.chats_title),
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
@@ -140,7 +137,7 @@ fun emptyChatsView() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = NO_CHATS_TITLE,
+                text = stringResource(R.string.chats_no_chats_title),
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -149,7 +146,7 @@ fun emptyChatsView() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = NO_CHATS_SUBTITLE,
+                text = stringResource(R.string.chats_no_chats_subtitle),
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,

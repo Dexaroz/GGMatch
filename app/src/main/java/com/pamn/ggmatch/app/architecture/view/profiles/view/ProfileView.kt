@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -80,7 +81,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.riotAccount.RiotAccountSt
 import com.pamn.ggmatch.app.architecture.model.user.UserId
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
-import com.pamn.ggmatch.app.architecture.view.profiles.ProfileTextVariables
 import com.pamn.ggmatch.app.architecture.view.profiles.components.gradientVerifyButton
 import com.pamn.ggmatch.app.architecture.view.profiles.components.preferenceChipsFlowRow
 import kotlinx.coroutines.launch
@@ -93,7 +93,6 @@ fun profileEditView(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     onLogout: () -> Unit,
-    texts: ProfileTextVariables = ProfileTextVariables(),
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -101,9 +100,9 @@ fun profileEditView(
     val firebaseUid = AppContainer.firebaseAuth.currentUser?.uid
     if (firebaseUid == null) {
         Column(modifier = modifier.padding(16.dp)) {
-            Text(texts.notAuthenticatedText)
+            Text(stringResource(R.string.profile_not_authenticated))
             Spacer(Modifier.height(12.dp))
-            Button(onClick = onBack) { Text(texts.backText) }
+            Button(onClick = onBack) { Text(stringResource(R.string.profile_back)) }
         }
         return
     }
@@ -152,7 +151,7 @@ fun profileEditView(
                 val profile =
                     when (val get = AppContainer.profileRepository.get(userId)) {
                         is Result.Error -> {
-                            errorText = texts.loadErrorText
+                            errorText = context.getString(R.string.profile_load_error)
                             isBusy = false
                             return@launch
                         }
@@ -164,14 +163,14 @@ fun profileEditView(
                 profile.changePhotoUrl(photoUrlVo, AppContainer.timeProvider)
 
                 when (val saved = AppContainer.profileRepository.addOrUpdate(profile)) {
-                    is Result.Error -> errorText = texts.saveErrorText
+                    is Result.Error -> errorText = context.getString(R.string.profile_save_error)
                     is Result.Ok -> {
                         pickedImageUri = photoUrlVo.value
-                        infoText = texts.profileSavedText
+                        infoText = context.getString(R.string.profile_saved)
                     }
                 }
             } catch (e: Exception) {
-                errorText = e.message ?: "Upload failed"
+                errorText = e.message ?: context.getString(R.string.profile_upload_failed)
             } finally {
                 isBusy = false
             }
@@ -211,7 +210,7 @@ fun profileEditView(
         when (val res = AppContainer.profileRepository.get(userId)) {
             is Result.Error -> {
                 isLoading = false
-                errorText = texts.loadErrorText
+                errorText = context.getString(R.string.profile_load_error)
             }
 
             is Result.Ok -> {
@@ -235,7 +234,7 @@ fun profileEditView(
                 selectedSchedules = profile.preferences.playSchedule
                 selectedPlaystyles = profile.preferences.playstyle
 
-                riotSummary = riotSummaryText(profile)
+                riotSummary = riotSummaryText(context, profile)
                 isLoading = false
             }
         }
@@ -251,7 +250,7 @@ fun profileEditView(
     if (showEditUsername) {
         editUsernameDialog(
             initial = usernameText,
-            title = texts.usernameLabel,
+            title = stringResource(R.string.profile_username_label),
             onDismiss = { showEditUsername = false },
             onSave = { newValue ->
                 usernameText = newValue
@@ -304,14 +303,14 @@ fun profileEditView(
                     IconButton(onClick = onBack) {
                         Icon(
                             painter = painterResource(id = R.drawable.undo),
-                            contentDescription = texts.backText,
+                            contentDescription = stringResource(R.string.profile_back),
                             tint = Color.White,
                             modifier = Modifier.size(24.dp),
                         )
                     }
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = usernameText.trim().ifBlank { texts.usernameLabel },
+                        text = usernameText.trim().ifBlank { stringResource(R.string.profile_username_label) },
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.ExtraBold,
@@ -369,7 +368,10 @@ fun profileEditView(
                                     shape = CircleShape,
                                     containerColor = MaterialTheme.colorScheme.primary,
                                 ) {
-                                    Icon(Icons.Default.CameraAlt, contentDescription = texts.takePictureText)
+                                    Icon(
+                                        Icons.Default.CameraAlt,
+                                        contentDescription = stringResource(R.string.profile_take_picture),
+                                    )
                                 }
                             }
 
@@ -378,7 +380,7 @@ fun profileEditView(
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = usernameText.trim().ifBlank { texts.usernameLabel },
+                                        text = usernameText.trim().ifBlank { stringResource(R.string.profile_username_label) },
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         maxLines = 1,
@@ -392,7 +394,7 @@ fun profileEditView(
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Edit,
-                                            contentDescription = texts.usernameLabel,
+                                            contentDescription = stringResource(R.string.profile_username_label),
                                         )
                                     }
 
@@ -413,7 +415,7 @@ fun profileEditView(
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Logout,
-                                            contentDescription = "Logout",
+                                            contentDescription = stringResource(R.string.profile_logout),
                                         )
                                     }
                                 }
@@ -431,7 +433,7 @@ fun profileEditView(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(
-                            text = texts.riotTitle,
+                            text = stringResource(R.string.profile_riot_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                         )
@@ -448,7 +450,7 @@ fun profileEditView(
                                     errorText = null
                                     infoText = null
                                 },
-                                label = { Text(texts.riotGameNameLabel) },
+                                label = { Text(stringResource(R.string.profile_riot_game_name_label)) },
                                 singleLine = true,
                             )
 
@@ -460,7 +462,7 @@ fun profileEditView(
                                     errorText = null
                                     infoText = null
                                 },
-                                label = { Text(texts.riotTagLabel) },
+                                label = { Text(stringResource(R.string.profile_riot_tag_label)) },
                                 singleLine = true,
                             )
                         }
@@ -469,7 +471,12 @@ fun profileEditView(
                         val canVerify = !isBusy && riotGameName.isNotBlank() && riotTagLine.isNotBlank()
 
                         gradientVerifyButton(
-                            text = if (isBusy) texts.riotVerifyingText else texts.riotVerifyButtonText,
+                            text =
+                                if (isBusy) {
+                                    stringResource(R.string.profile_riot_verifying)
+                                } else {
+                                    stringResource(R.string.profile_riot_verify_button)
+                                },
                             verified = riotVerified,
                             enabled = canVerify,
                             onClick = {
@@ -496,19 +503,19 @@ fun profileEditView(
                                             when (val p = AppContainer.profileRepository.get(userId)) {
                                                 is Result.Error -> {
                                                     isBusy = false
-                                                    errorText = texts.loadErrorText
+                                                    errorText = context.getString(R.string.profile_load_error)
                                                     riotStatus = RiotAccountStatus.UNVERIFIED
                                                 }
 
                                                 is Result.Ok -> {
                                                     isBusy = false
-                                                    infoText = texts.riotSavedText
+                                                    infoText = context.getString(R.string.profile_riot_saved)
 
                                                     val prof = p.value
                                                     riotStatus =
                                                         prof?.riotAccount?.verificationStatus
                                                             ?: RiotAccountStatus.UNVERIFIED
-                                                    riotSummary = riotSummaryText(prof)
+                                                    riotSummary = riotSummaryText(context, prof)
                                                 }
                                             }
                                         }
@@ -531,8 +538,12 @@ fun profileEditView(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Text(texts.favoriteRoleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text(texts.favoriteRoleHint, style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            stringResource(R.string.profile_favorite_role_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(stringResource(R.string.profile_favorite_role_hint), style = MaterialTheme.typography.bodySmall)
 
                         preferenceChipsFlowRow {
                             LolRole.entries.forEach { role ->
@@ -548,7 +559,11 @@ fun profileEditView(
                             }
                         }
 
-                        Text(texts.scheduleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            stringResource(R.string.profile_schedule_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
                         preferenceChipsFlowRow {
                             PlaySchedule.entries.forEach { s ->
                                 matchPreferenceChip(
@@ -561,7 +576,11 @@ fun profileEditView(
                             }
                         }
 
-                        Text(texts.languageTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            stringResource(R.string.profile_language_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
                         preferenceChipsFlowRow {
                             Language.entries.forEach { l ->
                                 matchPreferenceChip(
@@ -574,7 +593,11 @@ fun profileEditView(
                             }
                         }
 
-                        Text(texts.playstyleTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            stringResource(R.string.profile_playstyle_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
                         preferenceChipsFlowRow {
                             Playstyle.entries.forEach { p ->
                                 matchPreferenceChip(
@@ -589,8 +612,8 @@ fun profileEditView(
                     }
                 }
 
-                if (errorText != null) Text("❌ ${errorText.orEmpty()}")
-                if (infoText != null) Text("✅ ${infoText.orEmpty()}")
+                if (errorText != null) Text(stringResource(R.string.profile_error_prefix, errorText.orEmpty()))
+                if (infoText != null) Text(stringResource(R.string.profile_info_prefix, infoText.orEmpty()))
 
                 Button(
                     enabled = !isBusy,
@@ -608,7 +631,7 @@ fun profileEditView(
 
                             if (usernameText.isNotBlank() && usernameVo == null) {
                                 isBusy = false
-                                errorText = texts.invalidUsernameText
+                                errorText = context.getString(R.string.profile_invalid_username)
                                 return@launch
                             }
 
@@ -622,7 +645,7 @@ fun profileEditView(
                                     )
                                 }.getOrElse {
                                     isBusy = false
-                                    errorText = texts.invalidPreferencesText
+                                    errorText = context.getString(R.string.profile_invalid_preferences)
                                     return@launch
                                 }
 
@@ -630,7 +653,7 @@ fun profileEditView(
                                 when (val get = AppContainer.profileRepository.get(userId)) {
                                     is Result.Error -> {
                                         isBusy = false
-                                        errorText = texts.loadErrorText
+                                        errorText = context.getString(R.string.profile_load_error)
                                         return@launch
                                     }
 
@@ -651,18 +674,18 @@ fun profileEditView(
                             when (val saved = AppContainer.profileRepository.addOrUpdate(profile)) {
                                 is Result.Error -> {
                                     isBusy = false
-                                    errorText = texts.saveErrorText
+                                    errorText = context.getString(R.string.profile_save_error)
                                 }
 
                                 is Result.Ok -> {
                                     isBusy = false
-                                    infoText = texts.profileSavedText
+                                    infoText = context.getString(R.string.profile_saved)
                                 }
                             }
                         }
                     },
                 ) {
-                    Text(if (isBusy) texts.savingText else texts.saveButtonText)
+                    Text(if (isBusy) stringResource(R.string.profile_saving) else stringResource(R.string.profile_save_changes))
                 }
 
                 Spacer(Modifier.height(24.dp))
@@ -684,7 +707,7 @@ fun profileEditView(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = texts.changeImageText,
+                    text = stringResource(R.string.profile_change_image),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -699,7 +722,7 @@ fun profileEditView(
                         )
                     },
                 ) {
-                    Text(texts.selectGalleryPictureText)
+                    Text(stringResource(R.string.profile_choose_from_gallery))
                 }
 
                 Button(
@@ -710,14 +733,14 @@ fun profileEditView(
                         launchCamera()
                     },
                 ) {
-                    Text(texts.takePictureText)
+                    Text(stringResource(R.string.profile_take_picture))
                 }
 
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { showImagePickerSheet = false },
                 ) {
-                    Text(texts.backText)
+                    Text(stringResource(R.string.profile_back))
                 }
 
                 Spacer(Modifier.height(10.dp))
@@ -747,10 +770,10 @@ private fun editUsernameDialog(
             )
         },
         confirmButton = {
-            TextButton(onClick = { onSave(value) }) { Text("OK") }
+            TextButton(onClick = { onSave(value) }) { Text(stringResource(R.string.profile_ok)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.profile_cancel)) }
         },
     )
 }
@@ -760,17 +783,30 @@ private fun <T> toggleSet(
     item: T,
 ): Set<T> = if (set.contains(item)) set - item else set + item
 
-private fun riotSummaryText(profile: UserProfile?): String? {
+private fun riotSummaryText(context: Context, profile: UserProfile?): String? {
     val riot = profile?.riotAccount ?: return null
     val soloq = riot.soloq
 
-    if (soloq == null) return "Riot: ${riot.gameName}#${riot.tagLine} · SOLOQ: Unranked"
+    if (soloq == null) {
+        return context.getString(
+            R.string.profile_riot_summary_unranked,
+            riot.gameName,
+            riot.tagLine,
+        )
+    }
 
     val div = soloq.division?.let { " $it" }.orEmpty()
     val total = soloq.wins + soloq.losses
     val wr = if (total == 0) 0 else ((soloq.wins.toDouble() / total.toDouble()) * 100.0).roundToInt()
 
-    return "Riot: ${riot.gameName}#${riot.tagLine}\nSOLOQ: ${soloq.tier}$div · ${soloq.leaguePoints} LP · WR: $wr%"
+    return context.getString(
+        R.string.profile_riot_summary_ranked,
+        riot.gameName,
+        riot.tagLine,
+        soloq.tier + div,
+        soloq.leaguePoints,
+        wr,
+    )
 }
 
 private fun createTempImageUri(context: Context): Uri {
