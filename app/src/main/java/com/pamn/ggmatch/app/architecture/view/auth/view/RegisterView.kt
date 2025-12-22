@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pamn.ggmatch.R
@@ -28,7 +29,6 @@ import com.pamn.ggmatch.app.architecture.control.auth.commands.RegisterUserComma
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.AppError
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
-import com.pamn.ggmatch.app.architecture.view.auth.RegisterTextVariables
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthFooter
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthHeader
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthTitle
@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun registerView(
     modifier: Modifier = Modifier,
-    uiTexts: RegisterTextVariables = RegisterTextVariables(),
     headerImageRes: Int = R.drawable.register_header,
     logoText: String = "GGMATCH",
     authController: AuthController = AppContainer.authController,
@@ -56,6 +55,21 @@ fun registerView(
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
+
+    val tTitle = stringResource(R.string.auth_register_title)
+    val tEmail = stringResource(R.string.auth_email_placeholder)
+    val tPassword = stringResource(R.string.auth_password_placeholder)
+    val tConfirmPassword = stringResource(R.string.auth_register_confirm_password_placeholder)
+    val tLoading = stringResource(R.string.auth_register_loading)
+    val tButton = stringResource(R.string.auth_register_button)
+    val tFooter = stringResource(R.string.auth_register_footer_text)
+    val tFooterAction = stringResource(R.string.auth_register_footer_action)
+
+    val tEmptyFields = stringResource(R.string.auth_register_empty_fields_error)
+    val tInvalidEmail = stringResource(R.string.auth_register_invalid_email_error)
+    val tPasswordTooShort = stringResource(R.string.auth_register_password_too_short_error)
+    val tPasswordsDontMatch = stringResource(R.string.auth_register_passwords_dont_match_error)
+    val tGenericError = stringResource(R.string.auth_register_generic_error)
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -81,7 +95,7 @@ fun registerView(
                         .padding(horizontal = SharedDimens.screenHorizontalPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ggAuthTitle(text = uiTexts.title)
+                ggAuthTitle(text = tTitle)
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
@@ -91,7 +105,7 @@ fun registerView(
                         email = it
                         errorMessage = null
                     },
-                    label = uiTexts.emailPlaceholder,
+                    label = tEmail,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -102,7 +116,7 @@ fun registerView(
                         password = it
                         errorMessage = null
                     },
-                    label = uiTexts.passwordPlaceholder,
+                    label = tPassword,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -113,7 +127,7 @@ fun registerView(
                         confirmPassword = it
                         errorMessage = null
                     },
-                    label = uiTexts.confirmPasswordPlaceholder,
+                    label = tConfirmPassword,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -132,29 +146,29 @@ fun registerView(
                 Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
 
                 ggPrimaryGradientButton(
-                    text = if (isLoading) uiTexts.buttonText else uiTexts.buttonText,
+                    text = if (isLoading) tLoading else tButton,
                     enabled = !isLoading,
                     modifier = Modifier.width(SharedDimens.buttonWidth),
                     onClick = {
                         val trimmedEmail = email.trim()
 
                         if (trimmedEmail.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                            errorMessage = uiTexts.emptyFieldsErrorText
+                            errorMessage = tEmptyFields
                             return@ggPrimaryGradientButton
                         }
 
                         if (!isValidEmail(trimmedEmail)) {
-                            errorMessage = uiTexts.invalidEmailText
+                            errorMessage = tInvalidEmail
                             return@ggPrimaryGradientButton
                         }
 
                         if (password.length < 8) {
-                            errorMessage = uiTexts.passwordTooShortText
+                            errorMessage = tPasswordTooShort
                             return@ggPrimaryGradientButton
                         }
 
                         if (password != confirmPassword) {
-                            errorMessage = uiTexts.passwordsDontMatchText
+                            errorMessage = tPasswordsDontMatch
                             return@ggPrimaryGradientButton
                         }
 
@@ -177,7 +191,7 @@ fun registerView(
                                 }
                                 is Result.Error -> {
                                     isLoading = false
-                                    errorMessage = result.toUserMessage(uiTexts)
+                                    errorMessage = result.toUserMessage(tGenericError)
                                 }
                             }
                         }
@@ -187,8 +201,8 @@ fun registerView(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 ggAuthFooter(
-                    text = uiTexts.footerText,
-                    actionText = uiTexts.footerActionText,
+                    text = tFooter,
+                    actionText = tFooterAction,
                     onActionClick = onGoToLogin,
                 )
             }
@@ -196,6 +210,6 @@ fun registerView(
     }
 }
 
-private fun Result.Error<AppError>.toUserMessage(uiTexts: RegisterTextVariables): String = uiTexts.genericErrorText
+private fun Result.Error<AppError>.toUserMessage(generic: String): String = generic
 
 private fun isValidEmail(raw: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(raw).matches()

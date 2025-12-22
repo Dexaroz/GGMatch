@@ -73,7 +73,7 @@ fun ggMatchNavHost(navController: NavHostController) {
         composable(Router.AUTH_REGISTER) {
             registerView(
                 onRegisterSuccess = {
-                    navController.navigate(Router.HOME) {
+                    navController.navigate(Router.PROFILE) {
                         popUpTo(Router.AUTH_REGISTER) { inclusive = true }
                     }
                 },

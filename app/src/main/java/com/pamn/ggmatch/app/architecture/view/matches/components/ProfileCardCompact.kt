@@ -27,21 +27,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pamn.ggmatch.R
 import com.pamn.ggmatch.app.architecture.model.profile.UserProfile
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.DEFAULT_NAME
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.LANGUAGES_PREFIX
-import com.pamn.ggmatch.app.architecture.view.matches.MatchesTextVariables.ROLES_PREFIX
 
 @Composable
 fun profileCardCompact(profile: UserProfile) {
     val defaultImageRes = R.drawable.profile_picture
 
-    val username = profile.username ?: DEFAULT_NAME
+    val username = profile.username?.toString().orEmpty().ifBlank { stringResource(R.string.matches_unknown_name) }
     val mainRoles = profile.preferences.favoriteRoles.joinToString(", ") { it.name }
     val languages = profile.preferences.languages.joinToString(", ") { it.name.take(2) }
 
@@ -79,9 +77,9 @@ fun profileCardCompact(profile: UserProfile) {
                             .data(photoUrl)
                             .crossfade(true)
                             .build(),
-                    placeholder = painterResource(R.drawable.profile_picture),
-                    error = painterResource(R.drawable.profile_picture),
-                    contentDescription = "$username profile picture",
+                    placeholder = painterResource(defaultImageRes),
+                    error = painterResource(defaultImageRes),
+                    contentDescription = stringResource(R.string.matches_profile_picture_desc, username),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                 )
@@ -94,7 +92,7 @@ fun profileCardCompact(profile: UserProfile) {
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 Text(
-                    text = username.toString(),
+                    text = username,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -103,7 +101,7 @@ fun profileCardCompact(profile: UserProfile) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "$ROLES_PREFIX$mainRoles",
+                    text = stringResource(R.string.matches_roles_prefix) + mainRoles,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF44EAC5),
                 )
@@ -111,7 +109,7 @@ fun profileCardCompact(profile: UserProfile) {
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
-                    text = "$LANGUAGES_PREFIX$languages",
+                    text = stringResource(R.string.matches_languages_prefix) + languages,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.LightGray,
                 )

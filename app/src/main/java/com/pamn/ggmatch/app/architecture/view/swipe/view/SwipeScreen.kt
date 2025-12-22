@@ -142,7 +142,7 @@ fun swipeScreen(
                 characterImageId = R.drawable.thresh,
                 onGoToMatches = {
                     matchedProfile = null
-                    navController.navigate("chats") { }
+                    navController.navigate("matches") { }
                 },
             )
         }

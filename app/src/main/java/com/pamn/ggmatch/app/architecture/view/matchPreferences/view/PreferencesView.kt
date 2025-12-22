@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +42,6 @@ import com.pamn.ggmatch.app.architecture.model.profile.preferences.Language
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.LolRole
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.PlaySchedule
 import com.pamn.ggmatch.app.architecture.model.profile.preferences.Playstyle
-import com.pamn.ggmatch.app.architecture.view.matchPreferences.MatchPreferencesTextVariables
 import com.pamn.ggmatch.app.architecture.view.matchPreferences.components.matchPreferenceChip
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -87,20 +87,20 @@ fun preferencesView(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
-                    contentDescription = MatchPreferencesTextVariables.BACK_DESCRIPTION,
+                    contentDescription = stringResource(R.string.match_preferences_back_description),
                     tint = Color.White,
                     modifier = Modifier.size(24.dp).clickable { onBack() },
                 )
                 Spacer(Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = MatchPreferencesTextVariables.FILTER_TEAMMATES_TITLE,
+                        text = stringResource(R.string.match_preferences_filter_teammates_title),
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = MatchPreferencesTextVariables.FILTER_TEAMMATES_DESCRIPTION,
+                        text = stringResource(R.string.match_preferences_filter_teammates_description),
                         color = Color.White.copy(alpha = 0.7f),
                         fontSize = 14.sp,
                     )
@@ -115,18 +115,17 @@ fun preferencesView(
                         .padding(vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                preferenceSection(MatchPreferencesTextVariables.LANGUAGE_TITLE) {
+                preferenceSection(stringResource(R.string.match_preferences_language_title)) {
                     allLanguages.forEach { lang ->
                         matchPreferenceChip(
                             label = lang.name,
                             selected = lang in uiState.languages,
-                            iconRes = lang.iconRes,
                             onClick = { presenter.toggleLanguage(lang) },
                         )
                     }
                 }
 
-                preferenceSection(MatchPreferencesTextVariables.ROLES_TITLE) {
+                preferenceSection(stringResource(R.string.match_preferences_roles_title)) {
                     allRoles.forEach { role ->
                         matchPreferenceChip(
                             label = role.name,
@@ -137,7 +136,7 @@ fun preferencesView(
                     }
                 }
 
-                preferenceSection(MatchPreferencesTextVariables.SCHEDULE_TITLE) {
+                preferenceSection(stringResource(R.string.match_preferences_schedule_title)) {
                     allSchedules.forEach { schedule ->
                         matchPreferenceChip(
                             label = schedule.name,
@@ -148,7 +147,7 @@ fun preferencesView(
                     }
                 }
 
-                preferenceSection(MatchPreferencesTextVariables.PLAYSTYLE_TITLE) {
+                preferenceSection(stringResource(R.string.match_preferences_playstyle_title)) {
                     allPlaystyles.forEach { style ->
                         matchPreferenceChip(
                             label = style.name,

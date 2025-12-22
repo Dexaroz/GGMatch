@@ -38,14 +38,12 @@ fun matchesScreen(onBack: () -> Unit) {
             }
         }
 
-    // Adjuntar / separar presenter
     DisposableEffect(Unit) {
         presenter.attachView(view)
         presenter.loadProfiles()
         onDispose { presenter.detachView() }
     }
 
-    // Filtrado de matches una vez llegan los perfiles
     LaunchedEffect(allProfiles) {
         if (allProfiles.isNotEmpty()) {
             uiState = MatchesUiState.Loading
@@ -66,7 +64,6 @@ fun matchesScreen(onBack: () -> Unit) {
         }
     }
 
-    // Renderizado según estado
     when (val state = uiState) {
         MatchesUiState.Loading -> loadingMatchesView()
         MatchesUiState.Empty -> emptyMatchesView(onBack)

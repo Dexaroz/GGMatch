@@ -1,5 +1,6 @@
 package com.pamn.ggmatch.app.architecture.view.auth.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -43,7 +45,6 @@ import com.pamn.ggmatch.app.architecture.control.auth.commands.LoginUserCommand
 import com.pamn.ggmatch.app.architecture.control.auth.commands.LoginWithGoogleCommand
 import com.pamn.ggmatch.app.architecture.sharedKernel.result.Result
 import com.pamn.ggmatch.app.architecture.view.auth.AuthDimens
-import com.pamn.ggmatch.app.architecture.view.auth.LoginTextVariables
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthFooter
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthHeader
 import com.pamn.ggmatch.app.architecture.view.auth.components.ggAuthTitle
@@ -53,10 +54,10 @@ import com.pamn.ggmatch.app.architecture.view.shared.components.ggPrimaryGradien
 import com.pamn.ggmatch.app.architecture.view.shared.components.ggTextField
 import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun loginView(
     modifier: Modifier = Modifier,
-    uiTexts: LoginTextVariables = LoginTextVariables(),
     headerImageRes: Int = R.drawable.login_header,
     logoText: String = "GGMATCH",
     authController: com.pamn.ggmatch.app.controllers.AuthController = AppContainer.authController,
@@ -71,7 +72,19 @@ fun loginView(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val webClientId = context.getString(R.string.default_web_client_id)
+    val webClientId = stringResource(R.string.default_web_client_id)
+
+    val tTitle = stringResource(R.string.auth_login_title)
+    val tEmail = stringResource(R.string.auth_email_placeholder)
+    val tPassword = stringResource(R.string.auth_password_placeholder)
+    val tButton = stringResource(R.string.auth_login_button)
+    val tLoading = stringResource(R.string.auth_login_loading)
+    val tFooter = stringResource(R.string.auth_login_footer_text)
+    val tFooterAction = stringResource(R.string.auth_login_footer_action)
+    val tEmptyFields = stringResource(R.string.auth_login_empty_fields_error)
+    val tInvalidEmail = stringResource(R.string.auth_login_invalid_email_error)
+    val tGenericError = stringResource(R.string.auth_login_generic_error)
+    val tGoogle = stringResource(R.string.auth_login_google_button)
 
     val gso =
         remember(webClientId) {
@@ -93,7 +106,7 @@ fun loginView(
                 val idToken = account.idToken
 
                 if (idToken.isNullOrBlank()) {
-                    errorMessage = uiTexts.genericErrorText
+                    errorMessage = tGenericError
                     return@rememberLauncherForActivityResult
                 }
 
@@ -108,12 +121,12 @@ fun loginView(
                         }
                         is Result.Error -> {
                             isLoading = false
-                            errorMessage = uiTexts.genericErrorText
+                            errorMessage = tGenericError
                         }
                     }
                 }
             } catch (e: Exception) {
-                errorMessage = uiTexts.genericErrorText
+                errorMessage = tGenericError
             }
         }
 
@@ -135,7 +148,7 @@ fun loginView(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = SharedDimens.screenHorizontalPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ggAuthTitle(text = uiTexts.title)
+                ggAuthTitle(text = tTitle)
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
 
@@ -145,7 +158,7 @@ fun loginView(
                         emailText = it
                         errorMessage = null
                     },
-                    label = uiTexts.emailPlaceholder,
+                    label = tEmail,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -156,7 +169,7 @@ fun loginView(
                         password = it
                         errorMessage = null
                     },
-                    label = uiTexts.passwordPlaceholder,
+                    label = tPassword,
                 )
 
                 Spacer(modifier = Modifier.height(AuthDimens.fieldVerticalSpacing))
@@ -175,16 +188,16 @@ fun loginView(
                 Spacer(modifier = Modifier.height(AuthDimens.buttonTopMargin))
 
                 ggPrimaryGradientButton(
-                    text = if (isLoading) uiTexts.loadingText else uiTexts.buttonText,
+                    text = if (isLoading) tLoading else tButton,
                     enabled = !isLoading,
                     modifier = Modifier.width(SharedDimens.buttonWidth),
                     onClick = {
                         if (emailText.isBlank() || password.isBlank()) {
-                            errorMessage = uiTexts.emptyFieldsErrorText
+                            errorMessage = tEmptyFields
                             return@ggPrimaryGradientButton
                         }
                         if (!Patterns.EMAIL_ADDRESS.matcher(emailText.trim()).matches()) {
-                            errorMessage = uiTexts.invalidEmailErrorText
+                            errorMessage = tInvalidEmail
                             return@ggPrimaryGradientButton
                         }
 
@@ -201,7 +214,7 @@ fun loginView(
                                 }
                                 is Result.Error -> {
                                     isLoading = false
-                                    errorMessage = uiTexts.genericErrorText
+                                    errorMessage = tGenericError
                                 }
                             }
                         }
@@ -229,15 +242,15 @@ fun loginView(
                             modifier = Modifier.size(25.dp),
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text(uiTexts.googleButtonText)
+                        Text(tGoogle)
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 ggAuthFooter(
-                    text = uiTexts.footerText,
-                    actionText = uiTexts.footerActionText,
+                    text = tFooter,
+                    actionText = tFooterAction,
                     onActionClick = onGoToRegister,
                 )
             }

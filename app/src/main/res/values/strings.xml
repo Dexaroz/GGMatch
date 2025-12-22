@@ -1,4 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ggmatch</string>
     <string name="default_web_client_id">1019099012768-id70i6rvschq6cgfrv20u2fc76r05u8v.apps.googleusercontent.com</string>
+
+    <string name="auth_email_placeholder">Email</string>
+    <string name="auth_password_placeholder">Password</string>
+
+    <string name="auth_login_title">LOGIN</string>
+    <string name="auth_login_button">LOGIN</string>
+    <string name="auth_login_loading">LOADING…</string>
+    <string name="auth_login_footer_text">Don\'t have an account?</string>
+    <string name="auth_login_footer_action">Register</string>
+    <string name="auth_login_empty_fields_error">Email and password are required</string>
+    <string name="auth_login_invalid_email_error">Please enter a valid email address</string>
+    <string name="auth_login_generic_error">We couldn\'t log you in. Try again.</string>
+    <string name="auth_login_google_button">Sign in with Google</string>
+
+    <string name="auth_register_title">REGISTER</string>
+    <string name="auth_register_button">REGISTER</string>
+    <string name="auth_register_loading">LOADING…</string>
+    <string name="auth_register_confirm_password_placeholder">Confirm password</string>
+    <string name="auth_register_footer_text">Already have an account?</string>
+    <string name="auth_register_footer_action">Login</string>
+    <string name="auth_register_empty_fields_error">Please fill in all fields.</string>
+    <string name="auth_register_invalid_email_error">Please enter a valid email.</string>
+    <string name="auth_register_password_too_short_error">Password must be at least 8 characters.</string>
+    <string name="auth_register_passwords_dont_match_error">Passwords do not match.</string>
+    <string name="auth_register_generic_error">An error occurred while registering. Please try again.</string>
+
+    <string name="chats_title">Chats</string>
+    <string name="chats_back_description">Back</string>
+    <string name="chats_no_chats_title">No chats yet 💬</string>
+    <string name="chats_no_chats_subtitle">Start swiping to create a match and a chat!</string>
+    <string name="chat_title">Chat</string>
+    <string name="chat_message_placeholder">Message…</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_create_error">Couldn\'t create the chat.</string>
+    <string name="chat_load_error">Error loading messages.</string>
+    <string name="chat_send_error">Couldn\'t send the message.</string>
+    <string name="chat_loading">Loading…</string>
+    <string name="chat_error_prefix">❌ %1$s</string>
+
+    <string name="matches_title">Matches</string>
+    <string name="matches_back_description">Back</string>
+    <string name="matches_loading">Loading matches…</string>
+    <string name="matches_empty_title">No matches yet 💔</string>
+    <string name="matches_empty_subtitle">Start swiping to find your perfect match!</string>
+    <string name="matches_go_back">Go Back</string>
+    <string name="matches_error_title">Something went wrong ❌</string>
+
+    <string name="matches_unknown_name">Unknown</string>
+    <string name="matches_unknown_summoner">Unknown Summoner</string>
+    <string name="matches_default_server">UNK</string>
+    <string name="matches_roles_prefix">Roles: </string>
+    <string name="matches_languages_prefix">Languages: </string>
+    <string name="matches_profile_picture_desc">Profile picture of %1$s</string>
+
+    <string name="match_preferences_back_description">Back</string>
+    <string name="match_preferences_filter_teammates_title">Filter teammates</string>
+    <string name="match_preferences_filter_teammates_description">Adjust your preferences to find compatible players</string>
+    <string name="match_preferences_language_title">Language</string>
+    <string name="match_preferences_roles_title">Roles</string>
+    <string name="match_preferences_schedule_title">Schedule</string>
+    <string name="match_preferences_playstyle_title">Playstyle</string>
+
+    <string name="profile_back">Back</string>
+    <string name="profile_take_picture">Take a picture</string>
+    <string name="profile_logout">Logout</string>
+
+    <string name="profile_not_authenticated">You are not authenticated.</string>
+    <string name="profile_username_label">Username</string>
+
+    <string name="profile_riot_title">Verify Riot Account</string>
+    <string name="profile_riot_game_name_label">Game name</string>
+    <string name="profile_riot_tag_label">Tag</string>
+    <string name="profile_riot_verify_button">Verify profile</string>
+    <string name="profile_riot_verifying">Verifying…</string>
+    <string name="profile_riot_saved">Riot verified and saved.</string>
+
+    <string name="profile_favorite_role_title">Favorite Role</string>
+    <string name="profile_favorite_role_hint">Max 2 roles</string>
+    <string name="profile_schedule_title">Select schedule</string>
+    <string name="profile_language_title">Select language</string>
+    <string name="profile_playstyle_title">Select playstyle</string>
+
+    <string name="profile_save_changes">Save changes</string>
+    <string name="profile_saving">Saving…</string>
+
+    <string name="profile_invalid_username">Invalid username (3..20, letters/digits/_).</string>
+    <string name="profile_invalid_preferences">Invalid preferences.</string>
+    <string name="profile_load_error">Couldn\'t load the profile.</string>
+    <string name="profile_save_error">Couldn\'t save the profile.</string>
+    <string name="profile_saved">Profile saved.</string>
+    <string name="profile_upload_failed">Upload failed</string>
+
+    <string name="profile_error_prefix">❌ %1$s</string>
+    <string name="profile_info_prefix">✅ %1$s</string>
+
+    <string name="profile_change_image">Change Image</string>
+    <string name="profile_choose_from_gallery">Choose from gallery</string>
+
+    <string name="profile_ok">OK</string>
+    <string name="profile_cancel">Cancel</string>
+
+    <string name="profile_riot_summary_unranked">Riot: %1$s#%2$s · SOLOQ: Unranked</string>
+    <string name="profile_riot_summary_ranked">Riot: %1$s#%2$s\nSOLOQ: %3$s · %4$d LP · WR: %5$d%%</string>
+
+    <string name="swipe_load_profiles_error">Couldn\'t load profiles.</string>
+    <string name="swipe_warning_prefix">⚠️</string>
+    <string name="swipe_background_image_desc">Background image for %1$s</string>
+    <string name="swipe_profile_picture_desc">Profile picture of %1$s</string>
+    <string name="swipe_no_riot_account">No Riot account</string>
+    <string name="swipe_no_soloq_stats">No SOLOQ stats available</string>
+    <string name="swipe_wl_format">W/L: %1$d/%2$d</string>
+    <string name="swipe_winrate_format">Winrate: %1$d%%</string>
+    <string name="swipe_hot_streak">Hot streak 🔥</string>
+    <string name="swipe_inactive">Inactive</string>
+    <string name="swipe_tap_to_return">Tap to return</string>
+    <string name="swipe_empty_deck_message">No more profiles are available that match your preferences.</string>
+    <string name="swipe_empty_deck_suggestion">Please wait for new users or expand your matchmaking preferences.</string>
+    <string name="swipe_unknown_name">Unknown</string>
+    <string name="swipe_roles_prefix">Roles: </string>
+    <string name="swipe_languages_prefix">Languages: </string>
 </resources>
